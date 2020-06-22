@@ -1,0 +1,262 @@
+
+img {
+	max-width: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+.top-bar .top-bar-social-links ul li a i {
+    color: #62b13a;
+    border: 1px solid #62b13a;
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+.top-bar .top-bar-social-links ul li a i:hover {
+   background-color: #62b13a;
+   color: #fff;
+}
+
+.top-bar-social-links ul li:last-child a i {
+    border: none;
+    color: #ccccccb0;
+}
+.top-bar-social-links ul li:last-child a i:hover {
+	background-color: transparent;
+	color: #ccccccb0;
+}
+/*header tabs*/
+
+
+header.tab-header {
+    background-color: #63b32e;
+}
+
+.tab-header .navbar .navbar-collapse  a.nav-link {
+    color: #647b83 !important;
+    font-size: 17px;
+    transition: all 0.3s ease;
+}
+
+.tab-header .navbar .navbar-collapse a.nav-link:hover {
+	color: #fff !important;
+}
+
+.tab-header .navbar .navbar-collapse form input,
+.tab-header .navbar .navbar-collapse form button.btn  {
+    background: transparent;
+    border: none;
+    color: #647b83 !important;
+}
+
+/*test-project section*/
+
+a.main-btn {
+    color: #fff;
+    background: #63b32e;
+    padding: 9px 19px;
+    border-radius: 5px;
+    border: 1px solid #63b32e;
+    transition: all 0.3s ease;
+}
+a.main-btn:hover {
+	color: #63b32e;
+	background: transparent;
+}
+a.main-btn.cancel {
+    background-color: #d21416;
+    border: 1px solid #d21416;
+}
+a.main-btn.cancel:hover {
+	color: #d21416;
+	background: transparent;
+}
+
+
+.test-project .form-control {
+    background-color: #f8f8fa;
+}
+
+.test-project .test-proj-tittel p {
+    color: #9e9da3;
+}
+.test-project  textarea.form-control {
+    min-height: 120px;
+}
+
+/*floors tabbs*/
+.accordion .card-header:after {
+    font-family: 'FontAwesome';  
+    content: "\f013";
+    float: right; 
+}
+.accordion .card-header.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\f013";
+}
+
+.card-header {
+    background-color: #eaeaf2;
+    border-bottom: none;
+    border-radius: 8px !important;
+    padding: 8px 12px;
+}
+
+/*start setting tab */
+
+.form-setting-option table {
+    width: 1000px;
+    margin-left: auto;
+}
+.form-setting-option h4 {
+    margin-left: 108px;
+}
+.form-setting-option .table td, .table th {
+    border-bottom: 1px solid #dee2e6 !important;
+    border-top: none;
+    padding: 20px 29px;
+    font-weight: normal !important;
+    text-align: center;
+}
+.form-setting-option .table td a {
+    background: #eaeaf2;
+    width: 135px;
+    color: #000000b8;
+    padding: 5px 0px;
+    display: inline-block;
+    border-radius: 3px;
+}
+
+.table-custom-checkbox {
+  display: inline-block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.table-custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 28px;
+  width: 28px;
+  background-color: #eaeaf2;
+}
+
+/* On mouse-over, add a grey background color */
+.table-custom-checkbox:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.table-custom-checkbox input:checked ~ .checkmark {
+    background-color: #eaeaf2;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.table-custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.table-custom-checkbox .checkmark:after {
+  left: 9px;
+  top: 2px;
+  width: 10px;
+  height: 18px;
+  border: solid #000;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/*add-floor-tabs*/
+
+.add-floor-tabs .add-floor-number {
+    display: flex;
+    width: 60%;
+    justify-content: space-between;
+}
+.add-floor-tabs .add-floor-btns {
+    width: 40%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.add-floor-tabs {
+    width: 1000px;
+    margin-left: auto;
+}
+
+
+@media (max-width: 767px) {
+	.form-setting-option h4 {
+     margin-left: 0px; 
+  }
+	.add-floor-tabs {
+    width: 100%;
+    margin-left: auto;
+  }
+  .add-floor-tabs .add-floor-main {
+    flex-direction: column;
+  }
+  .add-floor-tabs .add-floor-number {
+    width: 100%;
+ }
+ .add-floor-tabs .add-floor-number .form-group {
+    margin-right: 5px;
+}
+
+ .add-floor-tabs .add-floor-btns {
+    width: 100%;
+    justify-content: center;
+    margin: 15px 0px;
+  }
+}
+
+@media (min-width: 767px) and  (max-width: 1024px) {
+	.form-setting-option h4 {
+     margin-left: 0px; 
+   }
+      .add-floor-tabs {
+    width: 100%;
+    }
+    .add-floor-tabs .add-floor-number .form-group {
+    margin-right: 5px;
+  }
+}
