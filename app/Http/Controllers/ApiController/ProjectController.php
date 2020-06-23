@@ -4,7 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
-use App\Http\Requests\APIProjectRequest;
+use App\Http\Requests\Api\ProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -34,7 +34,7 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(APIProjectRequest $request)
+    public function store(ProjectRequest $request)
     {
         $project = Project::create($request->all());
         return $project;
@@ -69,7 +69,7 @@ class ProjectController extends Controller
      * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(APIProjectRequest $request, Project $project)
+    public function update(ProjectRequest $request, Project $project)
     {
         $if_update = $project->update($request->all());
         if ($if_update) {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Api\ApiRequest;
 
-class APIProjectRequest extends FormRequest
+class ProjectRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,13 @@ class APIProjectRequest extends FormRequest
     {
         return [
             'project_name' => 'required',
-            'description'  => 'required'
+        ];
+    }
+
+    public function messages() 
+    {
+        return [
+            'project_name.required' => 'Project Name is required.'
         ];
     }
 }
