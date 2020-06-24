@@ -37,19 +37,19 @@ export class ProjectForm extends Component<IProps, IState> {
         this.setState({
             // project.project_name : event.target.value
         });
-        console.log(this.state.project);
+      
     }
 
     
 
     onSubmitHandler = (event: any) => {
-        console.log(typeof event);
-       console.log(event);
+    //     console.log(typeof event);
+    //    console.log(event);
     }
 
     render() {
         let {showDescription, toggleDescriptionAndTabs } = this.props;
-        console.log(showDescription);
+        // console.log(showDescription);
         return(
         <div className="start-form">
             <form onSubmit={this.onSubmitHandler.bind(this)}>

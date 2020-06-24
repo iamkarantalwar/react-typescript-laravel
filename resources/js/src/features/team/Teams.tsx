@@ -5,7 +5,7 @@ class Teams extends Component {
     render() {
         return (
             <div>
-                
+                <p>This is the team component</p>
             </div>
         );
     }

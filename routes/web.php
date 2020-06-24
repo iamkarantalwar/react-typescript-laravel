@@ -11,7 +11,11 @@
 |
 */
 
-Route::view('/{path?}', 'app')->where('path', "/^(login|logout)$/i")->name("frontend");
+Route::view('/{path?}', 'app')
+       ->where("path", '^(?!login|logout).*$')
+       ->middleware("auth")
+       ->name("frontend");
+       
 Auth::routes(['register' => false]);
 
 Route::get('/home', 'HomeController@index')->name('home');

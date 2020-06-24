@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 export class Header extends Component {
     render() {
             return (
@@ -33,13 +35,19 @@ export class Header extends Component {
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav mr-auto">
                             <li className="nav-item active">
-                                <a className="nav-link mr-4" href="/">Dashborad<span className="sr-only">(current)</span></a>
+                                <Link className="nav-link mr-4" to="/">Dashborad<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link mr-4" href="/projects">Projects</a>
+                                <Link className="nav-link mr-4" to="/projects">Projects</Link>
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link mr-4" href="Settings.html">Settings</a>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link mr-4" to="/users">User</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link mr-4" to="/teams">Teams</Link>
                             </li>
                             </ul>
                             <form className="form-inline my-2 my-lg-0">
@@ -50,23 +58,6 @@ export class Header extends Component {
                         </nav>
                     </div>
                    </header>
-                   <section className="test-project mt-5">
-                        <div className="container">
-                            <div className="row align-items-center">
-                                <div className="col-md-6">
-                                    <div className="test-proj-tittel">
-                                        <h3 className="font-weight-normal">Dashborad</h3>
-                                        <p><i className="fa fa-home" aria-hidden="true"></i> - Projects </p>
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className="test-proj-date text-right">
-                                        <p>Heute:<a href="#"> 01 April</a></p>
-                                    </div>
-                                </div>
-                            </div>            
-                        </div>
-                    </section>
                 </div>
                 
             );
