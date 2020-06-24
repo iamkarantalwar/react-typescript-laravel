@@ -1,11 +1,11 @@
 <?php
 
-use App\Enums\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\ProjectSettingField;
 
-class CreateRolesTable extends Migration
+class CreateProjectSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,12 @@ class CreateRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('project_settings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger("user_id");
-            $table->enum("role_name", [UserRole::ADMIN, UserRole::USER]);
+            $table->string('project_id');
+            $table->enum('field_name', array_values(ProjectSettingField::FIELDS));
+            $table->string('field_wirkzeit');
+            $table->string('field_');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +32,6 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('project_settings');
     }
 }

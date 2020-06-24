@@ -18,6 +18,7 @@ class CreateFloorRoomTypesTable extends Migration
             $table->bigInteger("floor_id");
             $table->bigInteger("floor_room_id");
             $table->bigInteger("room_type_id");
+            $table->softDeletes();
             $table->timestamps();
         });
     }

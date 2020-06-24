@@ -17,6 +17,7 @@ class CreateFloorRoomsTable extends Migration
             $table->bigIncrements('id');            
             $table->bigInteger("floor_id");
             $table->string("name");
+            $table->softDeletes();
             $table->timestamps();
         });
     }

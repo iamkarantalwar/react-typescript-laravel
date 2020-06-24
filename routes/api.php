@@ -17,6 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::resource('team', 'ApiController\TeamController');
+
 Route::resource('project', 'ApiController\ProjectController');
 
 Route::group(["prefix" => "admin", "namespace" => "ApiController" ], function() {

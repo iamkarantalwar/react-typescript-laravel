@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Models\Team;
 use Illuminate\Http\Request;
+use App\Http\Requests\Api\TeamRequest;
 
 class TeamController extends Controller
 {
@@ -14,7 +15,7 @@ class TeamController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Team::all(), 200);
     }
 
     /**
@@ -24,7 +25,7 @@ class TeamController extends Controller
      */
     public function create()
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -33,9 +34,10 @@ class TeamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TeamRequest $request)
     {
-        //
+        $team = Team::create($request->all());
+        return response()->json($team, 200);
     }
 
     /**
@@ -46,7 +48,7 @@ class TeamController extends Controller
      */
     public function show(Team $team)
     {
-        //
+        return $team;
     }
 
     /**
@@ -57,7 +59,7 @@ class TeamController extends Controller
      */
     public function edit(Team $team)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -67,9 +69,14 @@ class TeamController extends Controller
      * @param  \App\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Team $team)
+    public function update(TeamRequest $request, Team $team)
     {
-        //
+        $if_update = $team->update($request->all());
+        if ($if_update) {
+            return response()->json($team, 200);
+        } else {
+            return ['message' => 'Something Went Wrong.'];
+        }
     }
 
     /**
@@ -80,6 +87,11 @@ class TeamController extends Controller
      */
     public function destroy(Team $team)
     {
-        //
+        $if_delete = $team->delete();
+        if ($if_delete) {
+            return response()->json(['message' => 'Team Deleted Successfully.'], 200);
+        } else {
+            return ['message' => 'Something Went Wrong'];
+        }
     }
 }
