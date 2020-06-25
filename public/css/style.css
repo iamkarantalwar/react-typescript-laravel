@@ -10,7 +10,9 @@ a {
 a:hover {
 	text-decoration: none;
 }
-
+.form-control {
+    background-color: #f8f8fa;
+}
 
 .top-bar .top-bar-social-links ul li a i {
     color: #62b13a;
@@ -379,6 +381,19 @@ background-color: #f8f8fa;
     width: 840px;
     margin: auto;
 }
+
+/*User page css*/
+
+.team-name-box .table tr td span, .span-bg {
+    background: #eaeaf2;
+    width: 135px;
+    color: #000000b8;
+    padding: 5px 0px;
+    display: inline-block;
+    border-radius: 3px;
+}
+
+
 /*start responsive*/
 @media (max-width: 767px) {
 	.form-setting-option h4 {
@@ -441,6 +456,9 @@ background-color: #f8f8fa;
  .main-team-area {
     width: 100%;
   }
+ .add-new-user .add-user-form {
+    flex-wrap: wrap;
+  }
 
 }
 
@@ -472,7 +490,6 @@ background-color: #f8f8fa;
     width: 100%;
   }
 }
-
 
 button.main-btn {
     color: #fff;

@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
                         ->unique()
                         ->nullable()
                         ->default(null);
+            $table->string('shortcode');
+            $table->string('team_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -12,6 +12,7 @@ class RoomTypeSeeder extends Seeder
      */
     public function run()
     {
+        
         RoomType::create(
         [
             "room_type" => "HW",     

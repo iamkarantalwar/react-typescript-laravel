@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ProjectSettingStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,8 @@ class CreateProjectSettingsTable extends Migration
             $table->string('project_id');
             $table->enum('field_name', array_values(ProjectSettingField::FIELDS));
             $table->string('field_wirkzeit');
-            $table->string('field_');
+            $table->string('field_spulzeit');
+            $table->enum('aktiv', [ProjectSettingStatus::ACTIVE, ProjectSettingStatus::INACTIVE]);
             $table->softDeletes();
             $table->timestamps();
         });

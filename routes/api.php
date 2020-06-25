@@ -21,6 +21,10 @@ Route::resource('team', 'ApiController\TeamController');
 
 Route::resource('project', 'ApiController\ProjectController');
 
+Route::resource('user', 'ApiController\UserController');
+
+Route::get('userroles', 'ApiController\UserController@getUserRoles');
+
 Route::group(["prefix" => "admin", "namespace" => "ApiController" ], function() {
     Route::post("login",  "AdminAuthenticationController@login");
     Route::post("logout", "AdminAuthenticationController@logout")->middleware('auth:api');

@@ -37,12 +37,7 @@ export class Header extends Component {
                             <li className="nav-item active">
                                 <Link className="nav-link mr-4" to="/">Dashborad<span className="sr-only">(current)</span></Link>
                             </li>
-                            <li className="nav-item">
-                                <Link className="nav-link mr-4" to="/projects">Projects</Link>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link mr-4" href="Settings.html">Settings</a>
-                            </li>
+                           
                             <li className="nav-item">
                                 <Link className="nav-link mr-4" to="/users">User</Link>
                             </li>

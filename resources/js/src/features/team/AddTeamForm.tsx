@@ -63,7 +63,7 @@ class AddTeamForm extends Component<IProps, IState> {
                                     type="text" 
                                     name="team_name" 
                                     onChange={(e) => this.setState({team: {...this.state.team, team_name: e.target.value}})}
-                                    className="form-control"
+                                    className={`form-control ${this.state.errors.team_name ? 'is-invalid': '' }`}
                                 />
                                 </div>
                             </div>

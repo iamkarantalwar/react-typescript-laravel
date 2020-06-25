@@ -37,7 +37,13 @@ class TeamController extends Controller
     public function store(TeamRequest $request)
     {
         $team = Team::create($request->all());
-        return response()->json($team, 200);
+        
+        if ($team) {
+            return response()->json($team, 200);
+        } else {
+            return ["message" => "Something went wrong. Try again later."];
+        }
+        
     }
 
     /**

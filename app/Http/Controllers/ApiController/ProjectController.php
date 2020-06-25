@@ -37,7 +37,11 @@ class ProjectController extends Controller
     public function store(ProjectRequest $request)
     {
         $project = Project::create($request->all());
-        return $project;
+        if ($project) {
+            return $project;
+        } else {
+            return ["message" => "Something went wrong. Try again later."];
+        }
     }
 
     /**
