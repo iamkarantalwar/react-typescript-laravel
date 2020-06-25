@@ -4,16 +4,20 @@ import { ITeam } from '../../app/models/team.model';
 import { IUser } from '../../app/models/user.model';
 import { User } from '../../app/api/agent';
 import { AxiosError } from 'axios';
+import LoaderBar from '../../app/common/LoaderBar';
+
 
 interface IProps {
     roles: IRole[];
     teams: ITeam[];
+    afterAddNewUser: (team: IUser) => void;
 }
 
 interface IState {
     user: IUser;
     errors : IUser;
     added: boolean;
+    showLoader: boolean;
 }
 
 class UserForm extends Component<IProps, IState> {
@@ -43,6 +47,7 @@ class UserForm extends Component<IProps, IState> {
                 team_id:"",
             },
             added: false,
+            showLoader: false,
         }
     }
 
@@ -58,6 +63,7 @@ class UserForm extends Component<IProps, IState> {
 
     onSubmitHandler(event: any) {
         event.preventDefault();
+        this.setState({showLoader: true});
         User
         .saveUser(this.state.user)
         .then((res)=>{
@@ -72,6 +78,8 @@ class UserForm extends Component<IProps, IState> {
                         }
                 });
 
+                this.props.afterAddNewUser(res);
+
                 this.setState({
                     user: {...this.state.user,
                                 name: "",
@@ -83,7 +91,8 @@ class UserForm extends Component<IProps, IState> {
                             },
                             added: true,
                     });
-
+                    this.setState({showLoader: false});
+                
         })
         .catch((error: AxiosError) => {
             if (error.response?.status == 422) {
@@ -98,7 +107,7 @@ class UserForm extends Component<IProps, IState> {
                                 role_name: error_array.role_name != undefined ? error_array.role_name[0] : "",  
                             }
                     });
-                
+                    this.setState({showLoader: false});
                     
             }
         });
@@ -108,8 +117,10 @@ class UserForm extends Component<IProps, IState> {
     render() {
         return (
             <Fragment>
+ 
                   <form onSubmit={this.onSubmitHandler.bind(this)}>
-                  {this.state.added ? <span className="text-success">User Created SUccessfully.</span> : ""}
+                     {this.state.showLoader?<LoaderBar></LoaderBar> : ""}
+                  {this.state.added ? <span className="text-success">User Created Successfully.</span> : ""}
                            <div className="add-user-form d-flex align-items-end justify-content-between">                               
                               <div className="form-group col-md-5 px-1">
                                  <label>Add New User</label>

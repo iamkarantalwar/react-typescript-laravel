@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { ITeam } from '../../app/models/team.model';
 import { Team } from '../../app/api/agent';
+import LoaderBar from '../../app/common/LoaderBar';
 
 interface IProps {
-    teamNameExist : (team :ITeam) => boolean;
+    teamNameExist : (team: ITeam) => boolean;
     afterAddNewTeam: (team: ITeam) => void;
 }
 
@@ -11,6 +12,7 @@ interface IState{
     team: ITeam;
     errors: ITeam;
     success: string;
+    showLoader: boolean;
     
 }
 
@@ -24,26 +26,32 @@ class AddTeamForm extends Component<IProps, IState> {
             errors:{
                 team_name: ""
             },
-            success: ""   
+            success: "",
+            showLoader: false,   
         }
     }
 
     onSubmitHandler = (event: any) =>{
         event.preventDefault();
+       
         let team_name = this.state.team.team_name;
         //Check if Team Name Is Not Empty
         if (team_name == "") {
             this.setState({errors: {...this.state.errors, team_name: "Enter the team name"}});
+          
         } else if(this.props.teamNameExist(this.state.team)) {
             this.setState({errors: {...this.state.errors, team_name: "This team name is already exist."}});
+           
         } else {
-            
+            this.setState({showLoader: true});
             Team
             .saveTeam(this.state.team)
             .then((res) =>{ 
                 this.setState({errors: {...this.state.errors, team_name: ""}});
                 this.setState({success: "Team Created Successfully."});
                 this.props.afterAddNewTeam(res);
+                this.setState({team:{...this.state.team, team_name:""}});
+                this.setState({showLoader: false});
             });
            
         }
@@ -54,7 +62,7 @@ class AddTeamForm extends Component<IProps, IState> {
         return (
             <div className="team-add-form px-4">
                     <form onSubmit={this.onSubmitHandler.bind(this)}>
-                        {this.state.success ? <p className="text-primary">{this.state.success}</p> : ""}
+                        {this.state.showLoader ? <LoaderBar/> : ""}
                         <div className="row align-items-center justify-content-between">
                             <div className="add-new-team">
                                 <div className="form-group">
@@ -74,6 +82,7 @@ class AddTeamForm extends Component<IProps, IState> {
                             </div>
                         </div>
                         {this.state.errors.team_name ? <span className="text-danger">{this.state.errors.team_name}</span>: ""}
+                        {this.state.success ? <p className="text-primary">{this.state.success}</p> : ""}
                     </form>
             </div>
         );

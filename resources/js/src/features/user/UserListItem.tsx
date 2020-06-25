@@ -3,6 +3,7 @@ import { IUser } from '../../app/models/user.model';
 import { ITeam } from '../../app/models/team.model';
 import { IRole } from '../../app/models/role.model';
 import { User } from '../../app/api/agent';
+import LoaderBar from '../../app/common/LoaderBar';
 
 interface IProps {
     user: IUser;
@@ -18,7 +19,8 @@ interface IState {
         team: string,
         shortcode: string,
     },
-    updated: boolean
+    updated: boolean,
+    showLoader: boolean,
 }
 
 class UserListItem extends Component<IProps, IState> {
@@ -33,12 +35,15 @@ class UserListItem extends Component<IProps, IState> {
                 shortcode: "",
             },
             updated: false,
+            showLoader:false,
+
         }
     }
     componentDidMount() {
         this.setState({user: {...this.state.user,role_name: this.props.user.role.role_name}})
     }
     updateUserDetails(event: any) {
+        this.setState({showLoader: true});
         User
         .updateUser(this.state.user)
         
@@ -53,6 +58,7 @@ class UserListItem extends Component<IProps, IState> {
                 }); 
                 
                 this.setState({updated: true});
+                this.setState({showLoader: false});
                 // this.setState({user: {...this.state.user,role_name: res.role.role_name}})
 
         })
@@ -68,6 +74,7 @@ class UserListItem extends Component<IProps, IState> {
                                 role: error_array.role_name != undefined ? error_array.role_name[0] : "",  
                             }
                     });    
+                    this.setState({showLoader: false});
               //  console.log(this.state.errors); 
             }
         });
@@ -87,6 +94,7 @@ class UserListItem extends Component<IProps, IState> {
      
         return (
             <Fragment>
+                { this.state.showLoader ? <LoaderBar/> : ""}
                 <tr>
                     <th scope="row" 
                         className="text-left">

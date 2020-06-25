@@ -45,12 +45,17 @@ class Users extends Component<IProps, IState> {
    filterListItems = (event :any) => {
       let search = this.state.searchInput;
       if (search != "") {
-          let elem = this.state.elements.filter(e => e.name.includes(search));
+          let elem = this.state.users.filter(e => e.name.includes(search));
           this.setState({elements: elem});
       } else {
           this.setState({elements:this.state.users});
       }
      
+  }
+  afterAddNewUser(user: IUser) {
+   this.setState({
+      elements:[...this.state.users, user]
+  })
   }
 
     render() {
@@ -59,7 +64,9 @@ class Users extends Component<IProps, IState> {
                <div className="add-new-user">
                   <div className="container">
                      <div className="main-team-area">
-                        <UserForm roles={this.state.roles} teams={this.state.teams}/>
+                        <UserForm roles={this.state.roles} 
+                                  teams={this.state.teams}
+                                  afterAddNewUser={this.afterAddNewUser.bind(this)}/>
                         <div className="team-search mt-5 px-4 ml-3">
                            <div className="row align-items-center justify-content-between ">
                               <div className="add-new-team">

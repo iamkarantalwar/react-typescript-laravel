@@ -32,9 +32,9 @@ class Teams extends Component<IProps, IState> {
         }
     }
 
-    afterAddNewTeam = (team :ITeam) => {
+    afterAddNewTeam = (team: ITeam) => {
         this.setState({
-            teamList:[...this.state.teamList, team]
+            elements:[...this.state.teamList, team]
         })
     }
     
@@ -47,7 +47,7 @@ class Teams extends Component<IProps, IState> {
     filterListItems = (event :any) => {
         let search = this.state.searchInput;
         if (search != "") {
-            let elem = this.state.elements.filter(e => e.team_name.includes(search));
+            let elem = this.state.teamList.filter(e => e.team_name.includes(search));
             this.setState({elements: elem});
         } else {
             this.setState({elements:this.state.teamList});

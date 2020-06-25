@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { ITeam } from '../../app/models/team.model';
 import { Team } from '../../app/api/agent';
 import { AxiosError } from 'axios';
+import LoaderBar from '../../app/common/LoaderBar';
 
 interface IProps {
     team: ITeam;
@@ -12,6 +13,7 @@ interface IState {
     updateState: boolean;
     updated: boolean;
     errors: ITeam;
+    showLoader: boolean;
 }
 
 class TeamListItem extends Component<IProps, IState> {
@@ -26,7 +28,8 @@ class TeamListItem extends Component<IProps, IState> {
                 team_name:"",
             },
             updated: false,
-            updateState: false
+            updateState: false,
+            showLoader: false,
         }   
     }
 
@@ -42,12 +45,14 @@ class TeamListItem extends Component<IProps, IState> {
 
     updateTeam() {
         if (this.state.updateState) {
+            this.setState({showLoader: true});
             Team
             .updateTeam(this.state.team)
             .then((res)=>
             {
                 this.setState({updateState: false, updated:true});
                 this.setState({errors: {...this.state.errors, team_name: ""}});
+                this.setState({showLoader: false});
             })
             .catch((res: AxiosError) => { 
                 console.log(res.response);
@@ -56,7 +61,9 @@ class TeamListItem extends Component<IProps, IState> {
                     if(res.response.data.errors['team_name'])
                     {
                         this.setState({errors: {...this.state.errors, team_name: res.response.data.errors['team_name']}});
+                       
                     }
+                    this.setState({showLoader: false});
                 }
             });
         }
@@ -67,6 +74,7 @@ class TeamListItem extends Component<IProps, IState> {
        
         return (
             <Fragment>
+                {this.state.showLoader ? <LoaderBar/> : ""}
                  <tr>
                     <th scope="row" className="text-left">
                         <input type="text" 

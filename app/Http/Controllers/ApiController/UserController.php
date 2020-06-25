@@ -54,7 +54,7 @@ class UserController extends Controller
             "role_name" => $request->post("role_name"),
         ]);
 
-        return User::with(['role', 'team'])->where("id", $user->id);
+        return User::with(['role', 'team'])->where("id", $user->id)->first();
     }
 
     /**
