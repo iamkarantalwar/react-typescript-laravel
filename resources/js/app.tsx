@@ -11,7 +11,6 @@ export default class App extends React.Component{
   render(): any{
    
      return(
-        
          <Fragment>
             <BrowserRouter>   
                <Header/>      

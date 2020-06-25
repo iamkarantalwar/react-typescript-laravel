@@ -24,5 +24,6 @@ export const Project = {
 
 export const Team = {
     getTeams: ():Promise<ITeam[]> => requests.get(`${enviorment.baseUrl}/${endPoints.team}`),
-    saveTeam: (team: ITeam):Promise<ITeam> => requests.post(`${enviorment.baseUrl}/${endPoints.team}`, team)
+    saveTeam: (team: ITeam):Promise<ITeam> => requests.post(`${enviorment.baseUrl}/${endPoints.team}`, team),
+    updateTeam: (team: ITeam):Promise<ITeam> => requests.put(`${enviorment.baseUrl}/${endPoints.team}/${team.id}`, team),
 }

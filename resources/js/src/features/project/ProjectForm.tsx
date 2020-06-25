@@ -9,9 +9,9 @@ interface IProps {
 
 // let projectObject :IProject = {project_name:string, description:string};
 
-interface IState {
+interface IState extends IProject {
     btnText: string;
-    project:IProject;
+   
 }
 
 export class ProjectForm extends Component<IProps, IState> {
@@ -23,10 +23,8 @@ export class ProjectForm extends Component<IProps, IState> {
 
         this.state= {
             btnText: "Add Project",
-            project: {
-                project_name: "",
-                description: "",
-            },           
+            project_name: "",
+            description:""     
         }
     }
 
@@ -61,8 +59,8 @@ export class ProjectForm extends Component<IProps, IState> {
                                 <input type="name" className="form-control" 
                                                    placeholder="Projects Name" 
                                                    id="first-name"
-                                                   value={this.state.project.project_name}
-                                                   onChange={this.test}/>
+                                                   value={this.state.project_name}
+                                                   onChange={(e)=>this.setState({project_name:e.target.value})}/>
                             </div>
                         </div>
                         <div className="col-md-3 col-lg-3 col-xl-2">
@@ -77,7 +75,11 @@ export class ProjectForm extends Component<IProps, IState> {
                     </div>
                     <div className={`form-group ${showDescription ? 'd-block' : 'd-none'}`}>
                         <label>Example textarea</label>
-                        <textarea className="form-control" placeholder="Hire sollte ein Text zur.." id="exampleFormControlTextarea1" rows={3}></textarea>
+                        <textarea className="form-control" 
+                                  placeholder="Hire sollte ein Text zur.." 
+                                  id="exampleFormControlTextarea1" 
+                                  rows={3}
+                                  onChange={(e)=>{this.setState({description:e.target.value})}}></textarea>
                     </div>
                 </div>
             </form>
