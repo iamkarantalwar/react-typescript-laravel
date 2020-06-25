@@ -50,9 +50,9 @@ class TeamListItem extends Component<IProps, IState> {
             .updateTeam(this.state.team)
             .then((res)=>
             {
-                this.setState({updateState: false, updated:true});
+                this.setState({updateState: false, updated:true, showLoader: false});
                 this.setState({errors: {...this.state.errors, team_name: ""}});
-                this.setState({showLoader: false});
+                setTimeout(()=>{ this.setState({updated: false})},2000);
             })
             .catch((res: AxiosError) => { 
                 console.log(res.response);

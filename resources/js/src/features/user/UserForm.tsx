@@ -92,6 +92,7 @@ class UserForm extends Component<IProps, IState> {
                             added: true,
                     });
                     this.setState({showLoader: false});
+                    setTimeout(()=>{ this.setState({added: false})},2000);
                 
         })
         .catch((error: AxiosError) => {
@@ -178,7 +179,8 @@ class UserForm extends Component<IProps, IState> {
                            
                               <div className="form-group col-md-2 px-1">
                                  <select name="team" 
-                                         className={`form-control ${this.state.errors.team_id ? "is-invalid" : ""}`}                                         
+                                         className={`form-control ${this.state.errors.team_id ? "is-invalid" : ""}`} 
+                                         value={this.state.user.team_id as string}                                        
                                          onChange={(e) => this.setState({user:{...this.state.user,team_id:e.target.value}})}>
                                     <option value="">Select Team</option>
                                     {this.props

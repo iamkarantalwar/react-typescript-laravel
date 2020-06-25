@@ -90,8 +90,8 @@ class UserController extends Controller
     {
         $user_updated = $user->update([
             "name"     => $request->post("name"),
-            "email"    => $request->post("email"),
-            "password" => Hash::make($request->post("password")),
+            // "email"    => $request->post("email"),
+            // "password" => Hash::make($request->post("password")),
             "shortcode" => $request->post("shortcode"),
             "team_id"   => $request->post("team_id"),
         ]);

@@ -43,10 +43,10 @@ class UserListItem extends Component<IProps, IState> {
         this.setState({user: {...this.state.user,role_name: this.props.user.role.role_name}})
     }
     updateUserDetails(event: any) {
+       
         this.setState({showLoader: true});
         User
-        .updateUser(this.state.user)
-        
+        .updateUser(this.state.user)        
         .then((res)=>{
             this.setState({
                 errors: {...this.state.errors,
@@ -57,8 +57,9 @@ class UserListItem extends Component<IProps, IState> {
                         }
                 }); 
                 
-                this.setState({updated: true});
-                this.setState({showLoader: false});
+                this.setState({updated: true, showLoader: false});
+                setTimeout(()=>{ this.setState({updated: false})},1000);
+                // this.setState({});
                 // this.setState({user: {...this.state.user,role_name: res.role.role_name}})
 
         })

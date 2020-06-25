@@ -52,6 +52,7 @@ class AddTeamForm extends Component<IProps, IState> {
                 this.props.afterAddNewTeam(res);
                 this.setState({team:{...this.state.team, team_name:""}});
                 this.setState({showLoader: false});
+                setTimeout(()=>{ this.setState({success: ""})},2000);
             });
            
         }
@@ -70,6 +71,7 @@ class AddTeamForm extends Component<IProps, IState> {
                                 <input 
                                     type="text" 
                                     name="team_name" 
+                                    value={this.state.team.team_name}
                                     onChange={(e) => this.setState({team: {...this.state.team, team_name: e.target.value}})}
                                     className={`form-control ${this.state.errors.team_name ? 'is-invalid': '' }`}
                                 />

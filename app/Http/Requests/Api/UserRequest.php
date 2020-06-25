@@ -27,7 +27,7 @@ class UserRequest extends ApiRequest
             return [
                 'name'     => 'required',
                 'email'    => 'required|unique:users,email',
-                'password' => 'required',
+                'password' => 'required|min:6',
                 'shortcode'=> 'required',
                 'team_id'  => 'required',
                 'role_name'  => 'required',
