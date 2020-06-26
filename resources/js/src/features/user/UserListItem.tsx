@@ -131,7 +131,7 @@ class UserListItem extends Component<IProps, IState> {
                         <select name="team_id" 
                                 className="form-control"
                                 onChange={(e) => this.setState({user:{...this.state.user,team_id:e.target.value}})}
-                                defaultValue={this.props.user?.team?.id}>
+                                defaultValue={this.props.user.team_id as string}>
                             <option value="">Select Team</option>
                             {this.props
                                 .teams

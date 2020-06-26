@@ -5,6 +5,8 @@ import { IUser } from '../../app/models/user.model';
 import { ITeam } from '../../app/models/team.model';
 import UserListItem from './UserListItem';
 import UserForm from './UserForm';
+import LoaderBar from '../../app/common/LoaderBar';
+
 interface IProps{}
 
 interface IState {
@@ -13,6 +15,7 @@ interface IState {
    users: IUser[];
    elements: IUser[];
    searchInput: string;
+   showLoader:boolean;
 }
 
 class Users extends Component<IProps, IState> {
@@ -24,10 +27,14 @@ class Users extends Component<IProps, IState> {
          users: [],
          elements: [],
          searchInput: "",
+         showLoader: false,
       }
    }
    
    componentDidMount() {
+      
+      this.setState({showLoader: true});
+
       Role
       .getRoles()
       .then((res) => this.setState({roles: res}));
@@ -38,8 +45,12 @@ class Users extends Component<IProps, IState> {
 
       User
       .getUsers()
-      .then((res) => this.setState({users: res, elements: res}));
-
+      .then((res) => this.setState({
+                                       users: res, 
+                                       elements: res, 
+                                       showLoader:false
+                                    })
+      ).catch((res) => this.setState({showLoader: false}) );
    }
 
    filterListItems = (event :any) => {
@@ -87,7 +98,9 @@ class Users extends Component<IProps, IState> {
                               </div>
                            </div>
                         </div>
-                        <div className="team-name-box">
+                        { 
+                           this.state.showLoader ? <LoaderBar/> : 
+                           <div className="team-name-box">
                            <div className="main-table table-responsive">
                               <table className="table">
                                  <thead>
@@ -110,7 +123,8 @@ class Users extends Component<IProps, IState> {
                                  </tbody>
                               </table>
                            </div>
-                        </div>
+                           </div>
+                        }                        
                      </div>
                   </div>
                </div>

@@ -3,11 +3,13 @@ import AddTeamForm from './AddTeamForm';
 import TeamListItem from './TeamListItem';
 import { ITeam } from '../../app/models/team.model';
 import { Team } from '../../app/api/agent';
+import LoaderBar from '../../app/common/LoaderBar';
 
 interface IState {
     teamList: ITeam[];
     searchInput: string;
     elements: ITeam[];
+    showLoader:boolean;
 }
 
 interface IProps {}
@@ -20,6 +22,7 @@ class Teams extends Component<IProps, IState> {
             teamList: [],
             searchInput:"",
             elements: [],
+            showLoader:false,
         }
     }
 
@@ -40,8 +43,17 @@ class Teams extends Component<IProps, IState> {
     
 
     componentDidMount() {
-        Team.getTeams().then((res) => this.setState({teamList: res, elements:res}))
-                        .catch((res) => console.log(res));
+        this.setState({showLoader:true});
+        Team
+        .getTeams()
+        .then((res) => {
+            this.setState({teamList: res, elements:res});
+            this.setState({showLoader:false});
+        })
+        .catch((res) =>{
+            this.setState({showLoader:false});
+            console.log(res)
+        });
     }
 
     filterListItems = (event :any) => {
@@ -88,22 +100,25 @@ class Teams extends Component<IProps, IState> {
                                     </div>
                                 </div>
                             </div>
-                            <div className="team-name-box">
-                                <h5 className="font-weight-normal ml-4">Teamname</h5>
-                                <div className="main-table table-responsive">
-                                    <table className="table">
-                                        
-                                        <tbody>
-                                            {
-                                            this.state.elements                                           
-                                            .map((team) => <TeamListItem 
-                                            key={team.id} 
-                                            team={team}                                                               
-                                            />)}                                
-                                        </tbody>
-                                    </table>
+                            {
+                                this.state.showLoader ? <LoaderBar/> : 
+                                <div className="team-name-box">
+                                    <h5 className="font-weight-normal ml-4">Teamname</h5>
+                                    <div className="main-table table-responsive">
+                                        <table className="table">
+                                            
+                                            <tbody>
+                                                {
+                                                this.state.elements                                           
+                                                .map((team) => <TeamListItem 
+                                                key={team.id} 
+                                                team={team}                                                               
+                                                />)}                                
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>       

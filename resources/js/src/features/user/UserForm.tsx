@@ -120,8 +120,8 @@ class UserForm extends Component<IProps, IState> {
             <Fragment>
  
                   <form onSubmit={this.onSubmitHandler.bind(this)}>
-                     {this.state.showLoader?<LoaderBar></LoaderBar> : ""}
-                  {this.state.added ? <span className="text-success">User Created Successfully.</span> : ""}
+                    {this.state.showLoader?<LoaderBar></LoaderBar> : ""}
+                    {this.state.added ? <span className="text-success">User Created Successfully.</span> : ""}
                            <div className="add-user-form d-flex align-items-end justify-content-between">                               
                               <div className="form-group col-md-5 px-1">
                                  <label>Add New User</label>
@@ -156,32 +156,34 @@ class UserForm extends Component<IProps, IState> {
                            <div className="row align-items-end justify-content-between px-3">
                               <div className="form-group col-md-7 px-1">
                                  <input type="password" 
-                                        className={`form-control ${this.state.errors.password ? "is-invalid" : ""}`}
+                                        className={` form-control ${this.state.errors.password ? "is-invalid" : ""} `}
                                         placeholder="password"
                                         value={this.state.user.password}
-                                        onChange={(e) => this.setState({user:{...this.state.user, password: e.target.value}})}
+                                        onChange={ (e) => this.setState({ user:{...this.state.user, password: e.target.value} }) }
                                         />
                                 {this.state.errors.password ? <span className="text-danger">{this.state.errors.password}</span>:""}
                               </div>
                               <div className="form-group col-md-2 px-1">
                                  <select name="role" 
                                          className={`form-control ${this.state.errors.role_name ? "is-invalid" : ""}`}
-                                         onChange={(e) => this.setState({user:{...this.state.user, role_name: e.target.value}})}
+                                         onChange={ (e) => this.setState({ user:{...this.state.user, role_name: e.target.value} }) }
                                          value={this.state.user.role_name}
                                          >
                                     <option value="">Select Role</option>
-                                    {this.props
-                                        .roles.map((role)=> <option key={role.role_name} value={role.role_name}>{role.role_name}</option>)
+                                    {
+                                        this.props
+                                        .roles.map((role) => <option key={role.role_name} value={role.role_name}>{role.role_name}</option>)
                                     }
                                  </select>
-                                 {this.state.errors.role_name ? <span className="text-danger">{this.state.errors.role_name}</span>:""}
+                                 { this.state.errors.role_name ? <span className="text-danger">{this.state.errors.role_name}</span> : "" }
                               </div>
                            
                               <div className="form-group col-md-2 px-1">
                                  <select name="team" 
                                          className={`form-control ${this.state.errors.team_id ? "is-invalid" : ""}`} 
                                          value={this.state.user.team_id as string}                                        
-                                         onChange={(e) => this.setState({user:{...this.state.user,team_id:e.target.value}})}>
+                                         onChange={ (e) => this.setState({ user:{...this.state.user,team_id:e.target.value} }) }
+                                         >
                                     <option value="">Select Team</option>
                                     {this.props
                                         .teams.map((team) => <option key={team.id} value={team.id}>{team.team_name}</option>)
