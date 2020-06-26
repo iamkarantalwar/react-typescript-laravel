@@ -37,7 +37,8 @@ class Teams extends Component<IProps, IState> {
 
     afterAddNewTeam = (team: ITeam) => {
         this.setState({
-            elements:[...this.state.teamList, team]
+            elements:[...this.state.elements, team],
+            teamList:[...this.state.teamList, team]
         })
     }
     
@@ -59,7 +60,7 @@ class Teams extends Component<IProps, IState> {
     filterListItems = (event :any) => {
         let search = this.state.searchInput;
         if (search != "") {
-            let elem = this.state.teamList.filter(e => e.team_name.includes(search));
+            let elem = this.state.teamList.filter(e => e.team_name.toLowerCase().includes(search.toLowerCase()));
             this.setState({elements: elem});
         } else {
             this.setState({elements:this.state.teamList});

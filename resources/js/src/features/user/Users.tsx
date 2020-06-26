@@ -56,7 +56,7 @@ class Users extends Component<IProps, IState> {
    filterListItems = (event :any) => {
       let search = this.state.searchInput;
       if (search != "") {
-          let elem = this.state.users.filter(e => e.name.includes(search));
+          let elem = this.state.users.filter(e => e.name.toLowerCase().includes(search.toLowerCase()));
           this.setState({elements: elem});
       } else {
           this.setState({elements:this.state.users});
@@ -65,7 +65,8 @@ class Users extends Component<IProps, IState> {
   }
   afterAddNewUser(user: IUser) {
    this.setState({
-      elements:[...this.state.users, user]
+      elements: [...this.state.elements, user],
+      users: [...this.state.users, user]
   })
   }
 

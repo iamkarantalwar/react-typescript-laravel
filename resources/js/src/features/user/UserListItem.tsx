@@ -45,7 +45,11 @@ class UserListItem extends Component<IProps, IState> {
         this.setState({user: {...this.state.user,role_name: this.props.user.role.role_name}})
     }
     updateUserDetails(event: any) {
-       
+       if(this.state.pencil) {
+           this.setState({pencil:false});
+           return;
+       }
+
         this.setState({showLoader: true});
         User
         .updateUser(this.state.user)        
@@ -101,6 +105,7 @@ class UserListItem extends Component<IProps, IState> {
                     <th scope="row" 
                         className="text-left">
                         <input 
+                            className={`${!this.state.pencil ?  'form-control' : 'team-input'}`}
                             type="text"
                             value={this.state.user.name}
                             onChange={this.nameChangeHandler.bind(this)}
@@ -109,7 +114,14 @@ class UserListItem extends Component<IProps, IState> {
                         {this.state.errors.name ? <span className="text-danger">{this.state.errors.name}</span>:""}
                         {this.state.updated ?  <span className="text-success">This User Updated Successfully.</span> : ""}
                     </th>
-                    <td><span><input type="text" className="team-input" readOnly value={this.state.user.shortcode}></input></span></td>
+                    <td><span><input type="text" 
+                                     className="team-input" 
+                                     readOnly 
+                                     value={this.state.user.shortcode}
+                                     style={{
+                                         paddingLeft: '25px',
+                                     }}
+                                     /></span></td>
                     <td>
                         <select name="Admin" 
                                 className="form-control"

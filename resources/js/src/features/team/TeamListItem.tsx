@@ -66,6 +66,10 @@ class TeamListItem extends Component<IProps, IState> {
                     this.setState({showLoader: false});
                 }
             });
+        } else {
+            this.setState({
+                updateState: true,
+            })
         }
     }
 
@@ -79,7 +83,7 @@ class TeamListItem extends Component<IProps, IState> {
                     <th scope="row" className="text-left">
                         <input type="text" 
                             value={this.state.team.team_name}
-                            className={`team-input ${this.state.updateState ?  'border-bottom' : '' }`}
+                            className={` ${this.state.updateState ?  'form-control' : 'team-input' }`}
                             onChange={this.teamNameChangeHandler.bind(this)}
                         /><br/>
                         {this.state.errors.team_name ? <span className="text-danger">{this.state.errors.team_name}</span> : ""}

@@ -21,7 +21,7 @@ class CreateProjectSettingsTable extends Migration
             $table->enum('field_name', array_values(ProjectSettingField::FIELDS));
             $table->string('field_wirkzeit');
             $table->string('field_spulzeit');
-            $table->enum('aktiv', [ProjectSettingStatus::ACTIVE, ProjectSettingStatus::INACTIVE]);
+            $table->enum('aktiv', ['ACTIVE', 'INACTIVE']);
             $table->softDeletes();
             $table->timestamps();
         });
