@@ -8,7 +8,11 @@
 **Setup**
 1. Go to [localhost/phpmyadmin](localhost/phpmyadmin) and create a new Database naming: `carela`
 
-2. Open terminal, run `cd /var/www/html/laravel-react-app` and run the following commands in it:
+2. Open terminal, run `git clone https://gitlab.com/ui-clients/taps.git` and run the following commands in it:
+
+    `cd taps`
+    
+    `git checkout milestone-one`
 
     `composer install`
 
@@ -26,10 +30,6 @@
     
 4. Run
 
-    `git fetch`
-    
-    `git checkout milestone-one`
-    
     `composer dump-autoload`
     
     `php artisan storage:link`
