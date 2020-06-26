@@ -33,7 +33,7 @@ class LoginController extends Controller
     {
         
         $_ = User::where("email", $request->email)->first();
-        if ($_->role->role_name == "ADMIN")
+        if (isset($_->role->role_name) &&  $_->role->role_name == "ADMIN")
         {
             return $this->guard()->attempt(
                 $this->credentials($request), $request->filled('remember')

@@ -21,6 +21,7 @@ interface IState {
     },
     updated: boolean,
     showLoader: boolean,
+    pencil: boolean,
 }
 
 class UserListItem extends Component<IProps, IState> {
@@ -36,6 +37,7 @@ class UserListItem extends Component<IProps, IState> {
             },
             updated: false,
             showLoader:false,
+            pencil: true,
 
         }
     }
@@ -57,7 +59,7 @@ class UserListItem extends Component<IProps, IState> {
                         }
                 }); 
                 
-                this.setState({updated: true, showLoader: false});
+                this.setState({updated: true, showLoader: false, pencil: true});
                 setTimeout(()=>{ this.setState({updated: false})},1000);
                 // this.setState({});
                 // this.setState({user: {...this.state.user,role_name: res.role.role_name}})
@@ -88,11 +90,10 @@ class UserListItem extends Component<IProps, IState> {
         for(var i of shortcode_arr) {
             shortcode = shortcode + i.charAt(0).toUpperCase();
         }
-        this.setState({user:{...this.state.user, name: event.target.value, shortcode:shortcode}});
+        this.setState( {user:{...this.state.user, name: event.target.value, shortcode:shortcode}, pencil: false} );
       }
     
     render() {
-     
         return (
             <Fragment>
                 { this.state.showLoader ? <LoaderBar/> : ""}
@@ -113,7 +114,7 @@ class UserListItem extends Component<IProps, IState> {
                         <select name="Admin" 
                                 className="form-control"
                                 value={this.state.user.role_name}
-                                onChange={(e) => this.setState({user:{...this.state.user,role_name:e.target.value}})}
+                                onChange={(e) => this.setState({user:{...this.state.user,role_name:e.target.value}, pencil: false})}
                                 defaultValue={this.props.user.role.role_name}>
                             <option value="">Select Role</option>
                             {this.props
@@ -130,7 +131,7 @@ class UserListItem extends Component<IProps, IState> {
                     <td>
                         <select name="team_id" 
                                 className="form-control"
-                                onChange={(e) => this.setState({user:{...this.state.user,team_id:e.target.value}})}
+                                onChange={(e) => this.setState({user:{...this.state.user,team_id:e.target.value}, pencil: false})}
                                 defaultValue={this.props.user.team_id as string}>
                             <option value="">Select Team</option>
                             {this.props
@@ -144,7 +145,7 @@ class UserListItem extends Component<IProps, IState> {
                         {this.state.errors.team ? <span className="text-danger bg-white">{this.state.errors.team}</span>:""}
                     </td>
                     <td>
-                        <i className="fa-btn fa fa-pencil" aria-hidden="true" onClick={this.updateUserDetails.bind(this)}></i>
+                        <i className={`fa-btn fa ${this.state.pencil ? 'fa-pencil' : 'fa-check'} `} aria-hidden="true" onClick={this.updateUserDetails.bind(this)}></i>
                     </td>
                 </tr>      
             </Fragment>
