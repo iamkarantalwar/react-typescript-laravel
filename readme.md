@@ -30,8 +30,6 @@
     
     `git checkout dev`
     
-    `git pull origin dev`
-    
     `composer dump-autoload`
     
     `php artisan storage:link`
