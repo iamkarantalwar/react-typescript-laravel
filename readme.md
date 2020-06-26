@@ -8,7 +8,8 @@
 **Setup**
 1. Go to [localhost/phpmyadmin](localhost/phpmyadmin) and create a new Database naming: `carela`
 
-2. Open terminal, run `https://gitlab.com/ui-clients/taps.git` and run the following commands in it:
+2. Open terminal, run `git clone https://gitlab.com/ui-clients/taps.git` and run the following commands in it:
+
     `cd taps`
     
     `git checkout milestone-one`
