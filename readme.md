@@ -28,7 +28,7 @@
 
     `git fetch`
     
-    `git checkout dev`
+    `git checkout milestone-one`
     
     `composer dump-autoload`
     
