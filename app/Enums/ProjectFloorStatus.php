@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-class Status
+class ProjectFloorStatus
 {
     const PENDING = "PENDING";
     const INPROGRESS = "INPROGRESS";
