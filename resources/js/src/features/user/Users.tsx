@@ -82,7 +82,7 @@ class Users extends Component<IProps, IState> {
                         <div className="team-search mt-5 px-4 ml-3">
                            <div className="row align-items-center justify-content-between ">
                               <div className="add-new-team">
-                                 <h5 className="font-weight-normal">User</h5>
+                                 <h5 className="font-weight-bold">User</h5>
                               </div>
                               <div className="team-form-btn">
                                  <form className="form-inline my-2 my-lg-0">
@@ -98,6 +98,7 @@ class Users extends Component<IProps, IState> {
                                  </form>
                               </div>
                            </div>
+                           <hr/>
                         </div>
                         { 
                            this.state.showLoader ? <LoaderBar/> : 

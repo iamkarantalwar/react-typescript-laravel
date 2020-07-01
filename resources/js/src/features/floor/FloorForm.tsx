@@ -116,6 +116,7 @@ class FloorForm extends Component<IProps, IState> {
 
 				<form className="add-floor" onSubmit={this.onSubmitHandler}>
 					<h4 className="font-weight-normal">Add Floor</h4>
+					<hr/>
 					<div className="form-group">
 						<label>Name</label>
 						<input 
