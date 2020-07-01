@@ -4,7 +4,9 @@ namespace App\Http\Requests\Api;
 
 use App\Http\Requests\Api\ApiRequest;
 
-class ProjectRequest extends ApiRequest
+use Illuminate\Foundation\Http\FormRequest;
+
+class ProjectFloorRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,16 +26,11 @@ class ProjectRequest extends ApiRequest
     public function rules()
     {
         return [
-            'project_name' => 'required',
-            'description'  => 'required',
-        ];
-    }
-
-    public function messages() 
-    {
-        return [
-            'project_name.required' => 'Project Name is required.',
-            'description.required'  => 'Project Description is required.'
+            'name' => 'required',
+            'quantity' => 'required|integer',
+            'from' => 'required|integer|lt:to',
+            'to' => 'required|integer|gt:from',
+            'project_id' => 'required|integer'
         ];
     }
 }

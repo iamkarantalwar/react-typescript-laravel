@@ -7,6 +7,8 @@ import Teams from './src/features/team/Teams';
 import BottomHeader from './src/app/layout/BottomHeader';
 import Projects from './src/features/project/Projects';
 import Users from './src/features/user/Users';
+import { TitleConsumer, TitleContext } from './src/context/TitleContext';
+import ProjectSettings from './src/features/project/ProjectSettings';
 
 export default class App extends React.Component{
   render(): any{
@@ -14,8 +16,11 @@ export default class App extends React.Component{
      return(
          <Fragment>
             <BrowserRouter>   
-               <Header/>      
-               <BottomHeader/>    
+               <Header/>     
+               <TitleContext.Provider value="abc">
+                    <BottomHeader/>   
+               </TitleContext.Provider>
+                
                {/* <Route exact path='/' component={Dashboard} />  */}
                <Route
                   path={'/(.+)'}

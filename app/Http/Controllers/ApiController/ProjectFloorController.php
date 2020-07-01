@@ -4,6 +4,8 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Models\ProjectFloor;
 use Illuminate\Http\Request;
+use App\Enums\ProjectFloorStatus;
+use App\Http\Requests\Api\ProjectFloorRequest;
 
 class ProjectFloorController extends Controller
 {
@@ -33,9 +35,22 @@ class ProjectFloorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProjectFloorRequest $request)
     {
-        
+        $projectFloors = [];
+
+        for($i=$request->post('from'); $i<=$request->post('to'); $i++)
+        {
+            $projectFloor = ProjectFloor::create([
+                'project_id' => $request->post('project_id'),
+                'floor_name' => $request->post('name').($i),
+                'status' => ProjectFloorStatus::PENDING,
+            ]);
+
+            array_push($projectFloors, $projectFloor);
+        }
+
+        return $projectFloors;
     }
 
     /**

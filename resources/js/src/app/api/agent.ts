@@ -4,6 +4,9 @@ import {enviorment} from '../../../enviorment';
 import { ITeam } from '../models/team.model';
 import { IUser } from '../models/user.model';
 import { IRole } from '../models/role.model';
+import { IProjectSetting } from '../models/project-setting.model';
+import { IProjectFloorForm } from '../models/project-floor-form.model';
+import { IProjectFloor } from '../models/project-floor.model';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -19,6 +22,8 @@ const endPoints = {
     team: 'team',
     user: 'user',
     role: 'userroles',
+    projectSettings: 'project-settings',
+    projectFloor: 'project-floors',
 }
 
 export const Project = {
@@ -41,3 +46,14 @@ export const User = {
 export const Role = {
     getRoles: () : Promise<IRole[]> => requests.get(`${enviorment.baseUrl}/${endPoints.role}`),
 }
+
+export const ProjectSetting = {
+    getProjectSettings: (project: IProject) : Promise<IProjectSetting[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectSettings}/${project.id}`),
+    saveProjectSettings: (projectSettings: IProjectSetting[], project: IProject) : Promise<IProjectSetting[]> => requests.put(`${enviorment.baseUrl}/${endPoints.projectSettings}/${project.id}`, projectSettings), 
+}
+
+export const ProjectFloors = {
+    saveProjectFloor: (projectFloorForm: IProjectFloorForm): Promise<IProjectFloor[]> => requests.post(`${enviorment.baseUrl}/${endPoints.projectFloor}`, projectFloorForm),
+    updateProjectFloor: (floor: IProjectFloor): Promise<IProjectFloor> => requests.put(`${enviorment.baseUrl}/${endPoints.projectFloor}/${floor.id}`, floor)
+}
+

@@ -37,7 +37,9 @@ export class Header extends Component {
                             <li className="nav-item active">
                                 <Link className="nav-link mr-4" to="/">Dashborad<span className="sr-only">(current)</span></Link>
                             </li>
-                           
+                            <li className="nav-item">
+                                <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projects</Link>
+                            </li>                           
                             <li className="nav-item">
                                 <Link className="nav-link mr-4" to="/users">User</Link>
                             </li>

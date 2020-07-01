@@ -18,7 +18,8 @@ class CreateProjectFloorsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger("project_id");
             $table->string("floor_name");
-            $table->enum("status", ['PENDING', 'INPROGRESS', 'FINISHED']);
+            $table->enum("status", [ProjectFloorStatus::PENDING, ProjectFloorStatus::INPROGRESS, ProjectFloorStatus::FINISHED]);
+            $table->string('team_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

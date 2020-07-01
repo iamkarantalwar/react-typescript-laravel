@@ -21,6 +21,16 @@
 		<script src="{{ asset('js/popper.min.js') }}"></script>
 		<script src="{{ asset('js/bootstrap.min.js') }}"></script>
 		<script src="{{ asset('js/app.js') }}"></script>
+		<script>
+			$(document).ready(function(){
+				$('.collapsed').click(function() {
+				var description = $(this).closest('div').find('.collapse');
+				console.log(description);
+				description.collapse();
+				});
+			});
+			
+		</script>
 	</body>
 </html>
 

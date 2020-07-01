@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Enums\ProjectSettingField;
 use App\Http\Requests\Api\ProjectRequest;
 
 class ProjectController extends Controller
@@ -15,7 +16,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return Project::all();
+        return Project::with(['floors'])->get();
     }
 
     /**
@@ -38,6 +39,17 @@ class ProjectController extends Controller
     {
         $project = Project::create($request->all());
         if ($project) {
+            //Add Project Settings
+            $fields = ProjectSettingField::FIELDS;
+            foreach ($fields as $key => $value) {
+                $project->settings()->create([
+                    'project_id' => $project->id, 
+                    'field_name' => $key, 
+                    'field_wirkzeit' => '', 
+                    'field_spulzeit' => '', 
+                    'aktiv' => 'ACTIVE'
+                ]);
+            }
             return $project;
         } else {
             return ["message" => "Something went wrong. Try again later."];

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\ApiController;
 
-use App\Models\ProjectSetting;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Models\ProjectSetting;
+use App\Enums\ProjectSettingField;
+use App\Http\Requests\Api\ProjectSettingsRequest;
 
 class ProjectSettingController extends Controller
 {
@@ -14,7 +17,7 @@ class ProjectSettingController extends Controller
      */
     public function index()
     {
-        //
+       // return ProjectSettingField::FIELDS;
     }
 
     /**
@@ -22,9 +25,9 @@ class ProjectSettingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -35,7 +38,7 @@ class ProjectSettingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -44,9 +47,9 @@ class ProjectSettingController extends Controller
      * @param  \App\ProjectSetting  $projectSetting
      * @return \Illuminate\Http\Response
      */
-    public function show(ProjectSetting $projectSetting)
+    public function show(Project $projectSetting, Request $request)
     {
-        //
+        return $projectSetting->settings;
     }
 
     /**
@@ -57,7 +60,7 @@ class ProjectSettingController extends Controller
      */
     public function edit(ProjectSetting $projectSetting)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -67,9 +70,14 @@ class ProjectSettingController extends Controller
      * @param  \App\ProjectSetting  $projectSetting
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProjectSetting $projectSetting)
+    public function update(ProjectSettingsRequest $request, Project $projectSetting)
     {
-        //
+        foreach($request->post() as $setting)
+        {
+            ProjectSetting::where('id', $setting['id'])->update($setting);
+        }
+
+        return $projectSetting->settings;
     }
 
     /**

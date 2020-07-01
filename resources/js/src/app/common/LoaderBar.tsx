@@ -13,7 +13,7 @@ class LoaderBar extends Component {
                         alignItems: "center"
                     }}
                     >
-                    <Loader type="ThreeDots" color="#2BAD60" height={100} width={100} />
+                    <Loader type="ThreeDots" color="#63b32e" height={100} width={100} />
             </div>
             </Fragment>
         );

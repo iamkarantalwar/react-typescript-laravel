@@ -21,6 +21,10 @@ Route::resource('team', 'ApiController\TeamController');
 
 Route::resource('project', 'ApiController\ProjectController');
 
+Route::resource('project-settings', 'ApiController\ProjectSettingController');
+
+Route::resource('project-floors', 'ApiController\ProjectFloorController');
+
 Route::resource('user', 'ApiController\UserController');
 
 Route::get('userroles', 'ApiController\UserController@getUserRoles');

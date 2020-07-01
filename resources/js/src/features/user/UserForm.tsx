@@ -108,8 +108,7 @@ class UserForm extends Component<IProps, IState> {
                                 role_name: error_array.role_name != undefined ? error_array.role_name[0] : "",  
                             }
                     });
-                    this.setState({showLoader: false});
-                    
+                    this.setState({showLoader: false}); 
             }
         });
        
@@ -153,7 +152,7 @@ class UserForm extends Component<IProps, IState> {
                                 {this.state.errors.email ? <span className="text-danger">{this.state.errors.email}</span>:""}
                               </div>
                            </div>
-                           <div className="row align-items-end justify-content-between px-3">
+                           <div className="row align-items-end justify-content-between px-3 align-items-center mt-5">
                               <div className="form-group col-md-7 px-1">
                                  <input type="password" 
                                         className={` form-control ${this.state.errors.password ? "is-invalid" : ""} `}

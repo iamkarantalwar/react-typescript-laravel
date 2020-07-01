@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api;
 
 use App\Http\Requests\Api\ApiRequest;
 
-class ProjectRequest extends ApiRequest
+class ProjectSettingsRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,16 +24,18 @@ class ProjectRequest extends ApiRequest
     public function rules()
     {
         return [
-            'project_name' => 'required',
-            'description'  => 'required',
+            '*.project_id' => 'required',
+            '*.field_name' => 'required',
+            '*.field_wirkzeit' => 'required',
+            '*.field_spulzeit' => 'required',
+            '*.aktiv' => 'required'
         ];
     }
 
-    public function messages() 
-    {
+    public function messages() {
         return [
-            'project_name.required' => 'Project Name is required.',
-            'description.required'  => 'Project Description is required.'
+            '*.field_wirkzeit.required' => 'Field Wirkzeit Can\'t be empty',
+            '*.field_spulzeit.required' => 'Field Spulzeit Can\'t be empty',
         ];
     }
 }

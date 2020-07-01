@@ -1,4 +1,14 @@
 
+select.team-select {
+    padding: 5px 16px;
+    text-align: center;
+    border: 1px solid #000;
+    color: #000;
+    border-radius: 3px;
+    margin-right: 4px;
+    background: transparent;
+}
+
 img {
 	max-width: 100%;
 }
@@ -99,15 +109,15 @@ a.main-btn.cancel:hover {
 }
 
 /*floors tabbs*/
-.floors-tabbs .accordion .card-header:after {
+.floors-tabbs .accordion .card-header span {
     font-family: 'FontAwesome';  
-    content: "\f013";
+    /* content: "\f013"; */
     float: right; 
 }
-.floors-tabbs .accordion .card-header.collapsed:after {
-    /* symbol for "collapsed" panels */
+/* .floors-tabbs .accordion .card-header.collapsed:after {
+   
     content: "\f013";
-}
+} */
 
 .card-header {
     background-color: #eaeaf2;
@@ -247,7 +257,7 @@ a.main-btn.cancel:hover {
     justify-content: flex-end;
     margin-right: 25px;
 }
-.floor-overviwe .main-floor-overview a.overview-flor-btn {
+a.overview-flor-btn {
     padding: 5px 16px;
     text-align: center;
     border: 1px solid #000;
@@ -396,6 +406,10 @@ background-color: #f8f8fa;
 
 /*start responsive*/
 @media (max-width: 767px) {
+    .add-new-user .add-user-form .form-group {
+        margin-bottom: 35px;
+    }
+
 	.form-setting-option h4 {
      margin-left: 0px; 
   }
@@ -523,4 +537,12 @@ button.main-btn.cancel:hover {
 
 .fa-btn {
     cursor: pointer;
+}
+
+a{
+    cursor: pointer;
+}
+
+.add-new-user .main-team-area form span {
+    position: absolute;
 }

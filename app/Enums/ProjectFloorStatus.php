@@ -4,7 +4,7 @@ namespace App\Enums;
 
 class ProjectFloorStatus
 {
-    const PENDING = "PENDING";
-    const INPROGRESS = "INPROGRESS";
-    const FINISHED = "FINISHED";
+    const PENDING = "Ausstehend";
+    const INPROGRESS = "In Arbeit";
+    const FINISHED = "Fertig";
 }
