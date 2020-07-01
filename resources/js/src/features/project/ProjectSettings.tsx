@@ -19,6 +19,8 @@ interface IState {
 
 class ProjectSettings extends Component<IProps, IState> {
 
+    defaultErrors : Array<{field_wirkzeit:string, field_spulzeit:string }> = [];
+
     defaultState :IState = {
         settings: [],
         errors:[],
@@ -37,9 +39,10 @@ class ProjectSettings extends Component<IProps, IState> {
             showLoader: true,
         })
         ProjectSetting.getProjectSettings(this.props.project).then((res: IProjectSetting[]) => {
+            this.defaultErrors = res.map((e) => { return {field_spulzeit:"", field_wirkzeit: ""} });
             this.setState({
                 settings: res,
-                errors: res.map((e) => { return {field_spulzeit:"", field_wirkzeit: ""} }),
+                errors: this.defaultErrors,
                 showLoader: false,
             });
         });
@@ -90,20 +93,25 @@ class ProjectSettings extends Component<IProps, IState> {
             this.setState({
                 settings: res,
                 showLoader: false,
-                errors: this.defaultState.errors,
+                errors: this.defaultErrors,
                 message: "Settings Updated Successfully",
                 messageClass: 'text-success',
             });
-            setTimeout(()=> this.setState({message: "", messageClass:""}) );
+            setTimeout(()=> this.setState({message: "", messageClass:""}), 2000 );
         })
         .catch((error: AxiosError) => {
+            
             if (error.response?.status == 422) {
+                this.setState({
+                    errors: this.defaultErrors
+                });
                 let error_array = error.response?.data.errors;
                 let error_keys = Object.keys(error_array);
                 for(let key of error_keys)
                 {
                     let field = key.split(".")[1];
                     let index = parseInt(key.split(".")[0]);
+                    console.log(field);
                     if(field == 'field_spulzeit')
                     {
                         this.setState({
@@ -123,7 +131,7 @@ class ProjectSettings extends Component<IProps, IState> {
                 message: 'Something Went Wrong',
                 messageClass: 'text-danger'
             });
-            setTimeout(()=> this.setState({message: "", messageClass:""}) );
+            setTimeout(()=> this.setState({message: "", messageClass:""}), 2000 );
         });
     }
     
@@ -175,7 +183,7 @@ class ProjectSettings extends Component<IProps, IState> {
                                                                             name='field_spulzeit'
                                                                             onChange={(e) => this.inputChangeHandler(e, index)}
                                                                     />
-                                                                    { this.state.errors[index].field_wirkzeit ? <span className='text-danger'>{this.state.errors[index].field_spulzeit}</span> : ""}
+                                                                    { this.state.errors[index].field_spulzeit ? <span className='text-danger'>{this.state.errors[index].field_spulzeit}</span> : ""}
                                                                 </td>
                                                                 <td><label className="table-custom-checkbox">
                                                                     <input 

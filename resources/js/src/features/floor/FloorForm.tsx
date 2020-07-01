@@ -54,10 +54,12 @@ class FloorForm extends Component<IProps, IState> {
 	
 	onSubmitHandler = (event: any) => {
 		event.preventDefault();
-
+		this.setState({
+			errors: this.defaultState.errors
+		})
 		if(this.state.projectFloorForm.to != null && 
 		   this.state.projectFloorForm.from != null && 
-		   (this.state.projectFloorForm.to-this.state.projectFloorForm.from != this.state.projectFloorForm.quantity)
+		   ((this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1 != this.state.projectFloorForm.quantity)
 		   )
 		{
 			this.setState({
