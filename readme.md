@@ -12,7 +12,7 @@
 
     `cd taps`
     
-    `git checkout milestone-one`
+    `git checkout milestone-two`
 
     `composer install`
 
