@@ -60,7 +60,8 @@ export const ProjectSetting = {
 export const ProjectFloors = {
     getProjectFloors: (project: IProject) : Promise<IProjectFloor[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectFloor}?project_id=${project.id}`),
     saveProjectFloor: (projectFloorForm: IProjectFloorForm): Promise<IProjectFloor[]> => requests.post(`${enviorment.baseUrl}/${endPoints.projectFloor}`, projectFloorForm),
-    updateProjectFloor: (floor: IProjectFloor): Promise<IProjectFloor> => requests.put(`${enviorment.baseUrl}/${endPoints.projectFloor}/${floor.id}`, floor)
+    updateProjectFloor: (floor: IProjectFloor): Promise<IProjectFloor> => requests.put(`${enviorment.baseUrl}/${endPoints.projectFloor}/${floor.id}`, floor),
+    deleteProjectFloor: (floor: IProjectFloor)  => requests.del(`${enviorment.baseUrl}/${endPoints.projectFloor}/${floor.id}`),
 }
 
 export const RoomType = {

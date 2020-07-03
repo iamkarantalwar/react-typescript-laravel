@@ -42,6 +42,13 @@ class Floor extends Component<IProps, IState> {
         console.log(this.state);
     }
 
+    deleteFloor = (floor: IProjectFloor) =>{
+       let floors = this.state.floors.filter((floor_)=> floor.id != floor_.id);
+       this.setState({
+           floors: floors,
+       }) 
+    }
+
     afterUpdateFloor = (floor: IProjectFloor) => {
         let floors: IProjectFloor[] = this.state.floors.map((item) => {
             if(item.id == floor.id)
@@ -95,6 +102,7 @@ class Floor extends Component<IProps, IState> {
                 {                 
                     this.state.floors.map((floor) => {
                         return <FloorListItem 
+                                    deleteFloor={this.deleteFloor}
                                     selectFloor={this.selectFloor}
                                     key={floor.id} 
                                     floor={floor}

@@ -11,6 +11,7 @@ interface IProps {
     teams: ITeam[];
     selectFloor: (floor: IProjectFloor) => void;
     afterUpdateFloor: (floor: IProjectFloor) => void;
+    deleteFloor: (floor: IProjectFloor) => void;
 }
 
 interface IState {
@@ -118,6 +119,21 @@ class FloorListItem extends Component<IProps, IState> {
         this.setState({rooms: rooms});
     }
 
+    deleteFloor = (floor: IProjectFloor) => {
+      let confirm_: any = confirm("Are you sure you want to delete?");
+      if(confirm_) {
+          ProjectFloors
+          .deleteProjectFloor(floor)
+          .then((res) => {
+              this.setState({
+                message: 'Floor Deleted Successfully',
+                messageClass: 'text-danger'
+              })
+          });
+          setTimeout(()=>{ this.props.deleteFloor(floor); },2000);
+      }
+    }
+
     componentDidMount() {
       FloorRooms.getFloorRooms(this.props.floor)
       .then((res) => this.setState({rooms: res}))
@@ -176,6 +192,9 @@ class FloorListItem extends Component<IProps, IState> {
                           >
                             <span><i className="fa fa-plus" aria-hidden="true"></i></span> Room
                           </a>
+                        </div>
+                        <div className="room-btn">
+                            <i style={{cursor:'pointer'}} onClick={(e) => this.deleteFloor(this.props.floor)} className="fa fa-trash ml-2" aria-hidden="true"></i>
                         </div>
                         <div className="room-btn">
                           <i style={{cursor:'pointer'}} onClick={this.state.editFloor? this.onSubmitHandler : this.enableEditFloor} className={`fa ${this.state.editFloor ? 'fa-check' : 'fa-pencil'} ml-2`}></i>
