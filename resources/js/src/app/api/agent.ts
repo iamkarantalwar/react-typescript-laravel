@@ -7,6 +7,9 @@ import { IRole } from '../models/role.model';
 import { IProjectSetting } from '../models/project-setting.model';
 import { IProjectFloorForm } from '../models/project-floor-form.model';
 import { IProjectFloor } from '../models/project-floor.model';
+import { IRoomType } from '../models/room-type';
+import { IRoomForm } from '../models/room-form.model';
+import { IFloorRoom } from '../models/floor-room.model';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -24,6 +27,8 @@ const endPoints = {
     role: 'userroles',
     projectSettings: 'project-settings',
     projectFloor: 'project-floors',
+    roomTypes: 'room-types',
+    floorRooms: 'floor-rooms'
 }
 
 export const Project = {
@@ -53,7 +58,17 @@ export const ProjectSetting = {
 }
 
 export const ProjectFloors = {
+    getProjectFloors: (project: IProject) : Promise<IProjectFloor[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectFloor}?project_id=${project.id}`),
     saveProjectFloor: (projectFloorForm: IProjectFloorForm): Promise<IProjectFloor[]> => requests.post(`${enviorment.baseUrl}/${endPoints.projectFloor}`, projectFloorForm),
     updateProjectFloor: (floor: IProjectFloor): Promise<IProjectFloor> => requests.put(`${enviorment.baseUrl}/${endPoints.projectFloor}/${floor.id}`, floor)
 }
 
+export const RoomType = {
+    getRoomTypes: () : Promise<IRoomType[]> => requests.get(`${enviorment.baseUrl}/${endPoints.roomTypes}`)
+}
+
+export const FloorRooms = {
+    getFloorRooms: (projectFloor: IProjectFloor) => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?floor_id=${projectFloor.id}`),
+    saveFloorRooms : (floorRooms: IRoomForm) => requests.post(`${enviorment.baseUrl}/${endPoints.floorRooms}`, floorRooms), 
+    updateFloorRoom : (floorRoom: IFloorRoom): Promise<IFloorRoom> => requests.put(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`, floorRoom),
+}

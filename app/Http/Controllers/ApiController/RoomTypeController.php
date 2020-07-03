@@ -14,7 +14,7 @@ class RoomTypeController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(RoomType::all(), 200);
     }
 
     /**
@@ -24,7 +24,7 @@ class RoomTypeController extends Controller
      */
     public function create()
     {
-        //
+        return abort(400);
     }
 
     /**
@@ -35,7 +35,7 @@ class RoomTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $request;
     }
 
     /**

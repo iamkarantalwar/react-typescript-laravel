@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Models\FloorRoom;
 use Illuminate\Http\Request;
+use App\Http\Requests\Api\FloorRoomsRequest;
 
 class FloorRoomController extends Controller
 {
@@ -12,9 +13,9 @@ class FloorRoomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return FloorRoom::where('floor_id', $request->floor_id)->get();
     }
 
     /**
@@ -24,7 +25,7 @@ class FloorRoomController extends Controller
      */
     public function create()
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -33,9 +34,35 @@ class FloorRoomController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FloorRoomsRequest $request)
     {
-        //
+        $rooms = [];
+
+        $room_details  = $request->post('room_details');
+
+        $from = intval($request->post('from'));
+        $to = $request->post('to');
+
+        for($i=0; $i<count($request->post('room_details')); $i++) {
+            if ($room_details[$i]['quantity'] != null) {
+                
+                for($j=0; $j<$room_details[$i]['quantity']; $j++)
+                {
+                    $room = FloorRoom::create([
+                        'floor_id' => $request->post('floor_id'),
+                        'quantity' => $room_details[$i]['quantity'],
+                        'room_name' => $request->name.' '.$from,
+                        'room_type_id' => $room_details[$i]['room_type']['id'],
+                    ]);
+                    $from++;
+                    array_push($rooms, $room);
+                }
+               
+                
+            }          
+        }
+
+        return $rooms;
     }
 
     /**
@@ -46,7 +73,7 @@ class FloorRoomController extends Controller
      */
     public function show(FloorRoom $floorRoom)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -57,7 +84,7 @@ class FloorRoomController extends Controller
      */
     public function edit(FloorRoom $floorRoom)
     {
-        //
+        return abort(404);
     }
 
     /**
@@ -69,7 +96,12 @@ class FloorRoomController extends Controller
      */
     public function update(Request $request, FloorRoom $floorRoom)
     {
-        //
+        $update = $floorRoom->update($request->all());
+        if($update) {
+            return $floorRoom;
+        } else {
+            return ['message' => 'Something Went Wrong.'];
+        }
     }
 
     /**
@@ -80,6 +112,6 @@ class FloorRoomController extends Controller
      */
     public function destroy(FloorRoom $floorRoom)
     {
-        //
+        return abort(404);
     }
 }

@@ -14,9 +14,9 @@ class ProjectFloorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ProjectFloor::all();
+        return ProjectFloor::where('project_id', $request->project_id)->get();
     }
 
     /**
@@ -84,7 +84,12 @@ class ProjectFloorController extends Controller
      */
     public function update(Request $request, ProjectFloor $projectFloor)
     {
-        //
+        $update = $projectFloor->update($request->all());
+        if($update) {
+            return $projectFloor;
+        } else {
+            return ['message' => 'Something Went Wrong'];
+        }
     }
 
     /**

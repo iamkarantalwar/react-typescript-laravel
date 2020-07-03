@@ -15,8 +15,10 @@ class CreateFloorRoomsTable extends Migration
     {
         Schema::create('floor_rooms', function (Blueprint $table) {
             $table->bigIncrements('id');            
-            $table->bigInteger("floor_id");
-            $table->string("name");
+            $table->bigInteger('floor_id');
+            $table->string('quantity');
+            $table->string('room_name');
+            $table->string('room_type_id');
             $table->softDeletes();
             $table->timestamps();
         });

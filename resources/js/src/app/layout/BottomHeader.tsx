@@ -23,9 +23,7 @@ export class BottomHeader extends Component<IProps> {
                                     </div>
                                 </div>
                                 <div className="col-md-6">
-                                    <div className="test-proj-date text-right">
-                                        <p>Heute:<a href="#"> 01 April</a></p>
-                                    </div>
+                                    
                                 </div>
                             </div>            
                         </div>

@@ -16,7 +16,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return Project::with(['floors'])->get();
+        return Project::with(['floors', 'floors.rooms'])->get();
     }
 
     /**

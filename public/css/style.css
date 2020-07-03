@@ -8,6 +8,20 @@ select.team-select {
     margin-right: 4px;
     background: transparent;
 }
+.floor-card:first-child{
+    margin-top: 5px;
+}
+.floor-card{
+    padding: 0 2rem !important;
+}
+select.status-select {
+    padding: 5px 16px;
+    text-align: center;
+    /* color: #000; */
+    border-radius: 3px;
+    margin-right: 4px;
+    background: transparent;
+}
 
 img {
 	max-width: 100%;
@@ -545,4 +559,12 @@ a{
 
 .add-new-user .main-team-area form span {
     position: absolute;
+}
+
+#toggle-btn::after{
+    font-family: 'FontAwesome';  
+    content: "\f078"; /* fa-chevron-down */
+    position: absolute;
+    top: 12px;
+    right: 10px; 
 }

@@ -25,6 +25,10 @@ Route::resource('project-settings', 'ApiController\ProjectSettingController');
 
 Route::resource('project-floors', 'ApiController\ProjectFloorController');
 
+Route::resource('room-types', 'ApiController\RoomTypeController');
+
+Route::resource('floor-rooms', 'ApiController\FloorRoomController');
+
 Route::resource('user', 'ApiController\UserController');
 
 Route::get('userroles', 'ApiController\UserController@getUserRoles');

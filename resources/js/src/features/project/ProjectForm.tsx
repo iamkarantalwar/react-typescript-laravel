@@ -146,10 +146,10 @@ export class ProjectForm extends Component<IProps, IState> {
                                         return (
                                             <Fragment>
                                                 <div className="form-btn text-right" onClick={()=>this.props.showAddFloorWindow()}>
-                                                    <a href="#" className="main-btn">Add Floor</a>
+                                                    <a href={void(0)} className="main-btn">Add Floor</a>
                                                 </div>
                                                 <div className="form-btn text-right mt-4" onClick={()=> this.props.showSettingsWindow()}>
-                                                    <a href="#" className="main-btn">Settings</a>
+                                                    <a href={void(0)} className="main-btn">Settings</a>
                                                 </div>
                                             </Fragment>
                                         );
