@@ -146,7 +146,7 @@ class FloorListItem extends Component<IProps, IState> {
                         <div className="team-btn mr-1">
                             <select 
                               name="team" 
-                              value={this.props.floor.status || ''} 
+                              defaultValue={this.props.floor.status} 
                               className={`status-select border border-${this.getStatusCssClass()}`}
                               onChange={this.statusChangeHandler}
                             >
