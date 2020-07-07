@@ -10,6 +10,7 @@ import { IFloorRoom } from '../../app/models/floor-room.model';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import LoaderBar from '../../app/common/LoaderBar';
+import { TitleContext, titleContextType } from '../../context/TitleContext';
 
 interface IProps {
     project: IProject;
@@ -34,6 +35,7 @@ class Floor extends Component<IProps, IState> {
             selectedFloor: null,
             loader: false,
         }
+        const context: titleContextType = this.context;
     }
 
     afterAddOfFloors = (floors: IProjectFloor[]) => {
@@ -69,6 +71,8 @@ class Floor extends Component<IProps, IState> {
     }
 
     componentDidMount() {
+        this.context.changeTitle(this.props.project.project_name);
+       
         this.setState({loader: true})
         User.fetchUser().then(res => console.log(res));
         ProjectFloors
@@ -99,6 +103,17 @@ class Floor extends Component<IProps, IState> {
     } 
     
     render() {
+        const floorListItems: any = this.state.floors.map((floor) => {
+            return <FloorListItem 
+                        deleteFloor={this.deleteFloor}
+                        selectFloor={this.selectFloor}
+                        key={floor.id} 
+                        floor={floor}
+                        teams={this.state.teams}
+                        afterUpdateFloor={this.afterUpdateFloor}
+                    />
+        });
+
         return (
             <Fragment>
                 {
@@ -110,21 +125,17 @@ class Floor extends Component<IProps, IState> {
                     />  : ""
                 }
                 {  
-                    this.state.loader ? <LoaderBar/> :               
-                    this.state.floors.map((floor) => {
-                        return <FloorListItem 
-                                    deleteFloor={this.deleteFloor}
-                                    selectFloor={this.selectFloor}
-                                    key={floor.id} 
-                                    floor={floor}
-                                    teams={this.state.teams}
-                                    afterUpdateFloor={this.afterUpdateFloor}/>
-                    })
+                    this.state.loader ? 
+                    <LoaderBar/> : 
+                    this.state.floors.length == 0 ? <h1>No Floor Assigned Yet.</h1> : floorListItems           
+                    
                 }
                 { this.state.showRoomForm && this.state.selectedFloor != null ? <RoomForm deselectFloor={this.deselectFloor} floor={this.state.selectedFloor}/> : "" }
             </Fragment> 
         );
     }
 }
+
+Floor.contextType = TitleContext;
 
 export default Floor;

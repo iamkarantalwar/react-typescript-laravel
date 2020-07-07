@@ -11,10 +11,16 @@
 |
 */
 
+Route::get('logout/','\App\Http\Controllers\Auth\LoginController@logout');
+
+$auth_routes = ['login', 'logout'];
+
 Route::view('/{path?}', 'app')
-       ->where("path", '^(?!login|logout).*$')
+       ->where("path", '^(?!.*(login|logout)).*$')
        ->middleware(["auth"])
        ->name("frontend");
+
+
 
 Auth::routes(['register' => false]);
 

@@ -1,9 +1,16 @@
 import React, {Context} from 'react';
 
-const TitleContext = React.createContext("Title");
+export type titleContextType = {title: string, changeTitle:(title: string|any)=>void};
 
-const TitleProvider = TitleContext.Provider;
+const titleContextObject : titleContextType = {
+    title: "Title", 
+    changeTitle: (title: string | null) => {},
+}
 
-const TitleConsumer = TitleContext.Consumer;
+const TitleContext = React.createContext(titleContextObject);
 
-export { TitleConsumer, TitleProvider, TitleContext };
+// const TitleProvider = TitleContext.Provider;
+
+// const TitleConsumer = TitleContext.Consumer;
+
+export { TitleContext };

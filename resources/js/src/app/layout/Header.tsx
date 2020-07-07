@@ -69,6 +69,9 @@ export class Header extends Component {
                                     }
                                 }
                             </UserContext.Consumer>
+                            <li className="nav-item active">
+                                    <a className="nav-link mr-4" href="/logout">Logout<span className="sr-only">(current)</span></a>
+                            </li>
                             </ul>
                             <form className="form-inline my-2 my-lg-0">
                                 <input className="form-control mr-sm-2" type="search" placeholder="Search..." aria-label="Search"/>
