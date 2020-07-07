@@ -22,15 +22,10 @@
 		<script src="{{ asset('js/bootstrap.min.js') }}"></script>
 		
 		<script>
-	
-			const token = localStorage.getItem('token'); 
-			if (token == null) {
-				const token = '<?=session('token'); ?>';
-				const role = '<?=session('role'); ?>';
-				localStorage.setItem("token" , token);
-				localStorage.setItem("role" , role);
-			}  
-				
+			const token = '<?=session('token'); ?>';
+			const role = '<?=session('role'); ?>';
+			localStorage.setItem("token" , token);
+			localStorage.setItem("role" , role);
 		</script>
 		<script src="{{ asset('js/app.js') }}"></script>
 	</body>

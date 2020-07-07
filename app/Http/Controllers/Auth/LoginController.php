@@ -31,6 +31,13 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/';
 
+    protected function destroyToken() {
+        $user = Auth::user();
+        User::where('id', $user->id)->update([
+            'api_token' => null,
+        ]);
+    }
+
     protected function generateToken() {
         $token = null;
         $user = Auth::user();
@@ -56,6 +63,19 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         $this->generateToken();
+    }
+
+    public function logout(Request $request)
+    {
+        $this->destroyToken();
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return $this->loggedOut($request) ?: redirect('/');
     }
 
     /**
