@@ -120,7 +120,7 @@ class UserForm extends Component<IProps, IState> {
  
                   <form onSubmit={this.onSubmitHandler.bind(this)}>
                     {this.state.showLoader?<LoaderBar></LoaderBar> : ""}
-                    {this.state.added ? <span className="text-success">User Created Successfully.</span> : ""}
+                    {this.state.added ? <div className="text-success">User Created Successfully.</div> : ""}
                            <div className="add-user-form d-flex align-items-end justify-content-between">                               
                               <div className="form-group col-md-5 px-1">
                                  <label>Add New User</label>

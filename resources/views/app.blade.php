@@ -20,17 +20,19 @@
 		<script src="{{ asset('js/jquery-3.3.1.slim.min.js') }}"></script>
 		<script src="{{ asset('js/popper.min.js') }}"></script>
 		<script src="{{ asset('js/bootstrap.min.js') }}"></script>
-		<script src="{{ asset('js/app.js') }}"></script>
+		
 		<script>
-			$(document).ready(function(){
-				$('.collapsed').click(function() {
-				var description = $(this).closest('div').find('.collapse');
-				console.log(description);
-				description.collapse();
-				});
-			});
-			
+	
+			const token = localStorage.getItem('token'); 
+			if (token == null) {
+				const token = '<?=session('token'); ?>';
+				const role = '<?=session('role'); ?>';
+				localStorage.setItem("token" , token);
+				localStorage.setItem("role" , role);
+			}  
+				
 		</script>
+		<script src="{{ asset('js/app.js') }}"></script>
 	</body>
 </html>
 

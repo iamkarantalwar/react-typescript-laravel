@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
+import { UserRoles } from '../models/role.model';
 
 export class Header extends Component {
     render() {
@@ -35,17 +37,38 @@ export class Header extends Component {
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav mr-auto">
                             <li className="nav-item active">
-                                <Link className="nav-link mr-4" to="/">Dashborad<span className="sr-only">(current)</span></Link>
+                                    <Link className="nav-link mr-4" to="/">Dashborad<span className="sr-only">(current)</span></Link>
                             </li>
-                            <li className="nav-item">
-                                <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projects</Link>
-                            </li>                           
-                            <li className="nav-item">
-                                <Link className="nav-link mr-4" to="/users">User</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link mr-4" to="/teams">Teams</Link>
-                            </li>
+                            <UserContext.Consumer>
+                                {
+                                    (user) => {
+                                        if(user.role == UserRoles.ADMIN)
+                                        {
+                                            return (
+                                                <Fragment>
+                                                    <li className="nav-item">
+                                                        <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projects</Link>
+                                                    </li>                           
+                                                    <li className="nav-item">
+                                                        <Link className="nav-link mr-4" to="/users">User</Link>
+                                                    </li>
+                                                    <li className="nav-item">
+                                                        <Link className="nav-link mr-4" to="/teams">Teams</Link>
+                                                    </li>
+                                                </Fragment>
+                                            )
+                                        } else {
+                                            return (
+                                                <Fragment>
+                                                    <li className="nav-item">
+                                                        <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projects</Link>
+                                                    </li> 
+                                                </Fragment>
+                                            )
+                                        }
+                                    }
+                                }
+                            </UserContext.Consumer>
                             </ul>
                             <form className="form-inline my-2 my-lg-0">
                                 <input className="form-control mr-sm-2" type="search" placeholder="Search..." aria-label="Search"/>

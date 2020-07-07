@@ -1,13 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import {ProjectForm} from './ProjectForm';
 import {IProject} from '../../app/models/project.model';
-import {Project} from '../../app/api/agent';
+import {Project, User} from '../../app/api/agent';
 import ProjectListItem from './ProjectListItem';
 import LoaderBar from '../../app/common/LoaderBar';
 import { FormType } from '../../app/common/FormType';
 import ProjectSettings from './ProjectSettings';
 import Floor from '../floor/Floor';
 import { useLocation} from 'react-router-dom';
+import { userObject } from '../../context/UserContext';
+import { UserRoles } from '../../app/models/role.model';
 
 enum ProjectWindow {
     ADDFLOOR,
@@ -111,7 +113,9 @@ export class Projects extends React.Component<Props, State> {
     render() {
         return (
             <div className="container">
-                <ProjectForm
+                {
+                    userObject.role == UserRoles.ADMIN ?
+                    <ProjectForm
                     formType={this.state.formType} 
                     selectedProject={this.state.selectedProject}
                     showDescription={this.state.showDescription} 
@@ -120,7 +124,8 @@ export class Projects extends React.Component<Props, State> {
                     hideDescriptionAndShowTabs={this.hideDescriptionAndShowTabs}
                     showAddFloorWindow={this.showAddFloorWindow}
                     showSettingsWindow={this.showSettingsWindow}
-                />
+                    /> : ""
+                }
                 {
                     (() => {
                         if(this.state.projectWindow == ProjectWindow.VIEWPROJECTS) {
@@ -151,9 +156,13 @@ export class Projects extends React.Component<Props, State> {
                                     </div>
                                 </Fragment>
                             );
-                        } else if(this.state.projectWindow == ProjectWindow.PROJECTSETTINGS) {
+                        }
+                        else if(this.state.projectWindow == ProjectWindow.PROJECTSETTINGS && UserRoles.ADMIN != userObject.role) {
+                            return <Floor project={this.state.selectedProject as IProject} reloadWindow={this.reloadWindow}/>;
+                        }                        
+                        else if(this.state.projectWindow == ProjectWindow.PROJECTSETTINGS && userObject.role == UserRoles.ADMIN) {
                             return <ProjectSettings project={this.state.selectedProject as IProject}/>;
-                        } else if(this.state.projectWindow == ProjectWindow.ADDFLOOR) {
+                        } else if(this.state.projectWindow == ProjectWindow.ADDFLOOR && userObject.role == UserRoles.ADMIN) {
                             return <Floor project={this.state.selectedProject as IProject} reloadWindow={this.reloadWindow}/>;
                         }
 

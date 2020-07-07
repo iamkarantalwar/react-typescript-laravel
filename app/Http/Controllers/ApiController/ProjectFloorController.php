@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use Auth;
 use App\Models\ProjectFloor;
 use Illuminate\Http\Request;
 use App\Enums\ProjectFloorStatus;
 use App\Http\Requests\Api\ProjectFloorRequest;
+use App\Http\Requests\Api\ProjectFloorUpdateRequest;
 
 class ProjectFloorController extends Controller
 {
@@ -16,7 +18,12 @@ class ProjectFloorController extends Controller
      */
     public function index(Request $request)
     {
-        return ProjectFloor::where('project_id', $request->project_id)->get();
+        if($request->user()->role->role_name == "ADMIN") {
+            return ProjectFloor::where('project_id', $request->project_id)->get();
+        } else {
+            return ProjectFloor::where('project_id', $request->project_id)->where('team_id', $request->user()->team_id)->get();
+        }
+       
     }
 
     /**
@@ -82,7 +89,7 @@ class ProjectFloorController extends Controller
      * @param  \App\ProjectFloor  $projectFloor
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProjectFloor $projectFloor)
+    public function update(ProjectFloorUpdateRequest $request, ProjectFloor $projectFloor)
     {
         $update = $projectFloor->update($request->all());
         if($update) {

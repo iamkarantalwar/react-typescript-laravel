@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Rules\FloorStatusChangeRule;
+
 use App\Http\Requests\Api\ApiRequest;
 
-class ProjectFloorRequest extends ApiRequest
+class ProjectFloorUpdateRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +26,7 @@ class ProjectFloorRequest extends ApiRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'quantity' => 'required|integer',
-            'from' => 'required|integer|lt:to',
-            'to' => 'required|integer|gt:from',
-            'project_id' => 'required|integer'
+            'status' => ['required', new FloorStatusChangeRule(auth()->user()->role->role_name, $this->request->get('id'))]
         ];
     }
 }

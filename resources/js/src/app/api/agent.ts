@@ -13,6 +13,14 @@ import { IFloorRoom } from '../models/floor-room.model';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
+axios.interceptors.request.use((config) => {
+    const token = window.localStorage.getItem('token');
+    if(token) config.headers.Authorization = `Bearer ${token}`;
+    return config
+}, error => {
+return Promise.reject(error);
+})
+
 const requests = {
     get: (url: string) => axios.get(url).then(responseBody),
     post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
@@ -43,6 +51,7 @@ export const Team = {
 }
 
 export const User = {
+    fetchUser: () : Promise<IUser> => requests.get(`${enviorment.baseUrl}/usera`),
     getUsers: () : Promise<IUser[]> => requests.get(`${enviorment.baseUrl}/${endPoints.user}`),  
     saveUser: (user : IUser) : Promise<IUser> => requests.post(`${enviorment.baseUrl}/${endPoints.user}`, user),  
     updateUser: (user : IUser) : Promise<IUser> => requests.put(`${enviorment.baseUrl}/${endPoints.user}/${user.id}`, user),  

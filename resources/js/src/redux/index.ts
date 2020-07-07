@@ -1,0 +1,1 @@
+export { fetchUser } from './user/userAction';

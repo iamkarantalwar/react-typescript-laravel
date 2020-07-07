@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useContext} from 'react';
 import ReactDOM from 'react-dom';
 import {Header} from './src/app/layout/Header';
 import {Dashboard} from './src/features/dashboard/Dashboard';
@@ -7,18 +7,22 @@ import Teams from './src/features/team/Teams';
 import BottomHeader from './src/app/layout/BottomHeader';
 import Projects from './src/features/project/Projects';
 import Users from './src/features/user/Users';
-import { TitleConsumer, TitleContext } from './src/context/TitleContext';
-import ProjectSettings from './src/features/project/ProjectSettings';
+import { TitleContext } from './src/context/TitleContext';
+import Authorization from './src/app/hoc/Authorization';
+import { UserContext, userObject } from './src/context/UserContext';
+import { UserRoles } from './src/app/models/role.model';
 
 export default class App extends React.Component{
-  render(): any{
    
+  render(): any{
      return(
          <Fragment>
-            <BrowserRouter>   
+            <BrowserRouter> 
+            <UserContext.Provider value={userObject}>
                <Header/>     
+            </UserContext.Provider>  
                <TitleContext.Provider value="abc">
-                    <BottomHeader/>   
+                  <BottomHeader/>   
                </TitleContext.Provider>
                 
                {/* <Route exact path='/' component={Dashboard} />  */}
@@ -27,10 +31,10 @@ export default class App extends React.Component{
                   render={() => ( 
                     
                      <Switch>  
-                        <Route exact path="/" component={Dashboard}/>
-                        <Route exact path="/projects" component={Projects}/>
-                        <Route exact path="/teams" component={Teams}/>
-                        <Route exact path="/users" component={Users}/>
+                        <Route exact path="/" component={Authorization(Dashboard, [UserRoles.ADMIN])}/>
+                        <Route exact path="/projects" component={Authorization(Projects, [UserRoles.ADMIN, UserRoles.USER])}/>
+                        <Route exact path="/teams" component={Authorization(Teams, [UserRoles.ADMIN])}/>
+                        <Route exact path="/users" component={Authorization(Users, [UserRoles.ADMIN])}/>
                      </Switch>
                   )}
                />

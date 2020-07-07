@@ -4,9 +4,12 @@ import { IProject } from '../../app/models/project.model';
 import { IProjectFloor } from '../../app/models/project-floor.model';
 import FloorListItem from './FloorListItem';
 import { ITeam } from '../../app/models/team.model';
-import { Team, ProjectFloors } from '../../app/api/agent';
+import { Team, ProjectFloors, User } from '../../app/api/agent';
 import RoomForm from '../room/RoomForm';
 import { IFloorRoom } from '../../app/models/floor-room.model';
+import { userObject } from '../../context/UserContext';
+import { UserRoles } from '../../app/models/role.model';
+import LoaderBar from '../../app/common/LoaderBar';
 
 interface IProps {
     project: IProject;
@@ -18,6 +21,7 @@ interface IState {
     teams: ITeam[];
     showRoomForm: boolean;
     selectedFloor: IProjectFloor | null;
+    loader: boolean;
 }
 
 class Floor extends Component<IProps, IState> {
@@ -28,6 +32,7 @@ class Floor extends Component<IProps, IState> {
             teams: [],
             showRoomForm: true,
             selectedFloor: null,
+            loader: false,
         }
     }
 
@@ -64,9 +69,11 @@ class Floor extends Component<IProps, IState> {
     }
 
     componentDidMount() {
+        this.setState({loader: true})
+        User.fetchUser().then(res => console.log(res));
         ProjectFloors
         .getProjectFloors(this.props.project)
-        .then((res) => this.setState({floors: res}))
+        .then((res) => this.setState({floors: res, loader: false}))
         .catch((error) => console.log(error));
 
         Team
@@ -94,12 +101,16 @@ class Floor extends Component<IProps, IState> {
     render() {
         return (
             <Fragment>
-                <FloorForm 
-                    project={this.props.project} 
-                    reloadWindow={this.props.reloadWindow}
-                    afterAddOfFloors={this.afterAddOfFloors}
-                /> 
-                {                 
+                {
+                    userObject.role == UserRoles.ADMIN ?
+                    <FloorForm 
+                        project={this.props.project} 
+                        reloadWindow={this.props.reloadWindow}
+                        afterAddOfFloors={this.afterAddOfFloors}
+                    />  : ""
+                }
+                {  
+                    this.state.loader ? <LoaderBar/> :               
                     this.state.floors.map((floor) => {
                         return <FloorListItem 
                                     deleteFloor={this.deleteFloor}

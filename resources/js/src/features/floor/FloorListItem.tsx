@@ -5,6 +5,9 @@ import { ProjectFloors, FloorRooms } from '../../app/api/agent';
 import { Accordion,Button,Card } from 'react-bootstrap';
 import RoomListItem from '../room/RoomListItem';
 import { IFloorRoom } from '../../app/models/floor-room.model';
+import { userObject } from '../../context/UserContext';
+import { UserRoles } from '../../app/models/role.model';
+import { AxiosError } from 'axios';
 
 interface IProps {
     floor: IProjectFloor;
@@ -28,7 +31,9 @@ class FloorListItem extends Component<IProps, IState> {
     constructor(props: IProps) {
       super(props);
       this.state = {
-        floor: this.props.floor,
+        floor: {
+          ...this.props.floor
+        },
         message: "",
         messageClass: "",
         editFloor: false,
@@ -68,10 +73,20 @@ class FloorListItem extends Component<IProps, IState> {
         this.props.afterUpdateFloor(res);
         setTimeout(()=>{ this.setState({message: "", messageClass: ""})},2000);
       })
-      .catch((error) =>{
+      .catch((error: AxiosError) =>{
+        let message = 'Something Went Wrong';
+
+        if(error.response?.status==422) {
+            let error_bags = error.response.data.errors;
+            console.log('abc');
+            if(error_bags != undefined) {
+              message = error_bags.status != undefined ? error_bags.status[0] : message;
+            }
+        }
         this.setState({
-          message: "Something Went Wrong.",
-          messageClass: "text-danger"
+          message: message,
+          messageClass: "text-danger",
+          floor: this.props.floor
         });
        
         setTimeout(()=>{ this.setState({message: "", messageClass: ""})},2000);
@@ -153,7 +168,7 @@ class FloorListItem extends Component<IProps, IState> {
                           value={this.state.floor.floor_name}
                           readOnly={!this.state.editFloor}
                           className={`form-control ${!this.state.editFloor ? 'team-input' : ''}`}
-                          onChange={(e) => this.setState({floor: {...this.state.floor,floor_name: e.target.value}})}
+                          onChange={(e) => userObject.role == UserRoles.ADMIN ? this.setState({floor: {...this.state.floor,floor_name: e.target.value}}): ""}
                       />
                       </h6>
                 
@@ -172,6 +187,9 @@ class FloorListItem extends Component<IProps, IState> {
                               }
                             </select>
                         </div>
+                        {
+                          userObject.role == UserRoles.ADMIN ? 
+                        <Fragment>
                         <div className="team-btn mr-1">
                             <select 
                               name="team" 
@@ -196,6 +214,8 @@ class FloorListItem extends Component<IProps, IState> {
                         <div className="room-btn">
                             <i style={{cursor:'pointer'}} onClick={(e) => this.deleteFloor(this.props.floor)} className="fa fa-trash ml-2" aria-hidden="true"></i>
                         </div>
+                        </Fragment>
+                      : ""}
                         <div className="room-btn">
                           <i style={{cursor:'pointer'}} onClick={this.state.editFloor? this.onSubmitHandler : this.enableEditFloor} className={`fa ${this.state.editFloor ? 'fa-check' : 'fa-pencil'} ml-2`}></i>
                         </div>

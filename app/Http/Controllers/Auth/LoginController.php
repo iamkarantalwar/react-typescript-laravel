@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Str;
+use Auth;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -29,20 +31,33 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/';
 
-    protected function attemptLogin(Request $request)
-    {
-        
-        $_ = User::where("email", $request->email)->first();
-        if (isset($_->role->role_name) &&  $_->role->role_name == "ADMIN")
+    protected function generateToken() {
+        $token = null;
+        $user = Auth::user();
+        //If token is not available then generate it
+        if(Auth::user()->api_token == null )
         {
-            return $this->guard()->attempt(
-                $this->credentials($request), $request->filled('remember')
-            );
+            //Generate a random token
+            $token = Str::random(80);
+
+            // Attach a token with user
+            $user->forceFill([
+                'api_token' => hash('sha256', $token),
+            ])->save();
             
+            //Return Token As A response
+            session(['token' => $token, 'role' => $user->role->role_name]);
         } else {
-            return false;
+            //Return Token As A response
+            session(['token' => $user->api_token, 'role' => $user->role->role_name]);
         }
     }
+    
+    protected function authenticated(Request $request, $user)
+    {
+        $this->generateToken();
+    }
+
     /**
      * Create a new controller instance.
      *

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/usera', function (Request $request) {
     return $request->user();
 });
 
@@ -23,7 +23,7 @@ Route::resource('project', 'ApiController\ProjectController');
 
 Route::resource('project-settings', 'ApiController\ProjectSettingController');
 
-Route::resource('project-floors', 'ApiController\ProjectFloorController');
+Route::resource('project-floors', 'ApiController\ProjectFloorController')->middleware('auth:api');
 
 Route::resource('room-types', 'ApiController\RoomTypeController');
 
