@@ -12,6 +12,8 @@ import Authorization from './src/app/hoc/Authorization';
 import { UserContext, userObject } from './src/context/UserContext';
 import { UserRoles } from './src/app/models/role.model';
 import PropTypes from 'prop-types'
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 
 interface IProps {}
 
@@ -35,8 +37,7 @@ export default class App extends React.Component<IProps, IState>{
   render(): any{
      return(
          <Fragment>
-            
-               <BrowserRouter> 
+            <Provider store={store}>              <BrowserRouter> 
                <UserContext.Provider value={userObject}>
                   <Header/>     
                </UserContext.Provider>  
@@ -58,6 +59,7 @@ export default class App extends React.Component<IProps, IState>{
                   />
                         
                </BrowserRouter>
+            </Provider>
          </Fragment>
      );
   }

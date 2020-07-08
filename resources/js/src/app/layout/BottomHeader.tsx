@@ -1,19 +1,30 @@
 import React, { Component } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { TitleContext } from '../../context/TitleContext';
+import { connect } from 'react-redux';
+import { RootState,changeTitle } from '../../redux';
 
-interface IProps extends RouteComponentProps {}
+const mapStateToProps = (state: RootState) => ({
+    title: state.title,
+});
+
+const mapDispatchToProps = { changeTitle };
+
+type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+interface IProps extends RouteComponentProps,ReduxProps {}
 
 
 export class BottomHeader extends Component<IProps> {
     constructor(props: IProps) {
         super(props);        
     }
+
     render() {
         const path = this.props.location.pathname.split("/")[1];
         let context:{title: string} = this.context;
         let title_ = path.length === 0 ? "Dashboard" : path.charAt(0).toUpperCase() + path.slice(1);
-        title_ = context.title ? context.title : title_;
+        title_ = this.props.title.title ? this.props.title.title : title_;
         return (
             <div>                
                 <section className="test-project mt-5">
@@ -26,7 +37,6 @@ export class BottomHeader extends Component<IProps> {
                                     </div>
                                 </div>
                                 <div className="col-md-6">
-                                    
                                 </div>
                             </div>            
                         </div>
@@ -36,4 +46,5 @@ export class BottomHeader extends Component<IProps> {
     }
 }
 BottomHeader.contextType = TitleContext;
-export default withRouter(BottomHeader);
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BottomHeader));

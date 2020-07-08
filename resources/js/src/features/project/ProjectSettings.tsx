@@ -2,10 +2,20 @@ import React, { Component, Fragment } from 'react';
 import { IProject } from '../../app/models/project.model';
 import { ProjectSetting } from '../../app/api/agent';
 import { IProjectSetting,  ProjectSettingStatus} from '../../app/models/project-setting.model';
-import { AxiosResponse, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import LoaderBar from '../../app/common/LoaderBar';
+import { connect } from 'react-redux';
+import { RootState, changeTitle } from '../../redux';
 
-interface IProps{
+const mapStateToProps = (state: RootState) => ({
+    title: state.title,
+});
+
+const mapDispatchToProps = { changeTitle };
+
+type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+interface IProps extends ReduxProps{
     project: IProject;
 }
 
@@ -35,6 +45,7 @@ class ProjectSettings extends Component<IProps, IState> {
     }
 
     componentDidMount() {
+        this.props.changeTitle(this.props.project.project_name);
         this.setState({
             showLoader: true,
         })
@@ -46,6 +57,10 @@ class ProjectSettings extends Component<IProps, IState> {
                 showLoader: false,
             });
         });
+    }
+
+    componentWillUnmount() {
+        this.props.changeTitle(this.props.project.project_name);
     }
 
     handleChange = (event: any) => {
@@ -216,4 +231,4 @@ class ProjectSettings extends Component<IProps, IState> {
         );
     }
 }
-export default ProjectSettings;
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectSettings);

@@ -11,8 +11,18 @@ import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import LoaderBar from '../../app/common/LoaderBar';
 import { TitleContext, titleContextType } from '../../context/TitleContext';
+import { connect } from 'react-redux';
+import { RootState,changeTitle } from '../../redux';
 
-interface IProps {
+const mapStateToProps = (state: RootState) => ({
+    title: state.title,
+});
+
+const mapDispatchToProps = { changeTitle };
+
+type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+interface IProps extends ReduxProps {
     project: IProject;
     reloadWindow: () => void;
 }
@@ -71,7 +81,7 @@ class Floor extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.context.changeTitle(this.props.project.project_name);
+        this.props.changeTitle(this.props.project.project_name);
        
         this.setState({loader: true})
         User.fetchUser().then(res => console.log(res));
@@ -84,6 +94,10 @@ class Floor extends Component<IProps, IState> {
         .getTeams()
         .then((teams) => this.setState({teams: teams}))
         .catch((error) => console.log(error));
+    }
+
+    componentWillUnmount() {
+        this.props.changeTitle(null);
     }
 
     selectFloor = (floor: IProjectFloor) => {
@@ -138,4 +152,4 @@ class Floor extends Component<IProps, IState> {
 
 Floor.contextType = TitleContext;
 
-export default Floor;
+export default connect(mapStateToProps, mapDispatchToProps)(Floor);
