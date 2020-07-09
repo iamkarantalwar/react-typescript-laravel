@@ -165,7 +165,7 @@ class ProjectSettings extends Component<IProps, IState> {
                 <ProjectForm project={this.state.project as IProject}/>
                 <div className="start-form">
                     <div className="form-setting-option mt-4">
-                        <h4 className="setting-tittle font-weight-normal pl-4">Settings</h4>
+                        <h4 className="setting-tittle pl-4">Settings</h4>
                         <hr/>
                         <form onSubmit={this.onSubmitHandler}>
                         <div className="main-table table-responsive">

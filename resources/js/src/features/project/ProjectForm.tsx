@@ -152,10 +152,10 @@ export class ProjectForm extends Component<IProps, IState> {
                                     {
                                         return (
                                             <Fragment>
-                                                <div className="form-btn text-right">
+                                                <div className="form-btn text-right mt-2">
                                                     <Link to={`/project/${this.props.project.id}/floors`} className="main-btn">Add Floor</Link>
                                                 </div>
-                                                <div className="form-btn text-right mt-4">
+                                                <div className="form-btn text-right mt-2">
                                                     <Link to={`/project/${this.props.project.id}`} className="main-btn">Settings</Link>
                                                 </div>
                                             </Fragment>

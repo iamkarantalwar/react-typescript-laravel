@@ -152,7 +152,7 @@ class UserForm extends Component<IProps, IState> {
                                 {this.state.errors.email ? <span className="text-danger">{this.state.errors.email}</span>:""}
                               </div>
                            </div>
-                           <div className="row align-items-end justify-content-between px-3 align-items-center mt-5">
+                           <div className="row align-items-end justify-content-between px-3 align-items-center mt-md-5">
                               <div className="form-group col-md-7 px-1">
                                  <input type="password" 
                                         className={` form-control ${this.state.errors.password ? "is-invalid" : ""} `}
@@ -190,7 +190,7 @@ class UserForm extends Component<IProps, IState> {
                                  </select>
                                   {this.state.errors.team_id ? <span className="text-danger">{this.state.errors.team_id}</span>:""}
                               </div>
-                              <div className="form-btn form-group mb-4 col-md-1 px-1 text-right">
+                              <div className="form-btn form-group col-md-1 px-1 text-right">
                                  <button type="submit" className="main-btn">Add</button>
                               </div>
                            </div>

@@ -38,16 +38,9 @@ a {
 a:hover {
 	text-decoration: none;
 }
-hr {
-    border-top: 2px solid rgba(0,0,0,.1);
-}
 .form-control {
     background-color: #f8f8fa;
     padding: .375rem .75rem 10px;
-}
-textarea.form-control {
-    width: 100%;
-    max-width: 82.9%;
 }
 
 .top-bar .top-bar-social-links ul li a i {
@@ -275,7 +268,7 @@ a.main-btn.cancel:hover {
 
 .add-floor-tabs {
     width: 1000px;
-    margin: auto;
+    margin-left: auto;
 }
 
 /*Floor Overview section*/
@@ -336,8 +329,7 @@ a.overview-flor-btn {
 }
 
 .rooms-form-area {
-    width: 100%;
-    max-width: 800px;
+    width: 800px;
     margin: auto;
 }
 .floor-overviwe .rooms-form-area .form-control {
@@ -422,22 +414,22 @@ background-color: #f8f8fa;
     overflow: auto;
 }
 /* width */
-.main-team-area .team-name-box .main-table::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 10px;
 }
 
 /* Track */
-.main-team-area .team-name-box .main-table::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: #f1f1f1; 
 }
  
 /* Handle */
-.main-team-area .team-name-box .main-table::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: #888; 
 }
 
 /* Handle on hover */
-.main-team-area .team-name-box .main-table::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
 
@@ -474,8 +466,7 @@ background-color: #f8f8fa;
 /*start responsive*/
 @media (max-width: 767px) {
     .add-new-user .add-user-form .form-group {
-       /* / margin-bottom: 35px; */
-       
+        margin-bottom: 35px;
     }
 
 	.form-setting-option h4 {
@@ -541,18 +532,6 @@ background-color: #f8f8fa;
  .add-new-user .add-user-form {
     flex-wrap: wrap;
   }
-.floor-one-box .floor-overviwe-btn {
-    flex-wrap: wrap;
- }
- .floor-one-box .floor-overviwe-btn .team-btn {
-    margin-bottom: 5px;
- }
- .rooms-form-area .add-room-details {
-    flex-wrap: wrap;
-}
- .room-quantity-area .room-quantity .form-group {
-    margin-right: 8px;
-}
 
 }
 
