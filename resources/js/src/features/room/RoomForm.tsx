@@ -5,11 +5,10 @@ import { AxiosError } from 'axios';
 import { IRoomForm, RoomDetails } from '../../app/models/room-form.model';
 import { IProjectFloor } from '../../app/models/project-floor.model';
 import LoaderBar from '../../app/common/LoaderBar';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
-interface IProps {
+interface IProps extends RouteComponentProps {
     floor: IProjectFloor;
-    deselectFloor: () => void;
-   
 }
 
 interface IState {
@@ -116,7 +115,7 @@ class RoomForm extends Component<IProps, IState> {
                 messageClass: 'text-success',
                 roomForm: this.defaultState.roomForm,
             });
-            setTimeout(()=>{ this.setState({message: '', messageClass: ''}); this.props.deselectFloor();}, 4000);
+            setTimeout(()=>{ this.setState({message: '', messageClass: ''}); this.props.history.push(this.props.location.pathname) }, 2000);
             
         })
         .catch((error: AxiosError) => {
@@ -240,7 +239,7 @@ class RoomForm extends Component<IProps, IState> {
                                 <button type="submit" className="main-btn mr-1">Add</button>
                             </div>
                             <div className="add-floor-cancel">
-                                <button type="reset" className="main-btn cancel" onClick={this.props.deselectFloor}>Cancel</button>
+                                <button type="reset" className="main-btn cancel">Cancel</button>
                             </div>
                     </div>
                 </div>
@@ -250,4 +249,4 @@ class RoomForm extends Component<IProps, IState> {
     }
 }
 
-export default RoomForm;
+export default withRouter(RoomForm);

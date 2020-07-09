@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use App\Models\Tap;
+use App\Models\RoomType;
 use App\Models\FloorRoom;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\FloorRoomsRequest;
@@ -15,7 +17,11 @@ class FloorRoomController extends Controller
      */
     public function index(Request $request)
     {
-        return FloorRoom::where('floor_id', $request->floor_id)->get();
+        if($request->floor_id) {
+            return FloorRoom::with('taps')->where('floor_id', $request->floor_id)->get();
+        } else {
+            return FloorRoom::with('taps')->get();
+        }
     }
 
     /**
@@ -41,27 +47,31 @@ class FloorRoomController extends Controller
         $room_details  = $request->post('room_details');
 
         $from = intval($request->post('from'));
-        $to = $request->post('to');
+        $to = intval($request->post('to'));
 
-        for($i=0; $i<count($request->post('room_details')); $i++) {
-            if ($room_details[$i]['quantity'] != null) {
-                
-                for($j=0; $j<$room_details[$i]['quantity']; $j++)
-                {
-                    $room = FloorRoom::create([
-                        'floor_id' => $request->post('floor_id'),
-                        'quantity' => $room_details[$i]['quantity'],
-                        'room_name' => $request->name.' '.$from,
-                        'room_type_id' => $room_details[$i]['room_type']['id'],
-                    ]);
-                    $from++;
-                    array_push($rooms, $room);
-                }
-               
-                
-            }          
+        for($k=$from; $k<=$to; $k++)
+        {
+            $room = FloorRoom::create([
+                'floor_id' => $request->post('floor_id'),
+                'room_name' => $request->name.' '.$k,
+            ]);
+
+            for($i=0; $i<count($request->post('room_details')); $i++) {
+                if ($room_details[$i]['quantity'] != null) {
+                    for($j=0; $j<$room_details[$i]['quantity']; $j++)
+                    {
+                        $tap = Tap::create([
+                            'floor_room_id' => $room->id,
+                            'room_type_id' => $room_details[$i]['room_type']['id'],
+                            'name' => RoomType::where('id', $room_details[$i]['room_type']['id'])->first()->room_type.' '.($j+1),
+                        ]);
+                        $from++;
+                    } 
+                }          
+            }
+
+            array_push($rooms, $room);
         }
-
         return $rooms;
     }
 

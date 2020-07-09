@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { IProject } from '../../app/models/project.model';
 import { Collapse } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { userObject } from '../../context/UserContext';
+import { UserRoles } from '../../app/models/role.model';
 
 interface State {
    open: boolean;
@@ -8,7 +11,6 @@ interface State {
 
 interface IProps {
     project?: IProject;
-    selectProject: (project: IProject) => void;
 }
 
 class ProjectListItem extends Component<IProps, State> {
@@ -20,12 +22,8 @@ class ProjectListItem extends Component<IProps, State> {
         }
     }
     
-    
-   
     render() {
-
         const { project } = this.props;
-
         return (
             <div>
                 <div className="card-header collapsed mb-2">
@@ -38,11 +36,20 @@ class ProjectListItem extends Component<IProps, State> {
                     >
                        {project?.project_name}
                     </a>
-                   <a href={void(0)} onClick={() => this.props.selectProject(project as IProject)}>
-                        <span>
-                            <i className="fa fa-gear"></i>
-                        </span>
-                    </a>
+                    {
+                        userObject.role == UserRoles.ADMIN ?
+                        <Link to={`project/${project?.id}`}>
+                            <span>
+                                <i className="fa fa-gear"></i>
+                            </span>
+                        </Link> : 
+                        <Link to={`project/${project?.id}/floors`}>
+                            <span>
+                                <i className="fa fa-gear"></i>
+                            </span>
+                        </Link>
+                    }
+                    
                 </div>
                 <Collapse in={this.state.open}>
                     <div className="card-body collapse" id={`collapse${project?.id}`}>

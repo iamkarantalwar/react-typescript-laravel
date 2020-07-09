@@ -30,7 +30,7 @@ class FloorRoomsRequest extends ApiRequest
             'from' => 'required|integer|lte:to',
             'quantity' => 'required|integer',
             'to' => 'required|integer|gte:from',
-            'room_details' => ['required', new AddFloorRoomsRule($this->request->get('quantity'))],
+            'room_details' => 'required',
         ];
     }
 }

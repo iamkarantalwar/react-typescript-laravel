@@ -1,15 +1,15 @@
 import React, { Component, Fragment } from 'react';
-import {ProjectForm} from './ProjectForm';
+import ProjectForm from './ProjectForm';
 import {IProject} from '../../app/models/project.model';
 import {Project, User} from '../../app/api/agent';
 import ProjectListItem from './ProjectListItem';
 import LoaderBar from '../../app/common/LoaderBar';
 import { FormType } from '../../app/common/FormType';
-import ProjectSettings from './ProjectSettings';
 import Floor from '../floor/Floor';
 import { useLocation} from 'react-router-dom';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
+import { connect } from 'react-redux';
 
 enum ProjectWindow {
     ADDFLOOR,
@@ -63,34 +63,6 @@ export class Projects extends React.Component<Props, State> {
         this.componentDidMount();
     }
 
-    selectProject= (project: IProject) => {
-        this.setState({
-            selectedProject: project,
-            formType: FormType.UPDATE,
-            projectWindow: ProjectWindow.PROJECTSETTINGS,
-        });
-        this.hideTabsAndShowDescription();
-    }
-
-    hideTabsAndShowDescription() {
-        this.setState({
-            showFloor: false,
-            showDescription: true,
-        });
-    }
-
-    hideDescriptionAndShowTabs = () => {
-        this.setState({
-            showFloor: true,
-            showDescription: false,
-        });
-    }
-
-    // componentDidUpdate(prevProps) {
-
-    // }
-
-
     afterAddNewProject = (project: IProject) => {
         this.setState({
             projects: [...this.state.projects, project]
@@ -115,16 +87,7 @@ export class Projects extends React.Component<Props, State> {
             <div className="container">
                 {
                     userObject.role == UserRoles.ADMIN ?
-                    <ProjectForm
-                    formType={this.state.formType} 
-                    selectedProject={this.state.selectedProject}
-                    showDescription={this.state.showDescription} 
-                    hideTabsAndShowDescription={this.hideTabsAndShowDescription.bind(this)}
-                    afterAddNewProject={this.afterAddNewProject}
-                    hideDescriptionAndShowTabs={this.hideDescriptionAndShowTabs}
-                    showAddFloorWindow={this.showAddFloorWindow}
-                    showSettingsWindow={this.showSettingsWindow}
-                    /> : ""
+                    <ProjectForm project={undefined}/> : ""
                 }
                 {
                     (() => {
@@ -144,7 +107,6 @@ export class Projects extends React.Component<Props, State> {
                                                                 <ProjectListItem 
                                                                             key={project.id} 
                                                                             project={project}
-                                                                            selectProject={this.selectProject}
                                                                 />
                                                             );                            
                                                         })}                               
@@ -157,13 +119,9 @@ export class Projects extends React.Component<Props, State> {
                                 </Fragment>
                             );
                         }
-                        else if(this.state.projectWindow == ProjectWindow.PROJECTSETTINGS && UserRoles.ADMIN != userObject.role) {
-                            return <Floor project={this.state.selectedProject as IProject} reloadWindow={this.reloadWindow}/>;
-                        }                        
-                        else if(this.state.projectWindow == ProjectWindow.PROJECTSETTINGS && userObject.role == UserRoles.ADMIN) {
-                            return <ProjectSettings project={this.state.selectedProject as IProject}/>;
-                        } else if(this.state.projectWindow == ProjectWindow.ADDFLOOR && userObject.role == UserRoles.ADMIN) {
-                            return <Floor project={this.state.selectedProject as IProject} reloadWindow={this.reloadWindow}/>;
+                                       
+                         else if(this.state.projectWindow == ProjectWindow.ADDFLOOR && userObject.role == UserRoles.ADMIN) {
+                            return <Floor/>;
                         }
 
                     })()
@@ -173,4 +131,4 @@ export class Projects extends React.Component<Props, State> {
     }
 }
 
-export default Projects;
+export default connect(null)(Projects);

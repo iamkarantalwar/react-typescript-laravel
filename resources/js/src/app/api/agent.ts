@@ -13,13 +13,13 @@ import { IFloorRoom } from '../models/floor-room.model';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
-axios.interceptors.request.use((config) => {
-    const token = window.localStorage.getItem('token');
-    if(token) config.headers.Authorization = `Bearer ${token}`;
-    return config
-}, error => {
-return Promise.reject(error);
-})
+// axios.interceptors.request.use((config) => {
+//     const token = window.localStorage.getItem('token');
+//     if(token) config.headers.Authorization = `Bearer ${token}`;
+//     return config
+// }, error => {
+// return Promise.reject(error);
+// })
 
 const requests = {
     get: (url: string) => axios.get(url).then(responseBody),
@@ -40,6 +40,7 @@ const endPoints = {
 }
 
 export const Project = {
+    getProject: (projectId: string): Promise<IProject> => requests.get(`${enviorment.baseUrl}/${endPoints.project}?project_id=${projectId}`),
     getProjects: (): Promise<IProject[]> => requests.get(`${enviorment.baseUrl}/${endPoints.project}`),
     saveProject: (project: IProject): Promise<IProject> => requests.post(`${enviorment.baseUrl}/${endPoints.project}`, project),
 }
@@ -62,12 +63,12 @@ export const Role = {
 }
 
 export const ProjectSetting = {
-    getProjectSettings: (project: IProject) : Promise<IProjectSetting[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectSettings}/${project.id}`),
-    saveProjectSettings: (projectSettings: IProjectSetting[], project: IProject) : Promise<IProjectSetting[]> => requests.put(`${enviorment.baseUrl}/${endPoints.projectSettings}/${project.id}`, projectSettings), 
+    getProjectSettings: (projectId: string) : Promise<IProjectSetting[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectSettings}/${projectId}`),
+    saveProjectSettings: (projectSettings: IProjectSetting[], projectId: string) : Promise<IProjectSetting[]> => requests.put(`${enviorment.baseUrl}/${endPoints.projectSettings}/${projectId}`, projectSettings), 
 }
 
 export const ProjectFloors = {
-    getProjectFloors: (project: IProject) : Promise<IProjectFloor[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectFloor}?project_id=${project.id}`),
+    getProjectFloors: (projectId: string) : Promise<IProjectFloor[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectFloor}?project_id=${projectId}`),
     saveProjectFloor: (projectFloorForm: IProjectFloorForm): Promise<IProjectFloor[]> => requests.post(`${enviorment.baseUrl}/${endPoints.projectFloor}`, projectFloorForm),
     updateProjectFloor: (floor: IProjectFloor): Promise<IProjectFloor> => requests.put(`${enviorment.baseUrl}/${endPoints.projectFloor}/${floor.id}`, floor),
     deleteProjectFloor: (floor: IProjectFloor)  => requests.del(`${enviorment.baseUrl}/${endPoints.projectFloor}/${floor.id}`),
@@ -78,6 +79,7 @@ export const RoomType = {
 }
 
 export const FloorRooms = {
+    getAllRooms: () : Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}`),
     getFloorRooms: (projectFloor: IProjectFloor) => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?floor_id=${projectFloor.id}`),
     saveFloorRooms : (floorRooms: IRoomForm) => requests.post(`${enviorment.baseUrl}/${endPoints.floorRooms}`, floorRooms), 
     updateFloorRoom : (floorRoom: IFloorRoom): Promise<IFloorRoom> => requests.put(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`, floorRoom),

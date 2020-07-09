@@ -8,8 +8,22 @@ import { IFloorRoom } from '../../app/models/floor-room.model';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import { AxiosError } from 'axios';
+import { RootState, fetchRooms } from '../../redux';
+import { connect } from 'react-redux';
 
-interface IProps {
+const mapStateToProps = (state: RootState) => ({
+  rooms: state.rooms,
+});
+
+interface IMapDispatchToProps {
+  fetchRooms: (floor: IProjectFloor) => void,
+}
+
+const mapDispatchToProps: IMapDispatchToProps = { fetchRooms };
+
+type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
+
+interface IProps extends ReduxProps {
     floor: IProjectFloor;
     teams: ITeam[];
     selectFloor: (floor: IProjectFloor) => void;
@@ -78,7 +92,6 @@ class FloorListItem extends Component<IProps, IState> {
 
         if(error.response?.status==422) {
             let error_bags = error.response.data.errors;
-            console.log('abc');
             if(error_bags != undefined) {
               message = error_bags.status != undefined ? error_bags.status[0] : message;
             }
@@ -150,6 +163,8 @@ class FloorListItem extends Component<IProps, IState> {
     }
 
     componentDidMount() {
+      this.props.fetchRooms(this.props.floor);
+
       FloorRooms.getFloorRooms(this.props.floor)
       .then((res) => this.setState({rooms: res}))
       .catch((errors) => console.log(errors));
@@ -204,9 +219,9 @@ class FloorListItem extends Component<IProps, IState> {
                             </select>
                         </div>
                         <div className="room-btn">
-                          <a href='#room-form'
-                             className="overview-flor-btn bg-transparent"
-                             onClick={(e) => this.props.selectFloor(this.props.floor)}
+                          <a href={void(0)}
+                            className="overview-flor-btn bg-transparent"
+                            onClick={(e) => this.props.selectFloor(this.props.floor)}
                           >
                             <span><i className="fa fa-plus" aria-hidden="true"></i></span> Room
                           </a>
@@ -226,7 +241,7 @@ class FloorListItem extends Component<IProps, IState> {
                               : "" }
                           </Accordion.Toggle>                           
                 	      </div>
-                </div>
+                </div> 
                 
   	          </div>
               {
@@ -235,20 +250,20 @@ class FloorListItem extends Component<IProps, IState> {
               
                 
                 <Accordion.Collapse eventKey="0">
-                <Fragment>
-                {
-                    this.state.rooms.map((room, index) => {
-                        return(
-                          <RoomListItem 
-                            room={room as IFloorRoom}
-                            key={index}
-                            afterUpdateRoom={this.afterUpdateRoom}
-                          />                            
-                        )
-                    })
-                }
-                </Fragment>
-                 </Accordion.Collapse>  
+                  <Fragment>
+                  {
+                      this.state.rooms.map((room, index) => {
+                          return(
+                            <RoomListItem 
+                              room={room as IFloorRoom}
+                              key={index}
+                              afterUpdateRoom={this.afterUpdateRoom}
+                            />                            
+                          )
+                      })
+                  }
+                  </Fragment>
+                </Accordion.Collapse>  
               
            </div>
            </Accordion>
@@ -256,4 +271,4 @@ class FloorListItem extends Component<IProps, IState> {
     }
 }
 
-export default FloorListItem;
+export default connect(mapStateToProps, mapDispatchToProps)(FloorListItem);

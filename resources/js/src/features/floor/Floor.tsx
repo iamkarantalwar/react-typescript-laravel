@@ -4,15 +4,21 @@ import { IProject } from '../../app/models/project.model';
 import { IProjectFloor } from '../../app/models/project-floor.model';
 import FloorListItem from './FloorListItem';
 import { ITeam } from '../../app/models/team.model';
-import { Team, ProjectFloors, User } from '../../app/api/agent';
+import { Team, ProjectFloors, User, Project } from '../../app/api/agent';
 import RoomForm from '../room/RoomForm';
 import { IFloorRoom } from '../../app/models/floor-room.model';
-import { userObject } from '../../context/UserContext';
-import { UserRoles } from '../../app/models/role.model';
 import LoaderBar from '../../app/common/LoaderBar';
 import { TitleContext, titleContextType } from '../../context/TitleContext';
 import { connect } from 'react-redux';
-import { RootState,changeTitle } from '../../redux';
+import { RootState,changeTitle,fetchRooms } from '../../redux';
+import { RouteComponentProps, withRouter } from 'react-router';
+import ProjectForm from '../project/ProjectForm';
+import { userObject } from '../../context/UserContext';
+import { UserRoles } from '../../app/models/role.model';
+
+interface MatchParams {
+    id: string;
+}
 
 const mapStateToProps = (state: RootState) => ({
     title: state.title,
@@ -22,9 +28,8 @@ const mapDispatchToProps = { changeTitle };
 
 type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-interface IProps extends ReduxProps {
-    project: IProject;
-    reloadWindow: () => void;
+interface IProps extends ReduxProps, RouteComponentProps<MatchParams> {
+    project?: IProject;
 }
 
 interface IState {
@@ -33,6 +38,7 @@ interface IState {
     showRoomForm: boolean;
     selectedFloor: IProjectFloor | null;
     loader: boolean;
+    project: IProject;
 }
 
 class Floor extends Component<IProps, IState> {
@@ -44,6 +50,11 @@ class Floor extends Component<IProps, IState> {
             showRoomForm: true,
             selectedFloor: null,
             loader: false,
+            project: {
+                description:"",
+                project_name: "",
+                floors: [],
+            }
         }
         const context: titleContextType = this.context;
     }
@@ -56,7 +67,6 @@ class Floor extends Component<IProps, IState> {
         this.setState({
             floors: old_floors,
         })
-        console.log(this.state);
     }
 
     deleteFloor = (floor: IProjectFloor) =>{
@@ -76,17 +86,22 @@ class Floor extends Component<IProps, IState> {
                 return item;
             }
         });
-        console.log(floors);
         this.setState({floors:floors});
     }
 
     componentDidMount() {
-        this.props.changeTitle(this.props.project.project_name);
-       
+
         this.setState({loader: true})
-        User.fetchUser().then(res => console.log(res));
+
+        Project
+        .getProject(this.props.match.params.id)
+        .then((res) => {
+            this.setState({project:res});
+            this.props.changeTitle(res.project_name);
+        });
+
         ProjectFloors
-        .getProjectFloors(this.props.project)
+        .getProjectFloors(this.props.match.params.id)
         .then((res) => this.setState({floors: res, loader: false}))
         .catch((error) => console.log(error));
 
@@ -106,12 +121,6 @@ class Floor extends Component<IProps, IState> {
         });
     }
 
-    deselectFloor = () => {
-        this.setState({
-            selectedFloor: null,
-        })
-    }
-
     afterAddOfRooms = (rooms : IFloorRoom) => {
 
     } 
@@ -129,27 +138,32 @@ class Floor extends Component<IProps, IState> {
         });
 
         return (
-            <Fragment>
-                {
-                    userObject.role == UserRoles.ADMIN ?
-                    <FloorForm 
-                        project={this.props.project} 
-                        reloadWindow={this.props.reloadWindow}
-                        afterAddOfFloors={this.afterAddOfFloors}
-                    />  : ""
-                }
-                {  
-                    this.state.loader ? 
-                    <LoaderBar/> : 
-                    this.state.floors.length == 0 ? <h1>No Floor Assigned Yet.</h1> : floorListItems           
+            <div className="container">
+                <Fragment>
+                    {
+                        userObject.role == UserRoles.ADMIN ?
+                        <Fragment>
+                            <ProjectForm project={this.state.project}/>
+                            <FloorForm 
+                                project={this.state.project as IProject} 
+                                afterAddOfFloors={this.afterAddOfFloors}
+                            />  
+                        </Fragment>
+                        : ""
+                    }
                     
-                }
-                { this.state.showRoomForm && this.state.selectedFloor != null ? <RoomForm deselectFloor={this.deselectFloor} floor={this.state.selectedFloor}/> : "" }
-            </Fragment> 
+                    {  
+                        this.state.loader ? 
+                        <LoaderBar/> : 
+                        this.state.floors.length == 0 ? <h1>No Floor Assigned Yet.</h1> : floorListItems            
+                    }
+                    { this.state.showRoomForm && this.state.selectedFloor != null ? <RoomForm floor={this.state.selectedFloor}/> : "" }
+                </Fragment>
+            </div> 
         );
     }
 }
 
 Floor.contextType = TitleContext;
 
-export default connect(mapStateToProps, mapDispatchToProps)(Floor);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Floor));

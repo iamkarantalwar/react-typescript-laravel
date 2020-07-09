@@ -8,11 +8,15 @@ select.team-select {
     margin-right: 4px;
     background: transparent;
 }
+
 .floor-card:first-child{
     margin-top: 5px;
 }
 .floor-card{
-    padding: 0 2rem !important;
+    padding: 0 0 0 1.5rem !important;
+}
+.tap-card{
+    padding: 0 0 0 2.7rem !important;
 }
 select.status-select {
     padding: 5px 16px;

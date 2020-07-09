@@ -1,11 +1,18 @@
 import React, { Component, Fragment } from 'react';
 import { IProject } from '../../app/models/project.model';
-import { ProjectSetting } from '../../app/api/agent';
+import { ProjectSetting, Project } from '../../app/api/agent';
 import { IProjectSetting,  ProjectSettingStatus} from '../../app/models/project-setting.model';
 import { AxiosError } from 'axios';
 import LoaderBar from '../../app/common/LoaderBar';
 import { connect } from 'react-redux';
 import { RootState, changeTitle } from '../../redux';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import ProjectForm from './ProjectForm';
+
+
+interface MatchParams {
+    id: string;
+}
 
 const mapStateToProps = (state: RootState) => ({
     title: state.title,
@@ -15,11 +22,10 @@ const mapDispatchToProps = { changeTitle };
 
 type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-interface IProps extends ReduxProps{
-    project: IProject;
-}
+interface IProps extends ReduxProps, RouteComponentProps<MatchParams>{ }
 
 interface IState {
+    project?: IProject;
     settings: IProjectSetting[];
     errors: Array<{field_wirkzeit:string, field_spulzeit:string }>,
     showLoader: boolean,
@@ -45,11 +51,21 @@ class ProjectSettings extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.props.changeTitle(this.props.project.project_name);
+
         this.setState({
             showLoader: true,
         })
-        ProjectSetting.getProjectSettings(this.props.project).then((res: IProjectSetting[]) => {
+
+        Project
+        .getProject(this.props.match.params.id)
+        .then((project) => { 
+            this.setState({project: project});
+            this.props.changeTitle(project.project_name);
+        })
+
+        ProjectSetting
+        .getProjectSettings(this.props.match.params.id)
+        .then((res: IProjectSetting[]) => {
             this.defaultErrors = res.map((e) => { return {field_spulzeit:"", field_wirkzeit: ""} });
             this.setState({
                 settings: res,
@@ -60,14 +76,7 @@ class ProjectSettings extends Component<IProps, IState> {
     }
 
     componentWillUnmount() {
-        this.props.changeTitle(this.props.project.project_name);
-    }
-
-    handleChange = (event: any) => {
-        // let elementId: string = event.target.id;
-        // let element: string = elementId.split('-')[0];
-        // let id: string = elementId.split('-')[1];
-        // console.log(element);
+       this.props.changeTitle(null);
     }
 
     inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -103,7 +112,7 @@ class ProjectSettings extends Component<IProps, IState> {
         })
 
         ProjectSetting
-        .saveProjectSettings(this.state.settings, this.props.project)
+        .saveProjectSettings(this.state.settings, this.props.match.params.id)
         .then((res) => {
             this.setState({
                 settings: res,
@@ -153,13 +162,13 @@ class ProjectSettings extends Component<IProps, IState> {
     render() {
         return (
             <div className="container"> 
+                <ProjectForm project={this.state.project as IProject}/>
                 <div className="start-form">
                     <div className="form-setting-option mt-4">
                         <h4 className="setting-tittle font-weight-normal pl-4">Settings</h4>
                         <hr/>
                         <form onSubmit={this.onSubmitHandler}>
                         <div className="main-table table-responsive">
-                                
                                 <table className="table">
                                     <caption><span className={this.state.messageClass}>{this.state.message}</span></caption>
                                     <thead>
@@ -217,8 +226,7 @@ class ProjectSettings extends Component<IProps, IState> {
                                                 }                                                                         
                                         </tbody>
                                     }
-                                </table>
-                                                            
+                                </table>                   
                         </div>
                         <div className="table-btn text-right my-4">
                             <button type="submit" className="main-btn">Save</button>
@@ -231,4 +239,4 @@ class ProjectSettings extends Component<IProps, IState> {
         );
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectSettings);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectSettings));

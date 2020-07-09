@@ -14,9 +14,13 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Project::with(['floors', 'floors.rooms'])->get();
+        if($request->project_id) {
+            return Project::where('id', $request->project_id)->first();
+        } else {
+            return Project::with(['floors', 'floors.rooms'])->get();
+        }        
     }
 
     /**

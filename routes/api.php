@@ -23,7 +23,7 @@ Route::resource('project', 'ApiController\ProjectController');
 
 Route::resource('project-settings', 'ApiController\ProjectSettingController');
 
-Route::resource('project-floors', 'ApiController\ProjectFloorController')->middleware('auth:api');
+Route::resource('project-floors', 'ApiController\ProjectFloorController')->middleware('auth:web');
 
 Route::resource('room-types', 'ApiController\RoomTypeController');
 

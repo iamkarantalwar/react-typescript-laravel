@@ -2,29 +2,38 @@ import React, { Component, Fragment } from 'react';
 import { IProject } from '../../app/models/project.model';
 import { Project } from '../../../src/app/api/agent';
 import { AxiosError } from 'axios';
-import { FormType } from '../../app/common/FormType';
+import { Link } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from "react-router-dom";
+import { RootState, editProjectForm } from '../../redux';
+import { connect } from 'react-redux';
 
-interface IProps {
-    showDescription: boolean;
-    hideTabsAndShowDescription: () => void;
-    hideDescriptionAndShowTabs: () => void;
-    afterAddNewProject: (project: IProject) => void;
-    formType: FormType;
-    selectedProject: IProject | null;
-    showAddFloorWindow: () =>void;
-    showSettingsWindow: () =>void;
+const mapStateToProps = (state: RootState) => ({
+    projectForm: state.project,
+});
+
+interface IMapDispatchToProps {
+    editProjectForm: (form: IProject, status?: boolean) => void,
+}
+  
+const mapDispatchToProps: IMapDispatchToProps = { editProjectForm };
+
+type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
+
+interface IProps extends ReduxProps, RouteComponentProps {
+    project?: IProject;
+    project_name?: string;
 } 
 
 // let projectObject :IProject = {project_name:string, description:string};
 
 interface IState {
     btnText: string;
-    project: IProject;
     errors: {
         project_name: string;
         description: string;
     },
     project_saved_message: string,
+    showDescription: boolean,
 }
 
 export class ProjectForm extends Component<IProps, IState> {
@@ -35,57 +44,54 @@ export class ProjectForm extends Component<IProps, IState> {
 
     defaultState = {
         btnText: "Add Project",
-        project:{
-            project_name: "",
-            description:"" 
-        },
         errors: {
             project_name: "",
             description: "",
         },
         project_saved_message: "",
-        
+        showDescription: false,
     }
 
     componentDidMount() {
-        console.log('hello');
-        // if(this.props.FormType == FormType.UPDATE) {
-        //     this.setState({
-        //         project: this.props.selectedProject
-        //     });
-        // }
+        let path = this.props.location.pathname.split('/');
+        if(path[path.length-1] == "create") {
+            this.setState({btnText: "Create Project", showDescription: true});
+        }
+        if(this.props.project)
+        {
+            this.props.editProjectForm(this.props.project as IProject);
+            this.setState({showDescription: true});
+        }        
+    }
+
+    onChangeHandler = (event: any) => {
+        if(event.target.name == "project_name")
+            this.props.editProjectForm({...this.props.projectForm.project, project_name: event.target.value});
+        else
+            this.props.editProjectForm({...this.props.projectForm.project, description: event.target.value});
     }
 
     componentDidUpdate(prevProps: IProps) {
-        if(prevProps.formType == FormType.CREATE && this.props.formType == FormType.UPDATE && this.props.selectedProject != null) 
-        {
-            this.setState({
-                project: this.props.selectedProject
-            });
-        } else if(prevProps.formType == FormType.UPDATE && this.props.formType == FormType.CREATE && this.props.selectedProject == null) {
-            this.setState({
-                project: this.defaultState.project
-            });
+        if(prevProps.project?.id == undefined && this.props.project?.id) {
+            this.props.editProjectForm(this.props.project);
+            this.setState({showDescription: true});
         }
     }
 
-    test = (event: any) =>{
-        this.setState({
-            // project.project_name : event.target.value
-        }); 
+    componentWillUnmount() {
+        let path = this.props.location.pathname.split('/');
+        if(path[path.length-1] != "projects") {
+            this.props.editProjectForm({project_name: "", description: ""});
+        }
     }
-
-    
 
     onSubmitHandler = (event: any) => {
         event.preventDefault();
-
-        if(this.props.showDescription) {
-
+        if(this.props.projectForm.active  && this.state.showDescription) {
             Project
-            .saveProject(this.state.project)
+            .saveProject(this.props.projectForm.project)
             .then((res) => {
-                this.props.afterAddNewProject(res);
+                // this.props.afterAddNewProject(res);
                 this.setState({
                     project_saved_message: "Project saved Successfully.",
                     errors:{
@@ -93,16 +99,16 @@ export class ProjectForm extends Component<IProps, IState> {
                         project_name: "",
                         description: "",
                     },
-                    project: {
-                        ...this.state.project,
-                        project_name: "",
-                        description: "",
-                    },
                     btnText: "Add Project"
                 });
-                this.props.hideDescriptionAndShowTabs();
 
-                setTimeout(()=>{ this.setState({project_saved_message: ""})},2000);
+                this.props.editProjectForm({project_name: "", description: ""}, false);
+
+                setTimeout(()=>{ 
+                    this.setState({project_saved_message: ""});
+                    this.props.history.push('/projects');
+                },
+                2000);
             })
             .catch((error: AxiosError) => {
                 if (error.response?.status == 422) {
@@ -120,55 +126,54 @@ export class ProjectForm extends Component<IProps, IState> {
     }
 
     render() {
-      
-        // console.log(showDescription);
         return(
-        <div className="start-form">
+        <div className="start-form container">
             <form onSubmit={this.onSubmitHandler.bind(this)}>
                 <div className="col-md-12 mt-4">
                     <div className="row align-items-center">
                         <div className="col-md-9 col-lg-9 col-xl-10">
                             <div className="form-group">
                                 <label>Projects Name</label>
-                                <input type="name" className={`form-control ${this.state.errors.project_name ? 'is-invalid' : ''} ${this.state.project_saved_message ? 'is-valid' : ''}` } 
-                                                   placeholder="Projects Name" 
-                                                   id="first-name"
-                                                   value={this.state.project.project_name}
-                                                   onChange={(e)=>this.setState({project:{...this.state.project,project_name:e.target.value}})}/>
+                                <input type="name" 
+                                    className={`form-control ${this.state.errors.project_name ? 'is-invalid' : ''} ${this.state.project_saved_message ? 'is-valid' : ''}` } 
+                                    placeholder="Projects Name" 
+                                    id="first-name"
+                                    name="project_name"
+                                    value={this.props.projectForm.project.project_name}
+                                    onChange={this.onChangeHandler}
+                                />
                                 { this.state.errors.project_name ? <span className="text-danger">{this.state.errors.project_name}</span> : "" }
                                 { this.state.project_saved_message ? <span className="text-success">{this.state.project_saved_message}</span> : "" }
                             </div>
                         </div>
                         <div className="col-md-3 col-lg-3 col-xl-2">
                                 {(() => {
-                                    if(this.props.formType == FormType.UPDATE)
+                                    if(this.props.project)
                                     {
                                         return (
                                             <Fragment>
-                                                <div className="form-btn text-right" onClick={()=>this.props.showAddFloorWindow()}>
-                                                    <a href={void(0)} className="main-btn">Add Floor</a>
+                                                <div className="form-btn text-right">
+                                                    <Link to={`/project/${this.props.project.id}/floors`} className="main-btn">Add Floor</Link>
                                                 </div>
-                                                <div className="form-btn text-right mt-4" onClick={()=> this.props.showSettingsWindow()}>
-                                                    <a href={void(0)} className="main-btn">Settings</a>
+                                                <div className="form-btn text-right mt-4">
+                                                    <Link to={`/project/${this.props.project.id}`} className="main-btn">Settings</Link>
                                                 </div>
                                             </Fragment>
                                         );
-
-                                    } else if(this.props.formType == FormType.CREATE) 
+                                    } else 
                                     {
                                         return (
                                             <Fragment>
                                                   <div className="form-btn text-right mt-3">
-                                                    <button 
-                                                            type='submit' 
-                                                            className="main-btn" 
-                                                            onClick={() => 
-                                                            {
-                                                                this.setState({btnText: "Create Project"});
-                                                                this.props.hideTabsAndShowDescription();
-                                                            }}>
-                                                        {this.state.btnText}
-                                                    </button>
+                                                        <button 
+                                                                type={this.state.showDescription ? 'submit' : 'button'} 
+                                                                className="main-btn" 
+                                                                onClick={(e) => 
+                                                                {
+                                                                    this.state.btnText != "Create Project" ? this.props.history.push('/project/create'): this.onSubmitHandler(e);
+                                                                }}>
+                                                            {this.state.btnText}
+                                                        </button>
                                                 </div>
                                             </Fragment>
                                         );
@@ -176,14 +181,16 @@ export class ProjectForm extends Component<IProps, IState> {
                                 })()}
                         </div>
                     </div>
-                    <div className={`form-group ${this.props.showDescription ? 'd-block' : 'd-none'}`}>
+                    <div className={`form-group ${this.state.showDescription ? 'd-block' : 'd-none'}`}>
                         <label>Example textarea</label>
                         <textarea className={`form-control ${this.state.errors.description ? 'is-invalid' : ''}`}
                                   placeholder="Hire sollte ein Text zur.." 
                                   id="exampleFormControlTextarea1" 
                                   rows={3}
-                                  value={this.state.project.description}
-                                  onChange={(e)=>{this.setState({project: {...this.state.project, description: e.target.value}})}}>
+                                  name="description"
+                                  value={this.props.projectForm.project.description}
+                                  onChange={this.onChangeHandler}
+                        >
                         </textarea>
                         { this.state.errors.description ? <span className="text-danger">{this.state.errors.description}</span> : "" }
                     </div>
@@ -194,4 +201,4 @@ export class ProjectForm extends Component<IProps, IState> {
     }
 }
 
-export default ProjectForm;
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectForm));

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFloorRoomsTable extends Migration
+class CreateTapsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateFloorRoomsTable extends Migration
      */
     public function up()
     {
-        Schema::create('floor_rooms', function (Blueprint $table) {
-            $table->bigIncrements('id');            
-            $table->bigInteger('floor_id');
-            $table->string('room_name');
+        Schema::create('taps', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('floor_room_id');
+            $table->string('room_type_id');
+            $table->string('name');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,9 +28,8 @@ class CreateFloorRoomsTable extends Migration
      *
      * @return void
      */
-
     public function down()
     {
-        Schema::dropIfExists('floor_rooms');
+        Schema::dropIfExists('taps');
     }
 }

@@ -22,7 +22,6 @@ interface IState {
 
 interface IProps {
 	project: IProject
-	reloadWindow: () => void;
 	afterAddOfFloors: (floors :IProjectFloor[]) => void;
 }
 
@@ -74,7 +73,7 @@ class FloorForm extends Component<IProps, IState> {
 		this.setState({
 			showLoader: true,
 		});
-		
+	
 		ProjectFloors
 		.saveProjectFloor(this.state.projectFloorForm)
 		.then((res) => {
@@ -109,6 +108,12 @@ class FloorForm extends Component<IProps, IState> {
 
 			this.setState({showLoader: false});			
 		});
+	}
+
+	componentDidUpdate(prevProps: IProps) {
+		if(prevProps.project.id != this.props.project.id && this.props.project.id != undefined) {
+			this.setState({projectFloorForm:{...this.state.projectFloorForm, project_id: this.props.project.id}})
+		}
 	}
 	
     render() {
@@ -169,7 +174,7 @@ class FloorForm extends Component<IProps, IState> {
 							<button type="submit" className="main-btn mr-1">Create</button>
 						</div>
 						<div className="add-floor-cancel">
-							<button type="reset" className="main-btn cancel" onClick={()=>this.props.reloadWindow()}>Cancel</button>
+							<button type="reset" className="main-btn cancel">Cancel</button>
 						</div>
 					</div>
 				</div>
