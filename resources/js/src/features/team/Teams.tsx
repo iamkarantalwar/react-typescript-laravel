@@ -65,7 +65,6 @@ class Teams extends Component<IProps, IState> {
         } else {
             this.setState({elements:this.state.teamList});
         }
-       
     }
 
     render() {
@@ -106,7 +105,7 @@ class Teams extends Component<IProps, IState> {
                             {
                                 this.state.showLoader ? <LoaderBar/> : 
                                 <div className="team-name-box">
-                                    <h5 className="font-weight-normal ml-4">Teamname</h5>
+                                    <h5 className="ml-4">Teamname</h5>
                                     <div className="main-table table-responsive">
                                         <table className="table">
                                             

@@ -27,7 +27,7 @@ export class BottomHeader extends Component<IProps> {
         title_ = this.props.title.title ? this.props.title.title : title_;
         return (
             <div>                
-                <section className="test-project mt-5">
+                <section className="test-project mt-4">
                         <div className="container">
                             <div className="row align-items-center">
                                 <div className="col-md-6">

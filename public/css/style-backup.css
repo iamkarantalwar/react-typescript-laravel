@@ -40,7 +40,6 @@ a:hover {
 }
 .form-control {
     background-color: #f8f8fa;
-    padding: .375rem .75rem 10px;
 }
 
 .top-bar .top-bar-social-links ul li a i {
@@ -93,19 +92,11 @@ header.tab-header {
 }
 
 /*test-project section*/
-.test-proj-tittel {
-    padding-left: 20px;
-}
 
 a.main-btn {
-    color: #fff !important;
+    color: #fff;
     background: #63b32e;
-    width: 108px;
-    height: 35px;
-    display: flex;
-    font-size: 15px;
-    justify-content: center;
-    align-items: center;
+    padding: 9px 19px;
     border-radius: 5px;
     border: 1px solid #63b32e;
     transition: all 0.3s ease;
@@ -154,14 +145,6 @@ a.main-btn.cancel:hover {
 }
 
 /*start setting tab */
-
-.main-table .table thead tr th {
-    font-weight: 600 !important;
-}
-.main-table .table tbody tr td .form-control {
-    padding: 7px 5px;
-    font-size: 15px;
-}
 
 .form-setting-option table {
     width: 1000px;
@@ -409,30 +392,6 @@ background-color: #f8f8fa;
     right: 7px;
     background: none;
 }
-.main-team-area .team-name-box .main-table {
-    height: 400px;
-    overflow: auto;
-}
-/* width */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888; 
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-}
-
 
 .team-name-box .main-table table.table tr td a, .team-name-box .main-table table.table tr th a {
     background-color: #ebecf1;
@@ -567,9 +526,7 @@ background-color: #f8f8fa;
 button.main-btn {
     color: #fff;
     background: #63b32e;
-    width: 108px;
-    height: 35px;
-    font-size: 15px;
+    padding: 9px 19px;
     border-radius: 5px;
     border: 1px solid #63b32e;
     transition: all 0.3s ease;
