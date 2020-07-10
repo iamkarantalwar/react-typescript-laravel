@@ -30,7 +30,8 @@ type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
 interface IProps extends ReduxProps {
     floor: IProjectFloor;
     teams: ITeam[];
-    // selectFloor: (floor: IProjectFloor) => void;
+    toggleFloor: {id: number, open: boolean};
+    selectFloor: (floor: IProjectFloor) => void;
     afterUpdateFloor: (floor: IProjectFloor) => void;
     deleteFloor: (floor: IProjectFloor) => void;
 }
@@ -184,7 +185,7 @@ class FloorListItem extends Component<IProps, IState> {
     componentDidUpdate() {
     }
 
-    render() {
+    render() {     
       let roomsList = this.props.rooms.rooms.length>0 ? this.props.rooms.rooms.map((room, index) => {
         return(
           <RoomListItem 
@@ -272,12 +273,13 @@ class FloorListItem extends Component<IProps, IState> {
                           className="room-btn" 
                           onClick={(e) => {
                             !this.state.showRooms ? this.props.fetchRooms(this.props.floor): "";
-                            this.setState({showRooms: !this.state.showRooms, showRoomForm:false});
+                            this.setState({showRoomForm:false});
+                            this.props.selectFloor(this.props.floor);
                           }}
                           aria-controls={`collapse${this.props.floor.id}`}
                           aria-expanded={this.state.showRooms}
                         >
-                          <i style={{cursor:'pointer'}} className={`fa ${this.state.showRooms ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>                      
+                          <i style={{cursor:'pointer'}} className={`fa ${this.props.toggleFloor?.open ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>                      
                          </div>
                  </div> 
                  
@@ -285,7 +287,7 @@ class FloorListItem extends Component<IProps, IState> {
                {
                  this.state.message ? <span className={this.state.messageClass}>{this.state.message}</span> : ""
                }
-                <Collapse in={this.state.showRooms}>
+                <Collapse in={this.props.toggleFloor?.open}>
                   <div className=" collapse" id={`collapse${this.props.floor.id}`}>
                   {
                     this.props.rooms.loader ? <LoaderBar/> : roomsList

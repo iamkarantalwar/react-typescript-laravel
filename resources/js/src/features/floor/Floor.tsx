@@ -40,6 +40,7 @@ interface IState {
     loader: boolean;
     project: IProject;
     showFloorForm: boolean;
+    toggleFloors: Array<{id: number, open:boolean}>;
 }
 
 class Floor extends Component<IProps, IState> {
@@ -56,7 +57,8 @@ class Floor extends Component<IProps, IState> {
                 description:"",
                 project_name: "",
                 floors: [],
-            }
+            },
+            toggleFloors: []
         }
         const context: titleContextType = this.context;
     }
@@ -96,6 +98,13 @@ class Floor extends Component<IProps, IState> {
         this.setState({floors:floors});
     }
 
+    selectFloor = (floor: IProjectFloor) => {
+       console.log(this.state.toggleFloors);
+        let toggleFloors = this.state.toggleFloors.map((floor_) => floor_.id == floor.id ? {id: floor_.id, open: !floor_.open} : {id: floor_.id, open: false});
+        console.log(toggleFloors);
+        this.setState({toggleFloors: toggleFloors});
+    }
+
     componentDidMount() {
 
         this.setState({loader: true})
@@ -109,7 +118,11 @@ class Floor extends Component<IProps, IState> {
 
         ProjectFloors
         .getProjectFloors(this.props.match.params.id)
-        .then((res) => this.setState({floors: res, loader: false}))
+        .then((res) => { 
+            this.setState({floors: res, loader: false});
+            const toggleFloors = res.map((floor) =>{ return {id: floor.id, open:false} });
+            this.setState({toggleFloors: toggleFloors});
+        })
         .catch((error) => console.log(error));
 
         Team
@@ -133,10 +146,12 @@ class Floor extends Component<IProps, IState> {
     } 
     
     render() {
-        const floorListItems: any = this.state.floors.map((floor) => {
+        
+        const floorListItems: any = this.state.floors.map((floor, index) => {
             return <FloorListItem 
                         deleteFloor={this.deleteFloor}
-                        // selectFloor={this.selectFloor}
+                        selectFloor={this.selectFloor}
+                        toggleFloor={this.state.toggleFloors[index]}
                         key={floor.id} 
                         floor={floor}
                         teams={this.state.teams}
@@ -159,7 +174,6 @@ class Floor extends Component<IProps, IState> {
                                     afterAddOfFloors={this.afterAddOfFloors}
                                 />  : ""
                             }
-                            
                         </Fragment>
                         : ""
                     }
