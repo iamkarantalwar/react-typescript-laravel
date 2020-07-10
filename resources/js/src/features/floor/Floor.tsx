@@ -70,11 +70,15 @@ class Floor extends Component<IProps, IState> {
 
     afterAddOfFloors = (floors: IProjectFloor[]) => {
         let old_floors = this.state.floors;
+        let toggleFloors = this.state.toggleFloors;
         floors.forEach((floor, index) => {
             old_floors.push(floor);
+            toggleFloors.push({id: floor.id, open:false});
         });
+        
         this.setState({
             floors: old_floors,
+            toggleFloors: toggleFloors,
         })
     }
 
