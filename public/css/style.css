@@ -47,7 +47,11 @@ hr {
 }
 textarea.form-control {
     width: 100%;
-    max-width: 82.9%;
+    /* max-width: 82.9%; */
+}
+
+.mt-4-9 {
+    margin-top: 1.98rem!important;
 }
 
 .top-bar .top-bar-social-links ul li a i {
@@ -118,7 +122,7 @@ a.main-btn {
     transition: all 0.3s ease;
 }
 a.main-btn:hover {
-	color: #63b32e;
+	color: #63b32e !important;
 	background: transparent;
 }
 a.main-btn.cancel {
@@ -278,7 +282,10 @@ a.main-btn.cancel:hover {
     width: 1000px;
     margin: auto;
 }
-
+.floor-setting-btn {
+    top: 30px;
+    position: relative;
+}
 /*Floor Overview section*/
 
 .floor-overviwe .accordion .card-header:after {
@@ -474,6 +481,9 @@ background-color: #f8f8fa;
 
 /*start responsive*/
 @media (max-width: 767px) {
+    .floor-setting-btn {
+        top: 0;
+    }
     .team-form-btn form button {
         top: -7px;
     }
@@ -583,6 +593,15 @@ background-color: #f8f8fa;
   .main-team-area {
     width: 100%;
   }
+  textarea.form-control {
+    max-width: 74%;
+ }
+}
+
+@media (min-width: 1024px) and  (max-width: 1366px) {
+    textarea.form-control {
+      max-width: 83%;
+   }
 }
 
 button.main-btn {

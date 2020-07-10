@@ -23,7 +23,7 @@ interface IState {
 interface IProps {
 	project: IProject
 	afterAddOfFloors: (floors :IProjectFloor[]) => void;
-	toggleLoader: () => void;
+	toggleForm: () => void;
 }
 
 class FloorForm extends Component<IProps, IState> {
@@ -59,13 +59,12 @@ class FloorForm extends Component<IProps, IState> {
 		})
 		if(this.state.projectFloorForm.to != null && 
 		   this.state.projectFloorForm.from != null && 
-		   (((this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1 != this.state.projectFloorForm.quantity)
-		    || this.state.projectFloorForm.to-this.state.projectFloorForm.from == this.state.projectFloorForm.quantity))
+		   (this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1 != this.state.projectFloorForm.quantity)
 		{
 			
 			this.setState({
 				errors: {...this.state.errors,
-						quantity: "Wrong Quantity Here.",
+						quantity: `From quantity entered, Expected quantity should be ${(this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1}`,
 				}
 			})
 			return;
@@ -175,7 +174,7 @@ class FloorForm extends Component<IProps, IState> {
 							<button type="submit" className="main-btn mr-1">Create</button>
 						</div>
 						<div className="add-floor-cancel">
-							<button type="reset" className="main-btn cancel">Cancel</button>
+							<button type="reset" className="main-btn cancel" onClick={(e) => this.props.toggleForm()}>Cancel</button>
 						</div>
 					</div>
 				</div>

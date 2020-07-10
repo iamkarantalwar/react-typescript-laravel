@@ -49,4 +49,3 @@ export const fetchRoomsFail = (error:  string) => {
         message: error
     }
 }
-

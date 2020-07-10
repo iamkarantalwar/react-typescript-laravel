@@ -40,12 +40,11 @@ class RoomListItem extends Component<IProps,IState> {
         });
        
     }
-
     
     render() {
         return (
                 <Accordion>
-                    <div id=""  className="floor-card card-body pr-0 pt-2" data-parent="#accordion" style={{padding: '0 2rem !important'}}>
+                    <div id=""  className="floor-card" style={{padding: '0 2rem !important'}}>
                         <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                             <div className="card mb-0 border-0">
                                 <div className="card-header  mb-1" data-toggle="collapse" >

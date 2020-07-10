@@ -4,24 +4,29 @@ import { Project } from '../../../src/app/api/agent';
 import { AxiosError } from 'axios';
 import { Link } from 'react-router-dom';
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import { RootState, editProjectForm } from '../../redux';
+import { RootState, editProjectForm, changeTitle } from '../../redux';
 import { connect } from 'react-redux';
+import { userObject } from '../../context/UserContext';
+import { UserRoles } from '../../app/models/role.model';
 
 const mapStateToProps = (state: RootState) => ({
     projectForm: state.project,
+    title: state.title.title
 });
 
 interface IMapDispatchToProps {
     editProjectForm: (form: IProject, status?: boolean) => void,
+    changeTitle: (title: string | null) => void,
 }
   
-const mapDispatchToProps: IMapDispatchToProps = { editProjectForm };
+const mapDispatchToProps: IMapDispatchToProps = { editProjectForm, changeTitle };
 
 type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
 
 interface IProps extends ReduxProps, RouteComponentProps {
     project?: IProject;
     project_name?: string;
+    toggleFloorForm?: () => void;
 } 
 
 // let projectObject :IProject = {project_name:string, description:string};
@@ -56,6 +61,8 @@ export class ProjectForm extends Component<IProps, IState> {
         let path = this.props.location.pathname.split('/');
         if(path[path.length-1] == "create") {
             this.setState({btnText: "Create Project", showDescription: true});
+            const title = this.props.projectForm.project.project_name ? this.props.projectForm.project.project_name: this.props.title;
+            this.props.changeTitle(title);
         }
         if(this.props.project)
         {
@@ -83,6 +90,7 @@ export class ProjectForm extends Component<IProps, IState> {
         if(path[path.length-1] != "projects") {
             this.props.editProjectForm({project_name: "", description: ""});
         }
+        this.props.changeTitle(null);
     }
 
     onSubmitHandler = (event: any) => {
@@ -125,6 +133,15 @@ export class ProjectForm extends Component<IProps, IState> {
         } 
     }
 
+    addFloor = () => {
+        let path = this.props.location.pathname.split('/');
+        if(path[path.length-1] == "floors") {
+            this.props.toggleFloorForm ? this.props.toggleFloorForm(): "";
+        } else {
+            this.props.history.push(`/project/${this.props.project?.id}/floors`);
+        }        
+    }
+
     render() {
         return(
         <div className="start-form container">
@@ -151,14 +168,9 @@ export class ProjectForm extends Component<IProps, IState> {
                                     if(this.props.project)
                                     {
                                         return (
-                                            <Fragment>
-                                                <div className="form-btn text-right mt-2">
-                                                    <Link to={`/project/${this.props.project.id}/floors`} className="main-btn">Add Floor</Link>
-                                                </div>
-                                                <div className="form-btn text-right mt-2">
-                                                    <Link to={`/project/${this.props.project.id}`} className="main-btn">Settings</Link>
-                                                </div>
-                                            </Fragment>
+                                            <div className="form-btn text-right mt-2">
+                                                <a href={void(0)} onClick={this.addFloor} className="main-btn">Add Floor</a>
+                                            </div>
                                         );
                                     } else 
                                     {
@@ -181,19 +193,32 @@ export class ProjectForm extends Component<IProps, IState> {
                                 })()}
                         </div>
                     </div>
-                    <div className={`form-group ${this.state.showDescription ? 'd-block' : 'd-none'}`}>
-                        <label>Example textarea</label>
-                        <textarea className={`form-control ${this.state.errors.description ? 'is-invalid' : ''}`}
-                                  placeholder="Hire sollte ein Text zur.." 
-                                  id="exampleFormControlTextarea1" 
-                                  rows={3}
-                                  name="description"
-                                  value={this.props.projectForm.project.description}
-                                  onChange={this.onChangeHandler}
-                        >
-                        </textarea>
-                        { this.state.errors.description ? <span className="text-danger">{this.state.errors.description}</span> : "" }
+                    <div className="row">
+                    <div className="col-md-9 col-lg-9 col-xl-10">
+                        <div className={`form-group ${this.state.showDescription ? 'd-block' : 'd-none'}`}>
+                            <label>Project Description</label>
+                            <textarea className={`form-control ${this.state.errors.description ? 'is-invalid' : ''}`}
+                                    placeholder="Hire sollte ein Text zur.." 
+                                    id="exampleFormControlTextarea1" 
+                                    rows={3}
+                                    name="description"
+                                    value={this.props.projectForm.project.description}
+                                    onChange={this.onChangeHandler}
+                            >
+                            </textarea>
+                            { this.state.errors.description ? <span className="text-danger">{this.state.errors.description}</span> : "" }
+                        </div>
                     </div>
+                    {
+                        userObject.role == UserRoles.ADMIN && this.props.project ?
+                        <div className="col-md-3 col-lg-3 col-xl-2">
+                            <div className="form-btn text-right mt-4-9">
+                                <Link to={`/project/${this.props.project?.id}`} className="main-btn">Settings</Link>
+                            </div>
+                        </div> : ""
+                    }
+                    </div>
+                                          
                 </div>
             </form>
         </div>

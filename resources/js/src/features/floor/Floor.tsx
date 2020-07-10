@@ -39,6 +39,7 @@ interface IState {
     // selectedFloor: IProjectFloor | null;
     loader: boolean;
     project: IProject;
+    showFloorForm: boolean;
 }
 
 class Floor extends Component<IProps, IState> {
@@ -49,6 +50,7 @@ class Floor extends Component<IProps, IState> {
             teams: [],
             showRoomForm: true,
             // selectedFloor: null,
+            showFloorForm: false,
             loader: false,
             project: {
                 description:"",
@@ -59,8 +61,9 @@ class Floor extends Component<IProps, IState> {
         const context: titleContextType = this.context;
     }
 
-    toggleLoader= () => {
-        this.setState({ loader: !this.state.loader });
+    toggleForm = () => {
+        console.log('abc');
+        this.setState({ showFloorForm: !this.state.showFloorForm });
     }
 
     afterAddOfFloors = (floors: IProjectFloor[]) => {
@@ -147,12 +150,16 @@ class Floor extends Component<IProps, IState> {
                     {
                         userObject.role == UserRoles.ADMIN ?
                         <Fragment>
-                            <ProjectForm project={this.state.project}/>
-                            <FloorForm 
-                                toggleLoader = {this.toggleLoader}
-                                project={this.state.project as IProject} 
-                                afterAddOfFloors={this.afterAddOfFloors}
-                            />  
+                            <ProjectForm toggleFloorForm={this.toggleForm} project={this.state.project}/>
+                            {
+                                this.state.showFloorForm ? 
+                                <FloorForm 
+                                    toggleForm = {this.toggleForm}
+                                    project={this.state.project as IProject} 
+                                    afterAddOfFloors={this.afterAddOfFloors}
+                                />  : ""
+                            }
+                            
                         </Fragment>
                         : ""
                     }
@@ -160,7 +167,7 @@ class Floor extends Component<IProps, IState> {
                     {  
                         this.state.loader ? 
                         <LoaderBar/> : 
-                        this.state.floors.length == 0 ? <h1>No Floor Assigned Yet.</h1> : floorListItems            
+                        this.state.floors.length == 0 ? <h3 className="ml-md-5">No Floor Available.</h3> : floorListItems            
                     }
                     
                 </Fragment>

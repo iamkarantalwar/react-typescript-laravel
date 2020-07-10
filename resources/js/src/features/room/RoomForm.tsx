@@ -116,7 +116,10 @@ class RoomForm extends Component<IProps, IState> {
                 messageClass: 'text-success',
                 roomForm: this.defaultState.roomForm,
             });
-            setTimeout(()=>{ this.setState({message: '', messageClass: ''}); this.props.history.push(this.props.location.pathname) }, 2000);
+            setTimeout(()=>{ this.setState({message: '', messageClass: ''}); 
+                             this.props.hideRoomForm(); 
+                            }, 
+                            2000);
             
         })
         .catch((error: AxiosError) => {

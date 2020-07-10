@@ -80,7 +80,7 @@ export const RoomType = {
 
 export const FloorRooms = {
     getAllRooms: () : Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}`),
-    getFloorRooms: (projectFloor: IProjectFloor) => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?floor_id=${projectFloor.id}`),
+    getFloorRooms: (projectFloor: IProjectFloor): Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?floor_id=${projectFloor.id}`),
     saveFloorRooms : (floorRooms: IRoomForm) => requests.post(`${enviorment.baseUrl}/${endPoints.floorRooms}`, floorRooms), 
     updateFloorRoom : (floorRoom: IFloorRoom): Promise<IFloorRoom> => requests.put(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`, floorRoom),
 }
