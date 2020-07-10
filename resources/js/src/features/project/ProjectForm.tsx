@@ -168,7 +168,7 @@ export class ProjectForm extends Component<IProps, IState> {
                                     if(this.props.project)
                                     {
                                         return (
-                                            <div className="form-btn text-right mt-2">
+                                            <div className="form-btn text-right mt-md-2">
                                                 <a href={void(0)} onClick={this.addFloor} className="main-btn">Add Floor</a>
                                             </div>
                                         );

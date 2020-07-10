@@ -50,9 +50,7 @@ textarea.form-control {
     /* max-width: 82.9%; */
 }
 
-.mt-4-9 {
-    margin-top: 1.98rem!important;
-}
+
 
 .top-bar .top-bar-social-links ul li a i {
     color: #62b13a;
@@ -565,8 +563,18 @@ background-color: #f8f8fa;
 }
 
 }
+.mt-4-9 {
+    margin-top: 0;
+}
+
+@media (min-width: 767px) {
+.mt-4-9 {
+    margin-top: 1.98rem;
+}
+}
 
 @media (min-width: 767px) and  (max-width: 1024px) {
+    
 	.form-setting-option h4 {
      margin-left: 0px; 
    }
