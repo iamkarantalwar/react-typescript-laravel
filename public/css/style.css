@@ -168,6 +168,7 @@ a.main-btn.cancel:hover {
 .main-table .table tbody tr td .form-control {
     padding: 7px 5px;
     font-size: 15px;
+    width: auto;
 }
 
 .form-setting-option table {
@@ -473,9 +474,8 @@ background-color: #f8f8fa;
 
 /*start responsive*/
 @media (max-width: 767px) {
-    .add-new-user .add-user-form .form-group {
-       /* / margin-bottom: 35px; */
-       
+    .team-form-btn form button {
+        top: -7px;
     }
 
 	.form-setting-option h4 {

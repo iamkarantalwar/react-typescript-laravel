@@ -23,6 +23,7 @@ interface IState {
 interface IProps {
 	project: IProject
 	afterAddOfFloors: (floors :IProjectFloor[]) => void;
+	toggleLoader: () => void;
 }
 
 class FloorForm extends Component<IProps, IState> {
@@ -58,8 +59,8 @@ class FloorForm extends Component<IProps, IState> {
 		})
 		if(this.state.projectFloorForm.to != null && 
 		   this.state.projectFloorForm.from != null && 
-		   ((this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1 != this.state.projectFloorForm.quantity)
-		   )
+		   (((this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1 != this.state.projectFloorForm.quantity)
+		    || this.state.projectFloorForm.to-this.state.projectFloorForm.from == this.state.projectFloorForm.quantity))
 		{
 			
 			this.setState({
@@ -83,8 +84,8 @@ class FloorForm extends Component<IProps, IState> {
 				message: "Floor Created Successfully.",
 				messageClass: "text-success",
 			});
-
-			setTimeout(()=>{ this.setState({message: "", messageClass:""}); this.props.afterAddOfFloors(res)},2000);
+			this.props.afterAddOfFloors(res);
+			setTimeout(()=>{ this.setState({message: "", messageClass:""}); }, 2000);
 		})
 		.catch((error: AxiosError) => {
 			if (error.response?.status == 422) {
@@ -129,7 +130,7 @@ class FloorForm extends Component<IProps, IState> {
 						<label>Name</label>
 						<input 
 							type="name" 
-							className={`form-control ${this.state.errors.name ? 'is-invalid': ''}`}
+							className={`form-control ${this.state.errors.name ? 'is-invalid': ''} ${this.state.messageClass == 'text-success' ? 'is-valid' : ''}`}
 							placeholder="Name"
 							onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, name: e.target.value}})}
 						/>

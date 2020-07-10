@@ -58,6 +58,7 @@ export default class App extends React.Component<IProps, IState>{
                            <Route exact path="/project/create" component={Authorization(ProjectForm, [UserRoles.ADMIN])}/>
                            <Route exact path="/project/:id" component={Authorization(ProjectSettings, [UserRoles.ADMIN])}/>
                            <Route exact path="/project/:id/floors" component={Authorization(Floor, [UserRoles.ADMIN, UserRoles.USER])}/>
+                           <Route exact path="/project/:id/floors/:floorid" component={Authorization(Floor, [UserRoles.ADMIN, UserRoles.USER])}/>
                            <Route exact path="/teams" component={Authorization(Teams, [UserRoles.ADMIN])}/>
                            <Route exact path="/users" component={Authorization(Users, [UserRoles.ADMIN])}/>
                         </Switch>

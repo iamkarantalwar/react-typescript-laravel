@@ -10,6 +10,7 @@ import { UserRoles } from '../../app/models/role.model';
 import { AxiosError } from 'axios';
 import { RootState, fetchRooms } from '../../redux';
 import { connect } from 'react-redux';
+import RoomForm from '../room/RoomForm';
 
 const mapStateToProps = (state: RootState) => ({
   rooms: state.rooms,
@@ -26,7 +27,7 @@ type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
 interface IProps extends ReduxProps {
     floor: IProjectFloor;
     teams: ITeam[];
-    selectFloor: (floor: IProjectFloor) => void;
+    // selectFloor: (floor: IProjectFloor) => void;
     afterUpdateFloor: (floor: IProjectFloor) => void;
     deleteFloor: (floor: IProjectFloor) => void;
 }
@@ -39,6 +40,7 @@ interface IState {
     showRooms: boolean;
     rooms: IFloorRoom[];
     showLoader: boolean;
+    showRoomForm: boolean;
 }
 
 class FloorListItem extends Component<IProps, IState> {
@@ -54,6 +56,7 @@ class FloorListItem extends Component<IProps, IState> {
         showRooms: false,
         rooms: [],
         showLoader: false,
+        showRoomForm: false,
       }
     }
 
@@ -162,6 +165,10 @@ class FloorListItem extends Component<IProps, IState> {
       }
     }
 
+    hideRoomForm = () => {
+      this.setState({showRoomForm: false});
+    } 
+
     componentDidMount() {
       this.props.fetchRooms(this.props.floor);
 
@@ -172,6 +179,7 @@ class FloorListItem extends Component<IProps, IState> {
 
     render() {
         return (
+        <Fragment>
           <Accordion>
            <div className='mb-2'>
               <div className={`floor-one-box card-header d-flex align-items-center justify-content-between ${this.state.messageClass == 'text-danger' ? 'border border-danger' : ''} ${this.state.messageClass == 'text-success' ? 'border border-success' : ''}`}>
@@ -221,9 +229,9 @@ class FloorListItem extends Component<IProps, IState> {
                         <div className="room-btn">
                           <a href={void(0)}
                             className="overview-flor-btn bg-transparent"
-                            onClick={(e) => this.props.selectFloor(this.props.floor)}
+                            onClick={(e) => this.setState({showRoomForm: !this.state.showRoomForm, showRooms: false}) }
                           >
-                            <span><i className="fa fa-plus" aria-hidden="true"></i></span> Room
+                            <span><i className={`fa ${this.state.showRoomForm ? 'fa-minus' : 'fa-plus'}` } aria-hidden="true"></i></span> Room
                           </a>
                         </div>
                         <div className="room-btn">
@@ -234,7 +242,7 @@ class FloorListItem extends Component<IProps, IState> {
                         <div className="room-btn">
                           <i style={{cursor:'pointer'}} onClick={this.state.editFloor? this.onSubmitHandler : this.enableEditFloor} className={`fa ${this.state.editFloor ? 'fa-check' : 'fa-pencil'} ml-2`}></i>
                         </div>
-                        <div className="room-btn" onClick={(e) => this.setState({showRooms: !this.state.showRooms})}>
+                        <div className="room-btn" onClick={(e) => this.setState({showRooms: !this.state.showRooms, showRoomForm:false})}>
                           <Accordion.Toggle as={Button} variant="link" eventKey="0">
                             {this.state.rooms.length > 0 ?
                                 <i className={`fa ${this.state.showRooms ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>
@@ -267,6 +275,8 @@ class FloorListItem extends Component<IProps, IState> {
               
            </div>
            </Accordion>
+           { this.state.showRoomForm == true ? <RoomForm hideRoomForm={this.hideRoomForm} floor={this.state.floor}/> : "" }
+          </Fragment>
         );
     }
 }

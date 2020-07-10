@@ -9,6 +9,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 interface IProps extends RouteComponentProps {
     floor: IProjectFloor;
+    hideRoomForm: () => void;
 }
 
 interface IState {
@@ -239,7 +240,7 @@ class RoomForm extends Component<IProps, IState> {
                                 <button type="submit" className="main-btn mr-1">Add</button>
                             </div>
                             <div className="add-floor-cancel">
-                                <button type="reset" className="main-btn cancel">Cancel</button>
+                                <button type="reset" className="main-btn cancel" onClick={(e) => this.props.hideRoomForm()}>Cancel</button>
                             </div>
                     </div>
                 </div>

@@ -36,7 +36,7 @@ interface IState {
     floors: IProjectFloor[];
     teams: ITeam[];
     showRoomForm: boolean;
-    selectedFloor: IProjectFloor | null;
+    // selectedFloor: IProjectFloor | null;
     loader: boolean;
     project: IProject;
 }
@@ -48,7 +48,7 @@ class Floor extends Component<IProps, IState> {
             floors: [],
             teams: [],
             showRoomForm: true,
-            selectedFloor: null,
+            // selectedFloor: null,
             loader: false,
             project: {
                 description:"",
@@ -57,6 +57,10 @@ class Floor extends Component<IProps, IState> {
             }
         }
         const context: titleContextType = this.context;
+    }
+
+    toggleLoader= () => {
+        this.setState({ loader: !this.state.loader });
     }
 
     afterAddOfFloors = (floors: IProjectFloor[]) => {
@@ -115,11 +119,11 @@ class Floor extends Component<IProps, IState> {
         this.props.changeTitle(null);
     }
 
-    selectFloor = (floor: IProjectFloor) => {
-        this.setState({
-            selectedFloor: floor
-        });
-    }
+    // selectFloor = (floor: IProjectFloor) => {
+    //     this.setState({
+    //         selectedFloor: floor
+    //     });
+    // }
 
     afterAddOfRooms = (rooms : IFloorRoom) => {
 
@@ -129,7 +133,7 @@ class Floor extends Component<IProps, IState> {
         const floorListItems: any = this.state.floors.map((floor) => {
             return <FloorListItem 
                         deleteFloor={this.deleteFloor}
-                        selectFloor={this.selectFloor}
+                        // selectFloor={this.selectFloor}
                         key={floor.id} 
                         floor={floor}
                         teams={this.state.teams}
@@ -145,6 +149,7 @@ class Floor extends Component<IProps, IState> {
                         <Fragment>
                             <ProjectForm project={this.state.project}/>
                             <FloorForm 
+                                toggleLoader = {this.toggleLoader}
                                 project={this.state.project as IProject} 
                                 afterAddOfFloors={this.afterAddOfFloors}
                             />  
@@ -157,7 +162,7 @@ class Floor extends Component<IProps, IState> {
                         <LoaderBar/> : 
                         this.state.floors.length == 0 ? <h1>No Floor Assigned Yet.</h1> : floorListItems            
                     }
-                    { this.state.showRoomForm && this.state.selectedFloor != null ? <RoomForm floor={this.state.selectedFloor}/> : "" }
+                    
                 </Fragment>
             </div> 
         );
