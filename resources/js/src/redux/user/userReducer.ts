@@ -1,28 +1,30 @@
-import { FETCH_USER_FAIL, FETCH_USER_REQUEST, FETCH_USER_SUCCESS } from './userType';
+import { FETCH_USERS_FAIL, FETCH_USERS_REQUEST, FETCH_USERS_SUCCESS } from './userType';
+import { IUser } from '../../app/models/user.model';
 
-const initialState = {
+interface UserReducerState {
+    loader: boolean;
+    users: IUser[],
+    error: string;
+}
+
+const initialState :UserReducerState = {
     loader: false,
-    name: '',
-    email: '',
-    api_token:'',
-    role: {
-        role_name: '',
-    },
+    users: [],
     error: '',
 }
 
-const userReducer = (state=initialState, action: any) => {
+const usersReducer = (state:UserReducerState = initialState, action: any) => {
     switch(action.type) {
-        case FETCH_USER_REQUEST: return {
+        case FETCH_USERS_REQUEST: return {
                                     ...state,
                                     loader: true
                                 }
-        case FETCH_USER_SUCCESS: return {
+        case FETCH_USERS_SUCCESS: return {
                                     ...state,
                                     loader: false,
-                                    payload: action.payload
+                                    users: action.payload as IUser[]
                                 }
-        case FETCH_USER_FAIL : return {
+        case FETCH_USERS_FAIL : return {
                                     ...state,
                                     loader: false,
                                     error: action.message
@@ -31,4 +33,4 @@ const userReducer = (state=initialState, action: any) => {
     }
 }
 
-export default userReducer;
+export default usersReducer;

@@ -17,21 +17,29 @@ Route::middleware('auth:api')->get('/usera', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('team', 'ApiController\TeamController');
+Route::middleware('auth:web')->namespace('ApiController')->group(function(){
 
-Route::resource('project', 'ApiController\ProjectController');
+    Route::resource('team', 'TeamController');
 
-Route::resource('project-settings', 'ApiController\ProjectSettingController');
+    Route::resource('project', 'ProjectController');
 
-Route::resource('project-floors', 'ApiController\ProjectFloorController')->middleware('auth:web');
+    Route::resource('project-settings', 'ProjectSettingController');
 
-Route::resource('room-types', 'ApiController\RoomTypeController');
+    Route::resource('project-floors', 'ProjectFloorController');
 
-Route::resource('floor-rooms', 'ApiController\FloorRoomController');
+    Route::resource('room-types', 'RoomTypeController');
 
-Route::resource('user', 'ApiController\UserController');
+    Route::resource('floor-rooms', 'FloorRoomController');
 
-Route::get('userroles', 'ApiController\UserController@getUserRoles');
+    Route::resource('user', 'UserController');
+
+    Route::get('userroles', 'UserController@getUserRoles');
+
+    Route::resource('tap-statics', 'TapStaticController');
+
+});
+
+
 
 Route::group(["prefix" => "admin", "namespace" => "ApiController" ], function() {
     Route::post("login",  "AdminAuthenticationController@login");

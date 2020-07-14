@@ -5,12 +5,11 @@ import { IProjectFloor } from '../../app/models/project-floor.model';
 import FloorListItem from './FloorListItem';
 import { ITeam } from '../../app/models/team.model';
 import { Team, ProjectFloors, User, Project } from '../../app/api/agent';
-import RoomForm from '../room/RoomForm';
 import { IFloorRoom } from '../../app/models/floor-room.model';
 import LoaderBar from '../../app/common/LoaderBar';
 import { TitleContext, titleContextType } from '../../context/TitleContext';
 import { connect } from 'react-redux';
-import { RootState,changeTitle,fetchRooms } from '../../redux';
+import { RootState, changeTitle, fetchProjectSettings, fetchUsers } from '../../redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import ProjectForm from '../project/ProjectForm';
 import { userObject } from '../../context/UserContext';
@@ -20,13 +19,22 @@ interface MatchParams {
     id: string;
 }
 
+interface IMapDispatchToProps {
+    changeTitle: (title: string | null) => {
+        type: string;
+        payload: string | null;
+    };
+    fetchProjectSettings: (projectId: string)  => void;
+    fetchUsers: () => void
+}
+
 const mapStateToProps = (state: RootState) => ({
     title: state.title,
 });
 
-const mapDispatchToProps = { changeTitle };
+const mapDispatchToProps: IMapDispatchToProps = { changeTitle, fetchProjectSettings, fetchUsers };
 
-type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
 
 interface IProps extends ReduxProps, RouteComponentProps<MatchParams> {
     project?: IProject;
@@ -70,11 +78,15 @@ class Floor extends Component<IProps, IState> {
 
     afterAddOfFloors = (floors: IProjectFloor[]) => {
         let old_floors = this.state.floors;
+        let toggleFloors = this.state.toggleFloors;
         floors.forEach((floor, index) => {
             old_floors.push(floor);
+            toggleFloors.push({id: floor.id, open:false});
         });
+        
         this.setState({
             floors: old_floors,
+            toggleFloors: toggleFloors,
         })
     }
 
@@ -98,9 +110,8 @@ class Floor extends Component<IProps, IState> {
         this.setState({floors:floors});
     }
 
-    selectFloor = (floor: IProjectFloor) => {
-       console.log(this.state.toggleFloors);
-        let toggleFloors = this.state.toggleFloors.map((floor_) => floor_.id == floor.id ? {id: floor_.id, open: !floor_.open} : {id: floor_.id, open: false});
+    selectFloor = (floor: IProjectFloor, open: boolean | undefined = undefined) => {
+        let toggleFloors = this.state.toggleFloors.map((floor_) => floor_.id == floor.id ? {id: floor_.id, open: open != undefined ? open : !floor_.open} : {id: floor_.id, open: false});
         console.log(toggleFloors);
         this.setState({toggleFloors: toggleFloors});
     }
@@ -129,6 +140,12 @@ class Floor extends Component<IProps, IState> {
         .getTeams()
         .then((teams) => this.setState({teams: teams}))
         .catch((error) => console.log(error));
+
+
+        //Fetch all the project settings Because they are common in every tab
+        this.props.fetchProjectSettings(this.props.match.params.id);
+        //Fetch all the users because they are common in evry tab
+        this.props.fetchUsers();
     }
 
     componentWillUnmount() {

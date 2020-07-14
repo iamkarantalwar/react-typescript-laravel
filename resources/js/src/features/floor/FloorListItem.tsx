@@ -31,7 +31,7 @@ interface IProps extends ReduxProps {
     floor: IProjectFloor;
     teams: ITeam[];
     toggleFloor: {id: number, open: boolean};
-    selectFloor: (floor: IProjectFloor) => void;
+    selectFloor: (floor: IProjectFloor, open?: boolean) => void;
     afterUpdateFloor: (floor: IProjectFloor) => void;
     deleteFloor: (floor: IProjectFloor) => void;
 }
@@ -252,6 +252,7 @@ class FloorListItem extends Component<IProps, IState> {
                                   showRoomForm: !this.state.showRoomForm, 
                                   showRooms: false
                                 });
+                                this.props.selectFloor(this.props.floor, false);
                             }}
                            >
                              <span><i className={`fa ${this.state.showRoomForm ? 'fa-minus' : 'fa-plus'}` } aria-hidden="true"></i></span> Room
@@ -260,7 +261,7 @@ class FloorListItem extends Component<IProps, IState> {
                          <div className="room-btn">
                             <i 
                               style={{cursor:'pointer'}} 
-                              onClick={(e) => this.deleteFloor(this.props.floor)} 
+                              onClick={(e) => {this.deleteFloor(this.props.floor);this.props.selectFloor(this.props.floor);}} 
                               className="fa fa-trash ml-2" aria-hidden="true">                            
                             </i>
                          </div>
@@ -273,7 +274,7 @@ class FloorListItem extends Component<IProps, IState> {
                           className="room-btn" 
                           onClick={(e) => {
                             !this.state.showRooms ? this.props.fetchRooms(this.props.floor): "";
-                            this.setState({showRoomForm:false});
+                            this.setState({showRoomForm:false, showRooms: true});
                             this.props.selectFloor(this.props.floor);
                           }}
                           aria-controls={`collapse${this.props.floor.id}`}
@@ -287,7 +288,7 @@ class FloorListItem extends Component<IProps, IState> {
                {
                  this.state.message ? <span className={this.state.messageClass}>{this.state.message}</span> : ""
                }
-                <Collapse in={this.props.toggleFloor?.open}>
+                <Collapse in={this.props.toggleFloor?.open && this.state.showRooms}>
                   <div className=" collapse" id={`collapse${this.props.floor.id}`}>
                   {
                     this.props.rooms.loader ? <LoaderBar/> : roomsList

@@ -18,6 +18,10 @@ select.team-select {
 .tap-card{
     padding: 0 0 0 2.7rem !important;
 }
+
+.tap-static-card{
+    padding: 0 0 0 3.9rem !important;
+}
 select.status-select {
     padding: 5px 16px;
     text-align: center;
