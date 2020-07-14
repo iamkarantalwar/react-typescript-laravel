@@ -107,6 +107,6 @@ class ProjectFloorController extends Controller
      */
     public function destroy(ProjectFloor $projectFloor)
     {
-        //
+        $projectFloor->delete();
     }
 }

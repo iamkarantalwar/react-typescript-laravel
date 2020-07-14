@@ -10,23 +10,32 @@ import { IFloorRoom } from '../../app/models/floor-room.model';
 import LoaderBar from '../../app/common/LoaderBar';
 import { TitleContext, titleContextType } from '../../context/TitleContext';
 import { connect } from 'react-redux';
-import { RootState,changeTitle,fetchRooms } from '../../redux';
+import { RootState,changeTitle,fetchProjectSettings } from '../../redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import ProjectForm from '../project/ProjectForm';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
+import { Dispatch } from 'redux';
 
 interface MatchParams {
     id: string;
+}
+
+interface IMapDispatchToProps {
+    changeTitle: (title: string | null) => {
+        type: string;
+        payload: string | null;
+    };
+    fetchProjectSettings: (projectId: string)  => void;
 }
 
 const mapStateToProps = (state: RootState) => ({
     title: state.title,
 });
 
-const mapDispatchToProps = { changeTitle };
+const mapDispatchToProps: IMapDispatchToProps = { changeTitle, fetchProjectSettings };
 
-type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
 
 interface IProps extends ReduxProps, RouteComponentProps<MatchParams> {
     project?: IProject;
@@ -103,7 +112,7 @@ class Floor extends Component<IProps, IState> {
     }
 
     selectFloor = (floor: IProjectFloor) => {
-       console.log(this.state.toggleFloors);
+    //    console.log(this.state.toggleFloors);
         let toggleFloors = this.state.toggleFloors.map((floor_) => floor_.id == floor.id ? {id: floor_.id, open: !floor_.open} : {id: floor_.id, open: false});
         console.log(toggleFloors);
         this.setState({toggleFloors: toggleFloors});
@@ -133,6 +142,8 @@ class Floor extends Component<IProps, IState> {
         .getTeams()
         .then((teams) => this.setState({teams: teams}))
         .catch((error) => console.log(error));
+
+        this.props.fetchProjectSettings(this.props.match.params.id);
     }
 
     componentWillUnmount() {

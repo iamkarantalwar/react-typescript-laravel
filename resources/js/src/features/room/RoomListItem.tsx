@@ -79,11 +79,16 @@ class RoomListItem extends Component<IProps,IState> {
                     <Accordion.Collapse eventKey="0">
                         <Fragment>
                         {
-                           this.props.room?.taps?.map(tap => {
-                                return <TapListItem key={tap.id} tap={tap}/>
-                           })
+                            this.state.showTaps ?
+                            <Fragment>
+                            {
+                                this.props.room?.taps?.map(tap => {
+                                        return <TapListItem key={tap.id} tap={tap}/>
+                                })
+                            }
+                            </Fragment> : ""
                         }
-                       </Fragment>
+                        </Fragment>
                     </Accordion.Collapse>
                 </Accordion>
         );
