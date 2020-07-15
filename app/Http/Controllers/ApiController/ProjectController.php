@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use Auth;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Enums\ProjectSettingField;
@@ -19,7 +20,14 @@ class ProjectController extends Controller
         if($request->project_id) {
             return Project::where('id', $request->project_id)->first();
         } else {
-            return Project::with(['floors', 'floors.rooms'])->get();
+            if ($request->user()->role->role_name=="ADMIN") {
+                return Project::with(['floors', 'floors.rooms'])->get();
+            } else {
+                return Project::with(['floors' => function ($q) use($request) {
+                    return $q->where('team_id', $request->user()->team_id);
+                }])->get();
+            }
+           
         }        
     }
 

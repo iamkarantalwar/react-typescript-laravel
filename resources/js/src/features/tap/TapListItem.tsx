@@ -22,6 +22,8 @@ type ReduxProps = ReturnType<typeof mapStateToProps>;
 
 interface IProps extends ReduxProps,RouteComponentProps<RouteParam> {
     tap: ITap;
+    tapDetecting: boolean;
+    toggleTapDetecting: () => void;
 }
 
 interface IState {
@@ -118,11 +120,18 @@ class TapListItem extends Component<IProps, IState> {
             } 
         }
 
-        //Check if the Field Wirzekut have valid Value 
-        if(isNaN(Number(time))) {
-           
+        //Check If Other Tap Is detecting 
+        if (this.props.tapDetecting) {
+            //Alert The message Annother Tap Is Detecting
+            alert("Another tap is Detecting. Please Wait");
+        }  else {
+            //Check if the Field Wirzekut have valid Value 
+            if(isNaN(Number(time))) {
                 alert('Ask Admin to set timer.');
-            } else {       
+            } else {     
+                //Change the Prop to detecting 
+                this.props.toggleTapDetecting();
+
                 const time_ = parseInt(time)*1000;         
                 this.showInProgressTap();
                 setTimeout(() => {
@@ -134,8 +143,12 @@ class TapListItem extends Component<IProps, IState> {
                     this.setState({pendingStatics: pendingStatics, selectedPendingTapId: pendingStatics[0]?.id});
                     // Again check the Tap
                     this.checkTapStaticState();
-                }, 1);
+                    //Change The Prop To Detecting Finished
+                    this.props.toggleTapDetecting();
+                }, 10000);
             }
+        }
+        
         
     }
 

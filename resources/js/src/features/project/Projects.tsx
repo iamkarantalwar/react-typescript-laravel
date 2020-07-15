@@ -102,14 +102,25 @@ export class Projects extends React.Component<Props, State> {
                                                     this.state.showLoader ? 
                                                     <LoaderBar/> :
                                                     <div className="card mb-0 border-0">
-                                                        {this.state.projects.map((project: IProject) => {
-                                                            return(
-                                                                <ProjectListItem 
-                                                                            key={project.id} 
-                                                                            project={project}
-                                                                />
-                                                            );                            
-                                                        })}                               
+                                                        { userObject.role == UserRoles.ADMIN ?
+                                                            this.state.projects.map((project: IProject) => {
+                                                                return(
+                                                                    <ProjectListItem 
+                                                                                key={project.id} 
+                                                                                project={project}
+                                                                    />
+                                                                );
+                                                            }) 
+                                                            :
+                                                            this.state.projects.map((project: IProject) => {
+                                                                return project.floors != undefined && project.floors?.length > 0 ?
+                                                                    <ProjectListItem 
+                                                                                key={project.id} 
+                                                                                project={project}
+                                                                    />
+                                                                 : "" 
+                                                            })              
+                                                       }                               
                                                     </div>
                                                 }
                                             

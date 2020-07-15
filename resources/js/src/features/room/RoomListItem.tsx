@@ -16,6 +16,7 @@ interface IState {
     room: IFloorRoom;
     editRoom: boolean;
     showTaps: boolean;
+    tapDetecting: boolean;
 }
 
 class RoomListItem extends Component<IProps,IState> {
@@ -25,7 +26,12 @@ class RoomListItem extends Component<IProps,IState> {
             room: this.props.room,
             editRoom: false,
             showTaps: false,
+            tapDetecting: false,
         }
+    }
+
+    toggleTapDetecting = () => {
+        this.setState({tapDetecting: !this.state.tapDetecting});
     }
 
     updateRoomHandler = (event: any) => {
@@ -83,7 +89,11 @@ class RoomListItem extends Component<IProps,IState> {
                             <Fragment>
                             {
                                 this.props.room?.taps?.map(tap => {
-                                        return <TapListItem key={tap.id} tap={tap}/>
+                                        return <TapListItem 
+                                                    key={tap.id} 
+                                                    tap={tap}
+                                                    tapDetecting={this.state.tapDetecting}
+                                                    toggleTapDetecting={this.toggleTapDetecting}/>
                                 })
                             }
                             </Fragment> : ""
