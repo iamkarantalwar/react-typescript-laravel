@@ -17,7 +17,7 @@ export class Header extends Component {
                         <div className="col-md-6">
                             <div className="top-bar-social-links text-right">
                                 <ul className="list-inline">
-                                    <li className="list-inline-item"><a href="#" className="text-dark">Hello, bob</a></li>
+                                    <li className="list-inline-item"><a href="#" className="text-dark">Hello, {localStorage.getItem('name')}</a></li>
                                     <li className="list-inline-item"><a href="#"><i className="fa fa-bell-o" aria-hidden="true"></i></a></li>
                                     <li className="list-inline-item"><a href="#"><i className="fa fa-calendar" aria-hidden="true"></i></a></li>
                                     <li className="list-inline-item"><a href="#"><i className="fa fa-th" aria-hidden="true"></i></a></li>

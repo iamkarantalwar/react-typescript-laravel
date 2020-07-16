@@ -24,6 +24,8 @@
 		<script>
 			const token = '<?=session('token'); ?>';
 			const role = '<?=session('role'); ?>';
+			const name = '<?=auth()->user()->name; ?>';
+			localStorage.setItem("name" , name);
 			localStorage.setItem("token" , token);
 			localStorage.setItem("role" , role);
 		</script>

@@ -273,7 +273,7 @@ class FloorListItem extends Component<IProps, IState> {
                          <div 
                           className="room-btn" 
                           onClick={(e) => {
-                            !this.state.showRooms ? this.props.fetchRooms(this.props.floor): "";
+                            !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
                             this.setState({showRoomForm:false, showRooms: true});
                             this.props.selectFloor(this.props.floor);
                           }}
