@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use Carbon\Carbon;
 use App\Models\TapStatic;
 use Illuminate\Http\Request;
 
@@ -39,6 +40,9 @@ class TapStaticController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = $request->user()->id;
+        $dt = Carbon::now();
+        $data['date'] = $dt->format('Y-m-d');
+        $data['time'] = $dt->format('H:i:s');
         $tapStatic = TapStatic::create($data);
         if($tapStatic) {
             return TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
@@ -80,7 +84,7 @@ class TapStaticController extends Controller
     {
         $update = $tapStatic->update($request->all());
         if($update) {
-            return $tapStatic;
+            return TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
         } else {
             throw new Exception("Something went wrong", 1);
         }

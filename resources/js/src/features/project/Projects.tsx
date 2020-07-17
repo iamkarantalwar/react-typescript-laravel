@@ -82,6 +82,12 @@ export class Projects extends React.Component<Props, State> {
         );
     }
 
+    afterDeleteProject = (project: IProject)=> {
+      this.setState({
+          projects: this.state.projects.filter((project_) => project.id != project_.id),
+      });  
+    } 
+
     render() {
         return (
             <div className="container">
@@ -108,6 +114,7 @@ export class Projects extends React.Component<Props, State> {
                                                                     <ProjectListItem 
                                                                                 key={project.id} 
                                                                                 project={project}
+                                                                                afterDeleteProject={this.afterDeleteProject}
                                                                     />
                                                                 );
                                                             }) 
@@ -117,6 +124,7 @@ export class Projects extends React.Component<Props, State> {
                                                                     <ProjectListItem 
                                                                                 key={project.id} 
                                                                                 project={project}
+                                                                                afterDeleteProject={this.afterDeleteProject}
                                                                     />
                                                                  : "" 
                                                             })              

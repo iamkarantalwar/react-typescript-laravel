@@ -45,6 +45,7 @@ interface IState {
     rooms: IFloorRoom[];
     showLoader: boolean;
     showRoomForm: boolean;
+    toggleRooms: Array<{id: number, open:boolean}>;
 }
 
 class FloorListItem extends Component<IProps, IState> {
@@ -61,6 +62,7 @@ class FloorListItem extends Component<IProps, IState> {
         rooms: [],
         showLoader: false,
         showRoomForm: false,
+        toggleRooms: [],
       }
     }
 
@@ -109,7 +111,7 @@ class FloorListItem extends Component<IProps, IState> {
           floor: this.props.floor
         });
        
-        setTimeout(()=>{ this.setState({message: "", messageClass: ""})},2000);
+        setTimeout(()=>{ this.setState({message: "", messageClass: ""})}, 2000);
       })
       .finally(()=>{
         this.setState({
@@ -172,6 +174,30 @@ class FloorListItem extends Component<IProps, IState> {
     hideRoomForm = () => {
       this.setState({showRoomForm: false});
     } 
+
+    toggleCollapse = (target: any) => {
+      if (target.tagName != 'DIV')
+      {
+        return;
+      } 
+      !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
+      this.setState({showRoomForm:false, showRooms: true});
+      this.props.selectFloor(this.props.floor);
+    }
+
+    componentDidUpdate(prevState: any) {
+      if(prevState.rooms.loader == true && this.props.rooms.loader == false)
+      {
+        const toggleRooms = this.props.rooms.rooms.map((room) => {return {id: parseInt(room.id), open:false} });
+        this.setState({toggleRooms: toggleRooms})
+      }
+    }
+
+    toggleRoomsList = (open?: boolean) => {
+      !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
+      this.setState({showRoomForm:false, showRooms: open == undefined ? true : open});
+      this.props.selectFloor(this.props.floor);
+    }
   
 
     componentDidMount() {
@@ -182,15 +208,13 @@ class FloorListItem extends Component<IProps, IState> {
       // .catch((errors) => console.log(errors));
     }
 
-    componentDidUpdate() {
-    }
-
     render() {     
       let roomsList = this.props.rooms.rooms.length>0 ? this.props.rooms.rooms.map((room, index) => {
         return(
           <RoomListItem 
             room={room as IFloorRoom}
             key={index}
+            toggleRoom={this.state.toggleRooms[index]}
             afterUpdateRoom={this.afterUpdateRoom}
           />                            
         )
@@ -199,8 +223,13 @@ class FloorListItem extends Component<IProps, IState> {
         <Fragment>
           {
             this.state.showLoader ? <LoaderBar/> :
-            <div className='mb-2'>
-               <div className={`floor-one-box card-header d-flex align-items-center justify-content-between ${this.state.messageClass == 'text-danger' ? 'border border-danger' : ''} ${this.state.messageClass == 'text-success' ? 'border border-success' : ''}`}>
+            <div className='mb-2'> 
+               <div 
+                className={`floor-one-box card-header d-flex align-items-center justify-content-between 
+                            ${this.state.messageClass == 'text-danger' ? 'border border-danger' : ''} 
+                            ${this.state.messageClass == 'text-success' ? 'border border-success' : ''}`}
+                onClick={(e) => this.toggleCollapse(e.target)}
+               >
                  <div className="floors-tittle">
                    
                      <h6 className="mb-0"> 
@@ -255,7 +284,7 @@ class FloorListItem extends Component<IProps, IState> {
                                 this.props.selectFloor(this.props.floor, false);
                             }}
                            >
-                             <span><i className={`fa ${this.state.showRoomForm ? 'fa-minus' : 'fa-plus'}` } aria-hidden="true"></i></span> Room
+                             <span><i className={`fa ${this.state.showRoomForm ? 'fa-minus' : 'fa-plus'} room-form-icon`} aria-hidden="true"></i></span> Room
                            </a>
                          </div>
                          <div className="room-btn">
@@ -273,9 +302,7 @@ class FloorListItem extends Component<IProps, IState> {
                          <div 
                           className="room-btn" 
                           onClick={(e) => {
-                            !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
-                            this.setState({showRoomForm:false, showRooms: true});
-                            this.props.selectFloor(this.props.floor);
+                           this.toggleRoomsList(true)
                           }}
                           aria-controls={`collapse${this.props.floor.id}`}
                           aria-expanded={this.state.showRooms}
@@ -297,7 +324,7 @@ class FloorListItem extends Component<IProps, IState> {
                 </Collapse>               
             </div>
           }
-           { this.state.showRoomForm == true ? <RoomForm hideRoomForm={this.hideRoomForm} floor={this.state.floor}/> : "" }
+           { this.state.showRoomForm == true ? <RoomForm hideRoomForm={this.hideRoomForm} afterRoomsAdded={this.toggleRoomsList} floor={this.state.floor}/> : "" }
           </Fragment>
         );
     }

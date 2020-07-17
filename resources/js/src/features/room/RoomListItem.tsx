@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { IFloorRoom } from '../../app/models/floor-room.model';
 import { FloorRooms } from '../../app/api/agent';
-import { Accordion, Button } from 'react-bootstrap';
+import { Accordion, Button, Collapse } from 'react-bootstrap';
 import TapListItem from '../tap/TapListItem';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
@@ -10,6 +10,7 @@ import { UserRoles } from '../../app/models/role.model';
 interface IProps {
     room: IFloorRoom;
     afterUpdateRoom: (room :IFloorRoom) => void;
+    toggleRoom: {id: number, open: boolean};
 }
 
 interface IState {
@@ -46,11 +47,19 @@ class RoomListItem extends Component<IProps,IState> {
         });
        
     }
+
+    showTaps = (target: any) => {
+        console.log(target);
+        if(target.tagName == 'DIV') {
+            console.log(!this.state.showTaps);
+            this.setState({showTaps: this.state.showTaps === true ? false : true});
+        }
+    }
     
     render() {
         return (
-                <Accordion>
-                    <div id=""  className="floor-card" style={{padding: '0 2rem !important'}}>
+                <Fragment>
+                    <div id=""  className="floor-card" style={{padding: '0 2rem !important'}} onClick={(e) => this.showTaps(e.target)}>
                         <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                             <div className="card mb-0 border-0">
                                 <div className="card-header  mb-1" data-toggle="collapse" >
@@ -73,34 +82,39 @@ class RoomListItem extends Component<IProps,IState> {
                                                     <i className={`fa ${!this.state.editRoom ? 'fa-pencil' : 'fa-check' }`} aria-hidden="true"></i>
                                                 </a> : ""
                                             }                                            
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="0" onClick={(e)=> this.setState({showTaps: !this.state.showTaps})}>
-                                                <i className={`fa ${this.state.showTaps ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>
-                                            </Accordion.Toggle>   
+                                                <i 
+                                                    className={`fa ${this.state.showTaps ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}
+                                                    aria-controls={`collapse${this.props.room.id}`}
+                                                    aria-expanded={this.state.showTaps}
+                                                    onClick={(e) => this.setState({showTaps: !this.state.showTaps})}
+                                                ></i> 
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <Accordion.Collapse eventKey="0">
-                        <Fragment>
-                        {
-                            this.state.showTaps ?
+                    <Collapse in={this.state.showTaps}>
+                        <div className=" collapse" id={`collapse${this.props.room.id}`}>
                             <Fragment>
                             {
-                                this.props.room?.taps?.map(tap => {
-                                        return <TapListItem 
-                                                    key={tap.id} 
-                                                    tap={tap}
-                                                    tapDetecting={this.state.tapDetecting}
-                                                    toggleTapDetecting={this.toggleTapDetecting}/>
-                                })
+                                this.state.showTaps ?
+                                <Fragment>
+                                {
+                                    this.props.room?.taps?.map(tap => {
+                                            return <TapListItem 
+                                                        key={tap.id} 
+                                                        tap={tap}
+                                                        tapDetecting={this.state.tapDetecting}
+                                                        toggleTapDetecting={this.toggleTapDetecting}/>
+                                    })
+                                }
+                                </Fragment> : <></>
                             }
-                            </Fragment> : ""
-                        }
-                        </Fragment>
-                    </Accordion.Collapse>
-                </Accordion>
+                            </Fragment>
+                        </div>
+                    </Collapse>
+                </Fragment>
         );
     }
 }

@@ -10,4 +10,6 @@ export interface ITapStatic {
     setting?: IProjectSetting;
     user?: IUser;
     created_at?:Date;
+    date?:string;
+    time?:string;
 }

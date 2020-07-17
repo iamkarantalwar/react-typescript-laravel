@@ -17,7 +17,8 @@ class CreateTapStaticsTable extends Migration
             $table->bigIncrements('id');
             $table->string('taps_id');
             $table->string('project_setting_id');
-            $table->string('date_time')->nullable();
+            $table->date('date')->nullable();
+            $table->time('time')->nullable();
             $table->string('user_id');
             $table->boolean('detected');
             $table->timestamps();

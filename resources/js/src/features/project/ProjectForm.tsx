@@ -114,7 +114,7 @@ export class ProjectForm extends Component<IProps, IState> {
 
                 setTimeout(()=>{ 
                     this.setState({project_saved_message: ""});
-                    this.props.history.push('/projects');
+                    this.props.history.push(`/project/${res.id}/floors`);
                 },
                 2000);
             })
@@ -142,6 +142,24 @@ export class ProjectForm extends Component<IProps, IState> {
         }        
     }
 
+    isFloorWindow = (): boolean => {
+        let path = this.props.location.pathname.split('/');
+        if(path[path.length-1] == "floors") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    isSettingsWindow = (): boolean => {
+        let path = this.props.location.pathname.split('/');
+        if(path[path.length-2] == "project" && !isNaN(Number(path[path.length-1]))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     render() {
         return(
         <div className="start-form container">
@@ -158,6 +176,7 @@ export class ProjectForm extends Component<IProps, IState> {
                                     name="project_name"
                                     value={this.props.projectForm.project.project_name}
                                     onChange={this.onChangeHandler}
+                                    readOnly={this.isFloorWindow()}
                                 />
                                 { this.state.errors.project_name ? <span className="text-danger">{this.state.errors.project_name}</span> : "" }
                                 { this.state.project_saved_message ? <span className="text-success">{this.state.project_saved_message}</span> : "" }
@@ -165,14 +184,7 @@ export class ProjectForm extends Component<IProps, IState> {
                         </div>
                         <div className="col-md-3 col-lg-3 col-xl-2">
                                 {(() => {
-                                    if(this.props.project)
-                                    {
-                                        return (
-                                            <div className="form-btn text-right mt-md-2">
-                                                <a href={void(0)} onClick={this.addFloor} className="main-btn">Add Floor</a>
-                                            </div>
-                                        );
-                                    } else 
+                                    if(!this.props.project)
                                     {
                                         return (
                                             <Fragment>
@@ -201,6 +213,7 @@ export class ProjectForm extends Component<IProps, IState> {
                                     placeholder="Hire sollte ein Text zur.." 
                                     id="exampleFormControlTextarea1" 
                                     rows={3}
+                                    readOnly={this.isFloorWindow()}
                                     name="description"
                                     value={this.props.projectForm.project.description}
                                     onChange={this.onChangeHandler}
@@ -209,18 +222,42 @@ export class ProjectForm extends Component<IProps, IState> {
                             { this.state.errors.description ? <span className="text-danger">{this.state.errors.description}</span> : "" }
                         </div>
                     </div>
-                    {
-                        userObject.role == UserRoles.ADMIN && this.props.project ?
-                        <div className="col-md-3 col-lg-3 col-xl-2">
-                            <div className="form-btn text-right mt-4-9">
-                                <Link to={`/project/${this.props.project?.id}`} className="main-btn">Settings</Link>
-                            </div>
-                        </div> : ""
-                    }
                     </div>
                                           
                 </div>
+                <div className="col-md-12 my-2">
+                    <div className="row align-items-center">
+                        {
+                            this.isSettingsWindow() ?
+                            <div className="col-md-2 col-lg-2 col-xl-2">
+                                <div className="form-btn text-right">
+                                    <Link to={`/project/${this.props.project?.id}/floors`} className="main-btn">Floor Settings</Link>
+                                </div>             
+                            </div> : ""   
+                        }  
+                        <div className="col-md-6 col-lg-6 col-xl-6">
+                        {
+                            userObject.role == UserRoles.ADMIN && this.props.project ?
+                                <div className="form-btn text-right">
+                                    <Link to={`/project/${this.props.project?.id}`} className="main-btn">Settings</Link>
+                                </div>
+                            : ""
+                        }
+                        </div>
+                        <div className="col-md-2 col-lg-2 col-xl-2">
+                            {
+                                this.isFloorWindow() 
+                                    ? 
+                                <div className="form-btn text-right">
+                                    <a href={void(0)} onClick={this.addFloor} className="main-btn">Add Floor</a>
+                                </div> : ""
+                            }
+                           
+                        </div>
+                    </div>
+                </div>
             </form>
+            <hr/>
         </div>
         );
     }

@@ -118,9 +118,9 @@ class ProjectController extends Controller
     {
         $delete = $project->delete();
         if ($delete) {
-            return ["message" => "Project Deleted Successfully"];
+            echo true;
         } else {
-            return ["message" => "Something Went Wrong."];
+            echo false;
         }
     }
 }

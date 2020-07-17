@@ -187,7 +187,7 @@ class TapListItem extends Component<IProps, IState> {
         let setting = this.state.pendingStatics.find((stat)=> stat.id == id) as IProjectSetting;
         this.setState({tapStatus: <div className="row">
                     <div className="col-md-6">
-                        {setting.field_name} Detected
+                        {setting?.field_name} Detected
                     </div> 
                     <div className="col-md-6">
                         <i className="fa fa-check mr-3" onClick={(e) => this.detected(setting)}></i>

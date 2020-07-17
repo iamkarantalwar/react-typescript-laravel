@@ -11,6 +11,7 @@ import { IRoomType } from '../models/room-type';
 import { IRoomForm } from '../models/room-form.model';
 import { IFloorRoom } from '../models/floor-room.model';
 import { ITapStatic } from '../models/tap-static.model';
+import { env } from 'process';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -45,6 +46,7 @@ export const Project = {
     getProject: (projectId: string): Promise<IProject> => requests.get(`${enviorment.baseUrl}/${endPoints.project}?project_id=${projectId}`),
     getProjects: (): Promise<IProject[]> => requests.get(`${enviorment.baseUrl}/${endPoints.project}`),
     saveProject: (project: IProject): Promise<IProject> => requests.post(`${enviorment.baseUrl}/${endPoints.project}`, project),
+    deleteProject: (project: IProject): Promise<boolean> => requests.del(`${enviorment.baseUrl}/${endPoints.project}/${project.id}`)
 }
 
 export const Team = {
@@ -89,5 +91,6 @@ export const FloorRooms = {
 
 export const TapStatic = {
     createTapStatic : (stat: ITapStatic) : Promise<ITapStatic> => requests.post(`${enviorment.baseUrl}/${endPoints.tapStatics}`, stat),
-    getTapStatics: (tapId: string | number): Promise<ITapStatic[]> => requests.get(`${enviorment.baseUrl}/${endPoints.tapStatics}?tap_id=${tapId}`),   
+    getTapStatics: (tapId: string | number): Promise<ITapStatic[]> => requests.get(`${enviorment.baseUrl}/${endPoints.tapStatics}?tap_id=${tapId}`),  
+    updateTapStatic: (stat: ITapStatic): Promise<ITapStatic> => requests.put(`${enviorment.baseUrl}/${endPoints.tapStatics}/${stat.id}`, stat), 
 }

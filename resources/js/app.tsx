@@ -32,7 +32,6 @@ export default class App extends React.Component<IProps, IState>{
    }
 
    changeTitle = (title: string | null) => {
-      console.log('abcd');
       this.setState({title: title});
    }
    
@@ -70,9 +69,4 @@ export default class App extends React.Component<IProps, IState>{
      );
   }
 }
-
-
-
-
-
 ReactDOM.render(<App/>,document.getElementById('root'));

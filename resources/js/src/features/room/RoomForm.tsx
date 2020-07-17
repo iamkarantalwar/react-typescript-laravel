@@ -10,6 +10,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 interface IProps extends RouteComponentProps {
     floor: IProjectFloor;
     hideRoomForm: () => void;
+    afterRoomsAdded: (status?: boolean) => void;
 }
 
 interface IState {
@@ -118,6 +119,7 @@ class RoomForm extends Component<IProps, IState> {
             });
             setTimeout(()=>{ this.setState({message: '', messageClass: ''}); 
                              this.props.hideRoomForm(); 
+                             this.props.afterRoomsAdded(true);
                             }, 
                             2000);
             
