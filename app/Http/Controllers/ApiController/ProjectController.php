@@ -50,23 +50,28 @@ class ProjectController extends Controller
      */
     public function store(ProjectRequest $request)
     {
-        $project = Project::create($request->all());
-        if ($project) {
-            //Add Project Settings
-            $fields = ProjectSettingField::FIELDS;
-            foreach ($fields as $key => $value) {
-                $project->settings()->create([
-                    'project_id' => $project->id, 
-                    'field_name' => $key, 
-                    'field_wirkzeit' => '', 
-                    'field_spulzeit' => '', 
-                    'aktiv' => 'ACTIVE'
-                ]);
+        try {
+            $project = Project::create($request->all());
+            if ($project) {
+                //Add Project Settings
+                $fields = ProjectSettingField::FIELDS;
+                foreach ($fields as $key => $value) {
+                    $project->settings()->create([
+                        'project_id' => $project->id, 
+                        'field_name' => $key, 
+                        'field_wirkzeit' => '', 
+                        'field_spulzeit' => '', 
+                        'aktiv' => 'ACTIVE'
+                    ]);
+                }
+                return response()->json($project);
+            } else {
+                throw new Exception("Error Processing Request", 1);
             }
-            return $project;
-        } else {
-            return ["message" => "Something went wrong. Try again later."];
+        } catch (\Throwable $th) {
+            throw $th;
         }
+       
     }
 
     /**
@@ -77,7 +82,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return $project;
+        return response()->json($project);
     }
 
     /**
@@ -102,9 +107,9 @@ class ProjectController extends Controller
     {
         $if_update = $project->update($request->all());
         if ($if_update) {
-            return $project;
+            return response()->json($project);
         } else {
-            return ["message" => "Something Went Wrong"];
+           throw new Exception("Error Processing Request", 1);
         }
     }
 
@@ -118,9 +123,10 @@ class ProjectController extends Controller
     {
         $delete = $project->delete();
         if ($delete) {
-            echo true;
+            $result = true;
+            return response()->json($result);
         } else {
-            echo false;
+            throw new Exception("Error Processing Request", 1);
         }
     }
 }

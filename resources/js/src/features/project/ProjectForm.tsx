@@ -135,16 +135,16 @@ export class ProjectForm extends Component<IProps, IState> {
 
     addFloor = () => {
         let path = this.props.location.pathname.split('/');
-        if(path[path.length-1] == "floors") {
+        if(path[path.length-2] == "project" && !isNaN(Number(path[path.length-1]))) {
             this.props.toggleFloorForm ? this.props.toggleFloorForm(): "";
         } else {
-            this.props.history.push(`/project/${this.props.project?.id}/floors`);
+            this.props.history.push(`/project/${this.props.project?.id}`);
         }        
     }
 
     isFloorWindow = (): boolean => {
         let path = this.props.location.pathname.split('/');
-        if(path[path.length-1] == "floors") {
+        if(path[path.length-2] == "project" && !isNaN(Number(path[path.length-1]))) {
             return true;
         } else {
             return false;
@@ -153,7 +153,7 @@ export class ProjectForm extends Component<IProps, IState> {
 
     isSettingsWindow = (): boolean => {
         let path = this.props.location.pathname.split('/');
-        if(path[path.length-2] == "project" && !isNaN(Number(path[path.length-1]))) {
+        if(path[path.length-3] == "project" && !isNaN(Number(path[path.length-2])) && path[path.length-1] == "settings") {
             return true;
         } else {
             return false;
@@ -168,16 +168,19 @@ export class ProjectForm extends Component<IProps, IState> {
                     <div className="row align-items-center">
                         <div className="col-md-9 col-lg-9 col-xl-10">
                             <div className="form-group">
-                                <label>Projects Name</label>
-                                <input type="name" 
-                                    className={`form-control ${this.state.errors.project_name ? 'is-invalid' : ''} ${this.state.project_saved_message ? 'is-valid' : ''}` } 
-                                    placeholder="Projects Name" 
-                                    id="first-name"
-                                    name="project_name"
-                                    value={this.props.projectForm.project.project_name}
-                                    onChange={this.onChangeHandler}
-                                    readOnly={this.isFloorWindow()}
-                                />
+                                <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>Projects Name</label>
+                                {
+                                    this.isFloorWindow() ? <> <br/> {this.props.projectForm.project.project_name} </>
+                                    :                                
+                                    <input type="name" 
+                                        className={`form-control ${this.state.errors.project_name ? 'is-invalid' : ''} ${this.state.project_saved_message ? 'is-valid' : ''}` } 
+                                        placeholder="Projects Name" 
+                                        id="first-name"
+                                        name="project_name"
+                                        value={this.props.projectForm.project.project_name}
+                                        onChange={this.onChangeHandler}
+                                    />
+                                }
                                 { this.state.errors.project_name ? <span className="text-danger">{this.state.errors.project_name}</span> : "" }
                                 { this.state.project_saved_message ? <span className="text-success">{this.state.project_saved_message}</span> : "" }
                             </div>
@@ -208,17 +211,21 @@ export class ProjectForm extends Component<IProps, IState> {
                     <div className="row">
                     <div className="col-md-9 col-lg-9 col-xl-10">
                         <div className={`form-group ${this.state.showDescription ? 'd-block' : 'd-none'}`}>
-                            <label>Project Description</label>
-                            <textarea className={`form-control ${this.state.errors.description ? 'is-invalid' : ''}`}
+                            <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>Project Description</label>
+                            {
+                                 this.isFloorWindow() ? <> <br/> {this.props.projectForm.project.description} </>
+                                 :
+                                <textarea className={`form-control ${this.state.errors.description ? 'is-invalid' : ''}`}
                                     placeholder="Hire sollte ein Text zur.." 
                                     id="exampleFormControlTextarea1" 
                                     rows={3}
-                                    readOnly={this.isFloorWindow()}
                                     name="description"
                                     value={this.props.projectForm.project.description}
                                     onChange={this.onChangeHandler}
-                            >
-                            </textarea>
+                                >
+                                </textarea>
+                            }
+                           
                             { this.state.errors.description ? <span className="text-danger">{this.state.errors.description}</span> : "" }
                         </div>
                     </div>
@@ -231,15 +238,15 @@ export class ProjectForm extends Component<IProps, IState> {
                             this.isSettingsWindow() ?
                             <div className="col-md-2 col-lg-2 col-xl-2">
                                 <div className="form-btn text-right">
-                                    <Link to={`/project/${this.props.project?.id}/floors`} className="main-btn">Floor Settings</Link>
+                                    <Link to={`/project/${this.props.project?.id}`} className="main-btn">Floor Settings</Link>
                                 </div>             
                             </div> : ""   
                         }  
                         <div className="col-md-6 col-lg-6 col-xl-6">
                         {
-                            userObject.role == UserRoles.ADMIN && this.props.project ?
+                            userObject.role == UserRoles.ADMIN && this.props.project && !this.isSettingsWindow() ?
                                 <div className="form-btn text-right">
-                                    <Link to={`/project/${this.props.project?.id}`} className="main-btn">Settings</Link>
+                                    <Link to={`/project/${this.props.project?.id}/settings`} className="main-btn">Settings</Link>
                                 </div>
                             : ""
                         }

@@ -734,6 +734,7 @@ button.main-btn.cancel:hover {
 .team-input:focus{
     outline: none;
     border: none;
+    box-shadow: none;
 }
 
 .fa-btn {
@@ -779,4 +780,25 @@ a{
 .container {
     max-width: 96%;
 }
+}
+
+.tap-check {
+    background: #56962c;
+    padding: 1px 4px;
+    display: inline-block;
+}
+
+.tap-times {
+    background: #a51214;
+    padding: 1px 4px;
+    display: inline-block;
+}
+
+.main-tap-overview span i {
+    font-weight: 500;
+    font-size: 28px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

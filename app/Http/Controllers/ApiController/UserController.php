@@ -19,8 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-       
-        return User::with(['role', 'team'])->get();
+        $result =  User::with(['role', 'team'])->get();
+        return response()->json($result);
     }
 
     /**
@@ -54,7 +54,8 @@ class UserController extends Controller
             "role_name" => $request->post("role_name"),
         ]);
 
-        return User::with(['role', 'team'])->where("id", $user->id)->first();
+        $result = User::with(['role', 'team'])->where("id", $user->id)->first();
+        return response()->json($result);
     }
 
     /**
@@ -104,7 +105,8 @@ class UserController extends Controller
 
             if($role_updated) {
 
-                return User::with(['role', 'team'])->where("id", $user->id)->get();
+                $result =  User::with(['role', 'team'])->where("id", $user->id)->get();
+                return response()->json($result);
 
             } else {
                 return ["message" => "Something went wrong. Try again later."];
@@ -129,9 +131,10 @@ class UserController extends Controller
     }
 
     public function getUserRoles() {
-        return [
+        $result = [
             ['role_name' => UserRole::ADMIN], 
             ['role_name' => UserRole::USER]
         ];
+        return response()->json($result);
     }
 }

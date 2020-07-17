@@ -83,8 +83,9 @@ class FloorForm extends Component<IProps, IState> {
 				message: "Floor Created Successfully.",
 				messageClass: "text-success",
 			});
+			
 			this.props.afterAddOfFloors(res);
-			setTimeout(()=>{ this.setState({message: "", messageClass:""}); }, 2000);
+			setTimeout(()=>{ this.setState({message: "", messageClass:""}); this.props.toggleForm(); }, 2000);
 		})
 		.catch((error: AxiosError) => {
 			if (error.response?.status == 422) {

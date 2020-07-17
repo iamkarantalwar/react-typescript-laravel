@@ -18,12 +18,13 @@ class ProjectFloorController extends Controller
      */
     public function index(Request $request)
     {
+        $result = null;
         if($request->user()->role->role_name == "ADMIN") {
-            return ProjectFloor::where('project_id', $request->project_id)->get();
+            $result =  ProjectFloor::where('project_id', $request->project_id)->get();
         } else {
-            return ProjectFloor::where('project_id', $request->project_id)->where('team_id', $request->user()->team_id)->get();
+            $result = ProjectFloor::where('project_id', $request->project_id)->where('team_id', $request->user()->team_id)->get();
         }
-       
+        return response()->json($result);  
     }
 
     /**
@@ -44,20 +45,25 @@ class ProjectFloorController extends Controller
      */
     public function store(ProjectFloorRequest $request)
     {
-        $projectFloors = [];
+        try {
+            //code...
+            $projectFloors = [];
 
-        for($i=$request->post('from'); $i<=$request->post('to'); $i++)
-        {
-            $projectFloor = ProjectFloor::create([
-                'project_id' => $request->post('project_id'),
-                'floor_name' => $request->post('name').($i),
-                'status' => ProjectFloorStatus::PENDING,
-            ]);
+            for($i=$request->post('from'); $i<=$request->post('to'); $i++)
+            {
+                $projectFloor = ProjectFloor::create([
+                    'project_id' => $request->post('project_id'),
+                    'floor_name' => $request->post('name').($i),
+                    'status' => ProjectFloorStatus::PENDING,
+                ]);
 
-            array_push($projectFloors, $projectFloor);
+                array_push($projectFloors, $projectFloor);
+            }
+            return response()->json($projectFloors);
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        return $projectFloors;
+        
     }
 
     /**
@@ -93,9 +99,9 @@ class ProjectFloorController extends Controller
     {
         $update = $projectFloor->update($request->all());
         if($update) {
-            return $projectFloor;
+            return response()->json($projectFloor);
         } else {
-            return ['message' => 'Something Went Wrong'];
+            throw new Exception("Error Processing Request", 1);
         }
     }
 
@@ -107,6 +113,12 @@ class ProjectFloorController extends Controller
      */
     public function destroy(ProjectFloor $projectFloor)
     {
-        $projectFloor->delete();
+        $delete = $projectFloor->delete();
+        if ($delete) {
+            $result = true;
+            return response()->json($result);
+        } else {
+            throw new Exception("Error Processing Request", 1);
+        }
     }
 }

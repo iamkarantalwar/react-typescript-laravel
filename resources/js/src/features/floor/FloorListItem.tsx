@@ -89,7 +89,7 @@ class FloorListItem extends Component<IProps, IState> {
       .updateProjectFloor(this.state.floor)
       .then((res) => {
         this.setState({
-          message: "Floor Changed Successfully",
+          message: "Floor Updated Successfully",
           messageClass: "text-success",
           editFloor:false
         });
@@ -176,13 +176,12 @@ class FloorListItem extends Component<IProps, IState> {
     } 
 
     toggleCollapse = (target: any) => {
-      if (target.tagName != 'DIV')
+      if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editFloor))
       {
-        return;
-      } 
-      !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
-      this.setState({showRoomForm:false, showRooms: true});
-      this.props.selectFloor(this.props.floor);
+        !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
+        this.setState({showRoomForm:false, showRooms: true});
+        this.props.selectFloor(this.props.floor);
+      }
     }
 
     componentDidUpdate(prevState: any) {
@@ -225,7 +224,7 @@ class FloorListItem extends Component<IProps, IState> {
             this.state.showLoader ? <LoaderBar/> :
             <div className='mb-2'> 
                <div 
-                className={`floor-one-box card-header d-flex align-items-center justify-content-between 
+                className={`floor-one-box card-header d-flex align-items-center justify-content-between cursor-pointer 
                             ${this.state.messageClass == 'text-danger' ? 'border border-danger' : ''} 
                             ${this.state.messageClass == 'text-success' ? 'border border-success' : ''}`}
                 onClick={(e) => this.toggleCollapse(e.target)}
@@ -237,7 +236,7 @@ class FloorListItem extends Component<IProps, IState> {
                            type='text'
                            value={this.state.floor.floor_name}
                            readOnly={!this.state.editFloor}
-                           className={`form-control ${!this.state.editFloor ? 'team-input' : ''}`}
+                           className={`form-control ${!this.state.editFloor ? 'team-input cursor-pointer' : ''}`}
                            onChange={(e) => userObject.role == UserRoles.ADMIN ? this.setState({floor: {...this.state.floor,floor_name: e.target.value}}): ""}
                        />
                        </h6>

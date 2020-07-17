@@ -50,8 +50,7 @@ class RoomListItem extends Component<IProps,IState> {
 
     showTaps = (target: any) => {
         console.log(target);
-        if(target.tagName == 'DIV') {
-            console.log(!this.state.showTaps);
+        if(target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editRoom)) {
             this.setState({showTaps: this.state.showTaps === true ? false : true});
         }
     }
@@ -59,7 +58,7 @@ class RoomListItem extends Component<IProps,IState> {
     render() {
         return (
                 <Fragment>
-                    <div id=""  className="floor-card" style={{padding: '0 2rem !important'}} onClick={(e) => this.showTaps(e.target)}>
+                    <div id=""  className="floor-card" style={{padding: '0 2rem !important', cursor: 'pointer'}} onClick={(e) => this.showTaps(e.target)}>
                         <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                             <div className="card mb-0 border-0">
                                 <div className="card-header  mb-1" data-toggle="collapse" >
@@ -68,7 +67,7 @@ class RoomListItem extends Component<IProps,IState> {
                                             <a className="card-title">
                                                 <input
                                                     type='text'
-                                                    className={`form-control ${!this.state.editRoom ? 'team-input' : ''}`}
+                                                    className={`form-control ${!this.state.editRoom ? 'team-input cursor-pointer' : ''}`}
                                                     value={this.state.room.room_name}
                                                     readOnly={!this.state.editRoom}
                                                     onChange={(e) => this.setState({room:{...this.state.room, room_name: e.target.value}})}

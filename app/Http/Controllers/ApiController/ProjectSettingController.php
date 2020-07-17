@@ -49,7 +49,8 @@ class ProjectSettingController extends Controller
      */
     public function show(Project $projectSetting, Request $request)
     {
-        return $projectSetting->settings;
+        $result = $projectSetting->settings;
+        return response()->json($result);
     }
 
     /**
@@ -72,12 +73,18 @@ class ProjectSettingController extends Controller
      */
     public function update(ProjectSettingsRequest $request, Project $projectSetting)
     {
-        foreach($request->post() as $setting)
-        {
-            ProjectSetting::where('id', $setting['id'])->update($setting);
+        try {
+            //code...
+            foreach($request->post() as $setting)
+            {
+                ProjectSetting::where('id', $setting['id'])->update($setting);
+            }
+            $result = $projectSetting->settings;
+            return response()->json($result);
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        return $projectSetting->settings;
+       
     }
 
     /**

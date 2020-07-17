@@ -17,11 +17,13 @@ class FloorRoomController extends Controller
      */
     public function index(Request $request)
     {
+        $result = null;
         if($request->floor_id) {
-            return FloorRoom::with('taps')->where('floor_id', $request->floor_id)->get();
+            $result = FloorRoom::with('taps')->where('floor_id', $request->floor_id)->get();
         } else {
-            return FloorRoom::with('taps')->get();
+            $result = FloorRoom::with('taps')->get();
         }
+        return response()->json($result);
     }
 
     /**
@@ -42,37 +44,42 @@ class FloorRoomController extends Controller
      */
     public function store(FloorRoomsRequest $request)
     {
-        $rooms = [];
+        try {
+            $rooms = [];
 
-        $room_details  = $request->post('room_details');
-
-        $from = intval($request->post('from'));
-        $to = intval($request->post('to'));
-
-        for($k=$from; $k<=$to; $k++)
-        {
-            $room = FloorRoom::create([
-                'floor_id' => $request->post('floor_id'),
-                'room_name' => $request->name.' '.$k,
-            ]);
-
-            for($i=0; $i<count($request->post('room_details')); $i++) {
-                if ($room_details[$i]['quantity'] != null) {
-                    for($j=0; $j<$room_details[$i]['quantity']; $j++)
-                    {
-                        $tap = Tap::create([
-                            'floor_room_id' => $room->id,
-                            'room_type_id' => $room_details[$i]['room_type']['id'],
-                            'name' => RoomType::where('id', $room_details[$i]['room_type']['id'])->first()->room_type.' '.($j+1),
-                        ]);
-                        $from++;
-                    } 
-                }          
+            $room_details  = $request->post('room_details');
+    
+            $from = intval($request->post('from'));
+            $to = intval($request->post('to'));
+    
+            for($k=$from; $k<=$to; $k++)
+            {
+                $room = FloorRoom::create([
+                    'floor_id' => $request->post('floor_id'),
+                    'room_name' => $request->name.' '.$k,
+                ]);
+    
+                for($i=0; $i<count($request->post('room_details')); $i++) {
+                    if ($room_details[$i]['quantity'] != null) {
+                        for($j=0; $j<$room_details[$i]['quantity']; $j++)
+                        {
+                            $tap = Tap::create([
+                                'floor_room_id' => $room->id,
+                                'room_type_id' => $room_details[$i]['room_type']['id'],
+                                'name' => RoomType::where('id', $room_details[$i]['room_type']['id'])->first()->room_type.' '.($j+1),
+                            ]);
+                            $from++;
+                        } 
+                    }          
+                }
+    
+                array_push($rooms, $room);
             }
-
-            array_push($rooms, $room);
+            return response()->json($rooms);
+        } catch (\Throwable $th) {
+            throw $th;
         }
-        return $rooms;
+      
     }
 
     /**
@@ -108,9 +115,9 @@ class FloorRoomController extends Controller
     {
         $update = $floorRoom->update($request->all());
         if($update) {
-            return $floorRoom;
+            return response()->json($floorRoom);
         } else {
-            return ['message' => 'Something Went Wrong.'];
+            throw new Exception("Error Processing Request", 1);
         }
     }
 

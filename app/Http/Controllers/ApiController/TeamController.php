@@ -41,7 +41,7 @@ class TeamController extends Controller
         if ($team) {
             return response()->json($team, 200);
         } else {
-            return ["message" => "Something went wrong. Try again later."];
+            throw new Exception("Error Processing Request", 1);
         }
         
     }
@@ -54,7 +54,7 @@ class TeamController extends Controller
      */
     public function show(Team $team)
     {
-        return $team;
+        return response()->json($team);
     }
 
     /**
@@ -81,7 +81,7 @@ class TeamController extends Controller
         if ($if_update) {
             return response()->json($team, 200);
         } else {
-            return ['message' => 'Something Went Wrong.'];
+            throw new Exception("Error Processing Request", 1);
         }
     }
 
@@ -97,7 +97,7 @@ class TeamController extends Controller
         if ($if_delete) {
             return response()->json(['message' => 'Team Deleted Successfully.'], 200);
         } else {
-            return ['message' => 'Something Went Wrong'];
+            throw new Exception("Error Processing Request", 1);   
         }
     }
 }

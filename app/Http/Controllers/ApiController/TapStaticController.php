@@ -15,9 +15,10 @@ class TapStaticController extends Controller
      */
     public function index(Request $request)
     {
-        return TapStatic::whereHas('taps', function($q) use($request) {
+        $collection = TapStatic::whereHas('taps', function($q) use($request) {
                     return $q->where('id', $request->tap_id);
                 })->with(['setting', 'user'])->get();
+        return response()->json($collection);
     }
 
     /**
@@ -45,7 +46,8 @@ class TapStaticController extends Controller
         $data['time'] = $dt->format('H:i:s');
         $tapStatic = TapStatic::create($data);
         if($tapStatic) {
-            return TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
+            $result = TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
+            return response()->json($result);
         } else {
             throw new Exception("Error Processing Request", 1);
         }
@@ -84,7 +86,8 @@ class TapStaticController extends Controller
     {
         $update = $tapStatic->update($request->all());
         if($update) {
-            return TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
+            $result =  TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
+            return response()->json($result);
         } else {
             throw new Exception("Something went wrong", 1);
         }

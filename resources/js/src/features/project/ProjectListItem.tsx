@@ -38,10 +38,7 @@ class ProjectListItem extends Component<IProps, State> {
                  message: "Project Deleted Successfully.",
                  messageClass: "danger"
              });
-             setTimeout(() => {
-                 this.props.afterDeleteProject(this.props.project as IProject);
-             }, 2000);
-            
+             this.props.afterDeleteProject(this.props.project as IProject);            
         })
         .catch((err) => {
              this.setState({
@@ -54,7 +51,7 @@ class ProjectListItem extends Component<IProps, State> {
 
     openProjectFloors = (target: any) => {
         if(target.tagName != 'I') {
-            this.props.history.push(`/project/${this.props.project?.id}/floors`)
+            this.props.history.push(`/project/${this.props.project?.id}`)
         }
     }
     
@@ -75,7 +72,7 @@ class ProjectListItem extends Component<IProps, State> {
                     {
                         userObject.role == UserRoles.ADMIN ?
                         <Fragment>
-                            <Link to={`project/${project?.id}`}>
+                            <Link to={`project/${project?.id}/settings`}>
                                 <span >
                                     <i className="fa fa-gear"></i>
                                 </span>
