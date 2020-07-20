@@ -73,7 +73,7 @@ class TapListItem extends Component<IProps, IState> {
             let tapTimers: ITapTimer[] = [];
 
             settings.forEach((setting, index) => {
-                const match = timers.some(timer => timer.project_setting_id == setting.id);
+                const match = !timers.some(timer => timer.project_setting_id == setting.id);
                 if(!match) {
                     let timer_: ITapTimer = {
                         project_setting_id: setting.id as number,
@@ -90,10 +90,9 @@ class TapListItem extends Component<IProps, IState> {
             //Check If To Be Saved Has Any Object If it has then call the API
             if(tapTimersToBeStore.length > 0) {
                 TapTimer.saveTapTimers(tapTimersToBeStore)
-                .then((timers) => { tapTimers.push(...timers); this.setState({tapTimers: tapTimers}); })
-            } else {
-                this.setState({tapTimers: tapTimers});
+                .then((timers) => { tapTimers.push(...timers); console.log('Tap Timer', tapTimers); })
             }
+            this.setState({tapTimers: tapTimers});
 
             TapStatic.getTapStatics(this.props.tap.id)
             .then((tapsStatics) => { 
@@ -284,8 +283,12 @@ class TapListItem extends Component<IProps, IState> {
 
 
     showPendingTap = (id = this.state.selectedPendingTapId) => {
+        console.log(id);
         let setting = this.state.pendingStatics.find((stat)=> stat.id == id) as IProjectSetting;
-        let timer = this.state.tapTimers.find((timer) => timer.project_setting_id == setting.id) as ITapTimer;
+        console.log(this.state.tapTimers);
+        let timer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
+        console.log(setting);
+        console.log(timer);
         if (timer?.wirkzeit_status == false) {
             this.setState({
                 tapStatus: <div className="row">
