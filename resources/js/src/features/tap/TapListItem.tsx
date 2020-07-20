@@ -315,7 +315,7 @@ class TapListItem extends Component<IProps, IState> {
                                 className="tap-btn" 
                                 onClick={(e) =>{ 
                                 //Show the timer
-                                    this.showInProgressTap(setting.field_wirkzeit, SettingsField.spulzeit, timer); 
+                                    this.showInProgressTap(setting.field_spulzeit, SettingsField.spulzeit, timer); 
                                 }}>
                                     Start Spulzeit
                             </button>

@@ -114,7 +114,7 @@ export class ProjectForm extends Component<IProps, IState> {
 
                 setTimeout(()=>{ 
                     this.setState({project_saved_message: ""});
-                    this.props.history.push(`/project/${res.id}/floors`);
+                    this.props.history.push(`/project/${res.id}`);
                 },
                 2000);
             })
