@@ -73,7 +73,7 @@ class TapListItem extends Component<IProps, IState> {
             let tapTimers: ITapTimer[] = [];
 
             settings.forEach((setting, index) => {
-                const match = !timers.some(timer => timer.project_setting_id == setting.id);
+                const match = timers.find(timer_ => timer_.project_setting_id == setting.id);
                 if(!match) {
                     let timer_: ITapTimer = {
                         project_setting_id: setting.id as number,
@@ -83,7 +83,7 @@ class TapListItem extends Component<IProps, IState> {
                     }
                     tapTimersToBeStore.push(timer_);
                 } else {
-                    tapTimers.push(timers[index]);
+                    tapTimers.push(match);
                 }
             });
 
@@ -284,6 +284,7 @@ class TapListItem extends Component<IProps, IState> {
 
     showPendingTap = (id = this.state.selectedPendingTapId) => {
         console.log(id);
+        console.log(this.props.tap);
         let setting = this.state.pendingStatics.find((stat)=> stat.id == id) as IProjectSetting;
         console.log(this.state.tapTimers);
         let timer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
