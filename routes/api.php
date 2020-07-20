@@ -37,6 +37,11 @@ Route::middleware('auth:web')->namespace('ApiController')->group(function(){
 
     Route::resource('tap-statics', 'TapStaticController');
 
+    Route::group(['prefix' => 'tap-rounds'], function () {
+        Route::get('', 'TapTimerController@index');
+        Route::post('', 'TapTimerController@store');
+    });
+
 });
 
 

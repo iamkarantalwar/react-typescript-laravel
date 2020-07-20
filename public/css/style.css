@@ -198,6 +198,21 @@ header.tab-header {
     padding-left: 20px;
 }
 
+button.tap-btn {
+    color: #fff !important;
+    background: #63b32e;
+    width: 108px;
+    height: 35px;
+    display: flex;
+    font-size: 15px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid #63b32e;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
 a.main-btn {
     color: #fff !important;
     background: #63b32e;
@@ -693,9 +708,6 @@ background-color: #f8f8fa;
   .main-team-area {
     width: 100%;
   }
-  textarea.form-control {
-    /* max-width: 74%; */
- }
 }
 
 /* @media (min-width: 1024px) and  (max-width: 1366px) {

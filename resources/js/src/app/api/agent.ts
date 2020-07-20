@@ -11,7 +11,8 @@ import { IRoomType } from '../models/room-type';
 import { IRoomForm } from '../models/room-form.model';
 import { IFloorRoom } from '../models/floor-room.model';
 import { ITapStatic } from '../models/tap-static.model';
-import { env } from 'process';
+import { ITap } from '../models/tap.model';
+import { ITapTimer } from '../models/tap-timer.model';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -39,7 +40,8 @@ const endPoints = {
     projectFloor: 'project-floors',
     roomTypes: 'room-types',
     floorRooms: 'floor-rooms',
-    tapStatics: 'tap-statics'
+    tapStatics: 'tap-statics',
+    tapRounds: 'tap-rounds',
 }
 
 export const Project = {
@@ -93,4 +95,9 @@ export const TapStatic = {
     createTapStatic : (stat: ITapStatic) : Promise<ITapStatic> => requests.post(`${enviorment.baseUrl}/${endPoints.tapStatics}`, stat),
     getTapStatics: (tapId: string | number): Promise<ITapStatic[]> => requests.get(`${enviorment.baseUrl}/${endPoints.tapStatics}?tap_id=${tapId}`),  
     updateTapStatic: (stat: ITapStatic): Promise<ITapStatic> => requests.put(`${enviorment.baseUrl}/${endPoints.tapStatics}/${stat.id}`, stat), 
+}
+
+export const TapTimer = {
+    getTapTimers: (tap: ITap): Promise<ITapTimer[]> => requests.get(`${enviorment.baseUrl}/${endPoints.tapRounds}?tap_id=${tap.id}`),
+    saveTapTimers: (timers: ITapTimer[]) : Promise<ITapTimer[]> => requests.post(`${enviorment.baseUrl}/${endPoints.tapRounds}`, timers),
 }

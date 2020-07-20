@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { ITap } from '../../app/models/tap.model';
 import { IProjectSetting, ProjectSettingStatus } from '../../app/models/project-setting.model';
-import { ProjectSetting, TapStatic } from '../../app/api/agent';
+import { TapStatic, TapTimer } from '../../app/api/agent';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { ITapStatic } from '../../app/models/tap-static.model';
 import { TapStaticStateEnum } from './TapStaticStateEnum';
@@ -10,6 +10,12 @@ import { RootState } from '../../redux';
 import { connect } from 'react-redux';
 import { Accordion, Button } from 'react-bootstrap';
 import TapStaticListItem from './TapStaticListItem';
+import { ITapTimer } from '../../app/models/tap-timer.model';
+
+enum SettingsField {
+    wirkzeit,
+    spulzeit
+}
 
 interface RouteParam {
     id: string;
@@ -34,6 +40,7 @@ interface IState {
     selectedPendingTapId?: number;
     tapStatus: JSX.Element | undefined;
     showTapStatics: boolean;
+    tapTimers: ITapTimer[];
 }
 
 class TapListItem extends Component<IProps, IState> {
@@ -47,6 +54,7 @@ class TapListItem extends Component<IProps, IState> {
             selectedPendingTapId: undefined,
             tapStatus: undefined,
             showTapStatics: false,
+            tapTimers: [],
         }
     }
     
@@ -55,16 +63,50 @@ class TapListItem extends Component<IProps, IState> {
         const projectId = this.props.match.params.id;
         const settings = this.props.projectSettings.projectSettings.filter((setting)=> setting.aktiv == ProjectSettingStatus.ACTIVE);
         this.setState({settings: settings});
-        TapStatic
-        .getTapStatics(this.props.tap.id)
-        .then((tapsStatics) => { 
-            const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
-            this.setState({ 
-                tapStatics: tapsStatics,
-                pendingStatics: pendingStatics,
+
+        //Fetch All The Timers
+        TapTimer.getTapTimers(this.props.tap)
+        .then(timers => {
+
+            //Make Two Objects TimersToBeStore and TapTimers
+            let tapTimersToBeStore : ITapTimer[]  = [];
+            let tapTimers: ITapTimer[] = [];
+
+            settings.forEach((setting, index) => {
+                const match = timers.some(timer => timer.project_setting_id == setting.id);
+                if(!match) {
+                    let timer_: ITapTimer = {
+                        project_setting_id: setting.id as number,
+                        spulzeit_status: false,
+                        wirkzeit_status: false,
+                        tap_id: this.props.tap.id,
+                    }
+                    tapTimersToBeStore.push(timer_);
+                } else {
+                    tapTimers.push(timers[index]);
+                }
             });
-            this.checkTapStaticState(settings, pendingStatics);                
-        });           
+
+            //Check If To Be Saved Has Any Object If it has then call the API
+            if(tapTimersToBeStore.length > 0) {
+                TapTimer.saveTapTimers(tapTimersToBeStore)
+                .then((timers) => { tapTimers.push(...timers); this.setState({tapTimers: tapTimers}); })
+            } else {
+                this.setState({tapTimers: tapTimers});
+            }
+
+            TapStatic.getTapStatics(this.props.tap.id)
+            .then((tapsStatics) => { 
+                const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
+                this.setState({ 
+                    tapStatics: tapsStatics,
+                    pendingStatics: pendingStatics,
+                });
+                this.checkTapStaticState(settings, pendingStatics);                
+            });           
+            
+        });
+ 
     }
 
     checkTapStaticState = (settings = this.state.settings, pendingStatics = this.state.pendingStatics) => {
@@ -88,36 +130,13 @@ class TapListItem extends Component<IProps, IState> {
         this.setState({tapStatus: <div></div>});
     }
 
-    showInProgressTap = () => {
-        const now = new Date();
-        const time = now.getHours() + ":" + now.getMinutes();
-        const date = now.getDate() + "/" + (now.getMonth()+1) + "/" + now.getFullYear();
-        
-        const progressTap: JSX.Element = <div className="row">
-                                            <div className="col-md-4">
-                                                {date}
-                                            </div>
-                                            <div className="col-md-4">
-                                                {time}
-                                            </div>
-                                         </div>;
-        this.setState({tapStatus: progressTap, tapStaticState: TapStaticStateEnum.DETECTING});
-    }
-
-    notDetected = (setting: IProjectSetting) => {
-        this.tapStaticAgent(setting, false);
-        const pendingStatics = this.state.pendingStatics.filter((stat) => stat.id != setting.id);
-        this.setState({pendingStatics: pendingStatics, selectedPendingTapId: pendingStatics[0]?.id});
-        this.checkTapStaticState(this.state.settings, pendingStatics);
-    }
-
-    detected = (setting: IProjectSetting) => {
+    showInProgressTap = (timer: string, field: SettingsField, tapTimer: ITapTimer) => {
         let time: string = "";
-        //Extract the numeric value from the Field Wirzekut
-        for(let i of setting.field_wirkzeit) {
+        //Extract the numeric value from the Timer
+        for(let i of timer) {
             if(!isNaN(Number(i))) {
                 time+=i;
-            } 
+            }
         }
 
         //Check If Other Tap Is detecting 
@@ -126,33 +145,108 @@ class TapListItem extends Component<IProps, IState> {
             alert("Another tap is Detecting. Please Wait");
         }  else {
             //Check if the Field Wirzekut have valid Value 
-            if(isNaN(Number(time))) {
+            if(Number(time)==0) {
                 alert('Ask Admin to set timer.');
             } else {     
                 //Change the Prop to detecting 
                 this.props.toggleTapDetecting();
 
-                const time_ = parseInt(time)*1000;         
-                this.showInProgressTap();
-                setTimeout(() => {
-                    //Send The Request to the server
-                    this.tapStaticAgent(setting, true);
-                    //Filter the pending element extract the selected setting
-                    const pendingStatics = this.state.pendingStatics.filter((stat) => stat.id != setting.id);
-                    //Change the state after filtering the selected setting item
-                    this.setState({pendingStatics: pendingStatics, selectedPendingTapId: pendingStatics[0]?.id});
-                    // Again check the Tap
-                    this.checkTapStaticState();
-                    //Change The Prop To Detecting Finished
-                    this.props.toggleTapDetecting();
-                }, 10000);
+                const now = new Date();
+                const current_time = now.getHours() + ":" + now.getMinutes();
+                const current_date = now.getDate() + "/" + (now.getMonth()+1) + "/" + now.getFullYear();
+                let increment = 0;
+                let interval = setInterval(() => {
+                    const progressTap: JSX.Element = <div className="row">
+                                                    <div className="col-md-4">
+                                                        {current_date}
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        {current_time}
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <i className="fa fa-clock"></i>
+                                                            {Number(timer) -increment}
+                                                    </div>
+                                                </div>;
+                    if(increment<Number(time)) {
+                        increment = increment + 1;
+                        this.setState({tapStatus: progressTap, tapStaticState: TapStaticStateEnum.DETECTING});                        
+                    } else {
+                        clearInterval(interval);
+
+                        // Check the field and update the status
+                        if(field == SettingsField.wirkzeit) {
+                            //Change the Status Of The Timer
+                            tapTimer.wirkzeit_status = true;
+
+                        } else if(field == SettingsField.spulzeit) {
+                            //Change the Status Of The Timer
+                            tapTimer.spulzeit_status = true;
+                        }
+                        //Change The State of The Timer
+                        const timers = this.state.tapTimers.map((tapTimer) => tapTimer.id == tapTimer.id ? timer : tapTimer)
+                        //Recheck the status
+                        this.checkTapStaticState();
+                        this.props.toggleTapDetecting();
+                    }
+                }, 1000);
+                
             }
         }
-        
-        
     }
 
+    notDetected = (setting: IProjectSetting) => {
+        this.tapStaticAgent(setting, false);
+    }
+
+    detected = (setting: IProjectSetting) => {
+        this.tapStaticAgent(setting, true);
+    }
+
+
+    // detected = (seeting: string) => {
+    //     let time: string = "";
+    //     //Extract the numeric value from the Timer
+    //     for(let i of timer) {
+    //         if(!isNaN(Number(i))) {
+    //             time+=i;
+    //         } 
+    //     }
+
+    //     //Check If Other Tap Is detecting 
+    //     if (this.props.tapDetecting) {
+    //         //Alert The message Annother Tap Is Detecting
+    //         alert("Another tap is Detecting. Please Wait");
+    //     }  else {
+    //         //Check if the Field Wirzekut have valid Value 
+    //         if(isNaN(Number(time))) {
+    //             alert('Ask Admin to set timer.');
+    //         } else {     
+    //             //Change the Prop to detecting 
+    //             this.props.toggleTapDetecting();
+
+    //             const time_ = parseInt(time)*1000;         
+    //           //  this.showInProgressTap(time_);
+    //            // setTimeout(() => {
+    //                 // //Send The Request to the server
+    //                 // this.tapStaticAgent(setting, true);
+    //                 //Filter the pending element extract the selected setting
+    //                 //const pendingStatics = this.state.pendingStatics.filter((stat) => stat.id != setting.id);
+    //                 //Change the state after filtering the selected setting item
+    //                 //this.setState({pendingStatics: pendingStatics, selectedPendingTapId: pendingStatics[0]?.id});
+    //                 // Again check the Tap
+    //                 //this.checkTapStaticState();
+    //                 //Change The Prop To Detecting Finished
+    //                 //this.props.toggleTapDetecting();
+    //           //  }, 10000);
+    //         }
+    //     }
+        
+        
+    // }
+
     tapStaticAgent = (setting: IProjectSetting, detected: boolean) => {
+        this.setState({tapStatus: undefined});
         let tapStatic: ITapStatic = {
             detected:detected,
             project_setting_id: setting?.id as number,
@@ -162,6 +256,11 @@ class TapListItem extends Component<IProps, IState> {
         TapStatic
         .createTapStatic(tapStatic)
         .then((res) => { 
+            //Chnage The Pending Static Information
+            const pendingStatics = this.state.pendingStatics.filter((stat) => stat.id != setting.id);
+            this.setState({pendingStatics: pendingStatics, selectedPendingTapId: pendingStatics[0]?.id});
+            this.checkTapStaticState(this.state.settings, pendingStatics);
+
              //Append Setting Item Into Stat List State
              let statics = this.state.tapStatics;
              statics.push(res);
@@ -183,25 +282,64 @@ class TapListItem extends Component<IProps, IState> {
         }
     }
 
+
     showPendingTap = (id = this.state.selectedPendingTapId) => {
         let setting = this.state.pendingStatics.find((stat)=> stat.id == id) as IProjectSetting;
-        this.setState({tapStatus: <div className="row">
-                    <div className="col-md-6">
-                        {setting?.field_name} Detected
-                    </div> 
-                    <div className="col-md-6">
-                        <span className="tap-check mr-2" onClick={(e) => this.detected(setting)}>
-                            <i className="fa fa-check" ></i>
-                        </span>
-                        <span className="tap-times" onClick={(e) => this.notDetected(setting)}>
-                            <i className="fa fa-times" ></i>
-                        </span>
-                    </div> 
-                </div>});
-    }
+        let timer = this.state.tapTimers.find((timer) => timer.project_setting_id == setting.id) as ITapTimer;
+        if (timer?.wirkzeit_status == false) {
+            this.setState({
+                tapStatus: <div className="row">
+                        <div className="col-md-6">
+                            {setting?.field_name}
+                        </div> 
+                        <div className="col-md-6">
+                           <button 
+                               className="tap-btn"
+                               onClick={(e) =>{ 
+                               //Show the timer
+                                this.showInProgressTap(setting.field_wirkzeit, SettingsField.wirkzeit, timer); 
+                                }}>
+                                    Start Wirkzeit
+                            </button>
+                        </div> 
+                    </div>
+            });
+        } else if (timer?.spulzeit_status == false) {
+            this.setState({
+                tapStatus: <div className="row">
+                        <div className="col-md-6">
+                            {setting?.field_name}
+                        </div> 
+                        <div className="col-md-6">
+                            <button
+                                className="tap-btn" 
+                                onClick={(e) =>{ 
+                                //Show the timer
+                                    this.showInProgressTap(setting.field_wirkzeit, SettingsField.spulzeit, timer); 
+                                }}>
+                                    Start Spulzeit
+                            </button>
+                        </div> 
+                    </div>
+            });
+        } else if(timer?.spulzeit_status === true && timer?.wirkzeit_status === true) {
+            this.setState({tapStatus: <div className="row">
+                                        <div className="col-md-6">
+                                            {setting?.field_name} Detected
+                                        </div> 
+                                        <div className="col-md-6">
+                                            <span className="tap-check mr-2" onClick={(e) => this.detected(setting)}>
+                                                <i className="fa fa-check" ></i>
+                                            </span>
+                                            <span className="tap-times" onClick={(e) => this.notDetected(setting)}>
+                                                <i className="fa fa-times" ></i>
+                                            </span>
+                                        </div> 
+                                    </div>
+            });
 
-    componentDidUpdate() {
-        // console.log(this.state.tapStaticState);
+        }
+       
     }
 
     render() {
