@@ -136,6 +136,7 @@ class TapListItem extends Component<IProps, IState> {
     }
 
     showInProgressTap = (timer: string, field: SettingsField, tapTimer: ITapTimer, detectingBeforeClosing: boolean = false) => {
+        console.log('clicked');
         let time: string = "";
         //Extract the numeric value from the Timer
             for(let i of timer.toString()) {
@@ -203,6 +204,7 @@ class TapListItem extends Component<IProps, IState> {
                             //Recheck the status
                             this.checkTapStaticState();
                            // this.props.toggleTapDetecting();
+                           this.interval = null;
                         } else {
                             console.log('not stopped');
                         }
@@ -300,10 +302,7 @@ class TapListItem extends Component<IProps, IState> {
                         <div className="col-md-6">
                             <button
                                 className="tap-btn" 
-                                onClick={(e) =>{ 
-                                //Show the timer
-                                    this.showInProgressTap(setting.field_spulzeit, SettingsField.spulzeit, timer); 
-                                }}>
+                                onClick={this.showInProgressTap.bind(this, setting.field_spulzeit, SettingsField.spulzeit, timer, false)}>
                                     Start Spulzeit
                             </button>
                         </div> 
