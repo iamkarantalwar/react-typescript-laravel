@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use Exception;
 use Carbon\Carbon;
 use App\Models\TapStatic;
 use Illuminate\Http\Request;

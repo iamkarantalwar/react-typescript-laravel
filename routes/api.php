@@ -40,6 +40,7 @@ Route::middleware('auth:web')->namespace('ApiController')->group(function(){
     Route::group(['prefix' => 'tap-rounds'], function () {
         Route::get('', 'TapTimerController@index');
         Route::post('', 'TapTimerController@store');
+        Route::put('/{timer}', 'TapTimerController@update');
     });
 
 });

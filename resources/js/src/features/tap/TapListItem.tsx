@@ -5,17 +5,15 @@ import { TapStatic, TapTimer } from '../../app/api/agent';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { ITapStatic } from '../../app/models/tap-static.model';
 import { TapStaticStateEnum } from './TapStaticStateEnum';
-import LoaderBar from '../../app/common/LoaderBar';
 import { RootState } from '../../redux';
 import { connect } from 'react-redux';
 import { Accordion, Button } from 'react-bootstrap';
 import TapStaticListItem from './TapStaticListItem';
 import { ITapTimer } from '../../app/models/tap-timer.model';
+import { SettingsField } from '../../app/enums/settings-field.enum';
+import { time } from 'console';
+import { AnyMxRecord } from 'dns';
 
-enum SettingsField {
-    wirkzeit,
-    spulzeit
-}
 
 interface RouteParam {
     id: string;
@@ -41,6 +39,8 @@ interface IState {
     tapStatus: JSX.Element | undefined;
     showTapStatics: boolean;
     tapTimers: ITapTimer[];
+    detectingField?: SettingsField;
+    timer: number;
 }
 
 class TapListItem extends Component<IProps, IState> {
@@ -55,9 +55,12 @@ class TapListItem extends Component<IProps, IState> {
             tapStatus: undefined,
             showTapStatics: false,
             tapTimers: [],
+            detectingField: undefined,
+            timer:0,
         }
     }
-    
+
+    interval: any;
 
     componentDidMount() {
         const projectId = this.props.match.params.id;
@@ -67,12 +70,11 @@ class TapListItem extends Component<IProps, IState> {
         //Fetch All The Timers
         TapTimer.getTapTimers(this.props.tap)
         .then(timers => {
-
             //Make Two Objects TimersToBeStore and TapTimers
             let tapTimersToBeStore : ITapTimer[]  = [];
             let tapTimers: ITapTimer[] = [];
 
-            settings.forEach((setting, index) => {
+            settings.forEach((setting) => {
                 const match = timers.find(timer_ => timer_.project_setting_id == setting.id);
                 if(!match) {
                     let timer_: ITapTimer = {
@@ -80,6 +82,10 @@ class TapListItem extends Component<IProps, IState> {
                         spulzeit_status: false,
                         wirkzeit_status: false,
                         tap_id: this.props.tap.id,
+                        spulzeit_pending_timer: null,
+                        wirkzeit_pending_timer: null,
+                        spulzeit_timer_started: null,
+                        wirkzeit_timer_started: null,
                     }
                     tapTimersToBeStore.push(timer_);
                 } else {
@@ -105,7 +111,7 @@ class TapListItem extends Component<IProps, IState> {
             });           
             
         });
- 
+
     }
 
     checkTapStaticState = (settings = this.state.settings, pendingStatics = this.state.pendingStatics) => {
@@ -129,14 +135,15 @@ class TapListItem extends Component<IProps, IState> {
         this.setState({tapStatus: <div></div>});
     }
 
-    showInProgressTap = (timer: string, field: SettingsField, tapTimer: ITapTimer) => {
+    showInProgressTap = (timer: string, field: SettingsField, tapTimer: ITapTimer, detectingBeforeClosing: boolean = false) => {
         let time: string = "";
         //Extract the numeric value from the Timer
-        for(let i of timer) {
-            if(!isNaN(Number(i))) {
-                time+=i;
+            for(let i of timer.toString()) {
+                if(!isNaN(Number(i))) {
+                    time+=i;
+                }
             }
-        }
+        
 
         //Check If Other Tap Is detecting 
         if (this.props.tapDetecting) {
@@ -147,51 +154,67 @@ class TapListItem extends Component<IProps, IState> {
             if(Number(time)==0) {
                 alert('Ask Admin to set timer.');
             } else {     
+                //Tell The Agent To Store It In The Back-end
+                if(!detectingBeforeClosing) {
+                    this.timerStartAgent(field, tapTimer);
+                }               
                 //Change the Prop to detecting 
-                this.props.toggleTapDetecting();
+                //this.props.toggleTapDetecting();
+                //Change The State of the tap to tell which setting is detecting
+                this.setState({detectingField: field});
 
                 const now = new Date();
                 const current_time = now.getHours() + ":" + now.getMinutes();
                 const current_date = now.getDate() + "/" + (now.getMonth()+1) + "/" + now.getFullYear();
-                let increment = 0;
-                let interval = setInterval(() => {
-                    const progressTap: JSX.Element = <div className="row">
-                                                    <div className="col-md-4">
-                                                        {current_date}
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        {current_time}
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <i className="fa fa-clock"></i>
-                                                            {Number(timer) -increment}
-                                                    </div>
-                                                </div>;
-                    if(increment<Number(time)) {
+                let increment = -1;
+                if(!this.interval) {
+                    this.interval = setInterval(() => {
                         increment = increment + 1;
-                        this.setState({tapStatus: progressTap, tapStaticState: TapStaticStateEnum.DETECTING});                        
-                    } else {
-                        clearInterval(interval);
-
-                        // Check the field and update the status
-                        if(field == SettingsField.wirkzeit) {
-                            //Change the Status Of The Timer
-                            tapTimer.wirkzeit_status = true;
-
-                        } else if(field == SettingsField.spulzeit) {
-                            //Change the Status Of The Timer
-                            tapTimer.spulzeit_status = true;
+                        const progressTap: JSX.Element = <div className="row">
+                                                        <div className="col-md-4">
+                                                            {current_date}
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            {current_time}
+                                                        </div>
+                                                        <div className="col-md-4">
+                                                            <i className="fa fa-clock"></i>
+                                                                {Number(timer)-increment}
+                                                        </div>
+                                                    </div>;
+                        if(Number(timer)-increment != 0) {
+                            this.setState({tapStatus: progressTap, tapStaticState: TapStaticStateEnum.DETECTING});                        
+                        } else if(Number(timer)-increment == 0) {
+                            clearInterval(this.interval);
+                            // Check the field and update the status
+                            if(field == SettingsField.wirkzeit) {
+                                //Change the Status Of The Timer
+                                tapTimer.wirkzeit_status = true;
+    
+                            } else if(field == SettingsField.spulzeit) {
+                                //Change the Status Of The Timer
+                                tapTimer.spulzeit_status = true;
+                            }
+                            //Call the Agent To Mark Completed in server 
+                            this.settingTimerCompletedAgent(tapTimer);
+                            //Change The State of The Timer
+                            const timers: ITapTimer[] = this.state.tapTimers.map((tapTimer_) => tapTimer_.id == tapTimer.id ? tapTimer : tapTimer_);
+                            this.setState({tapTimers: timers});
+                            //Recheck the status
+                            this.checkTapStaticState();
+                           // this.props.toggleTapDetecting();
+                        } else {
+                            console.log('not stopped');
                         }
-                        //Change The State of The Timer
-                        const timers = this.state.tapTimers.map((tapTimer) => tapTimer.id == tapTimer.id ? timer : tapTimer)
-                        //Recheck the status
-                        this.checkTapStaticState();
-                        this.props.toggleTapDetecting();
-                    }
-                }, 1000);
-                
+                    }, 1000);
+                }                
             }
         }
+    }
+
+    timerStartAgent = (field: SettingsField, tapTimer: ITapTimer) => {
+        TapTimer.startTapTimer(field, tapTimer)
+        .then((res) => console.group(res));
     }
 
     notDetected = (setting: IProjectSetting) => {
@@ -203,46 +226,10 @@ class TapListItem extends Component<IProps, IState> {
     }
 
 
-    // detected = (seeting: string) => {
-    //     let time: string = "";
-    //     //Extract the numeric value from the Timer
-    //     for(let i of timer) {
-    //         if(!isNaN(Number(i))) {
-    //             time+=i;
-    //         } 
-    //     }
-
-    //     //Check If Other Tap Is detecting 
-    //     if (this.props.tapDetecting) {
-    //         //Alert The message Annother Tap Is Detecting
-    //         alert("Another tap is Detecting. Please Wait");
-    //     }  else {
-    //         //Check if the Field Wirzekut have valid Value 
-    //         if(isNaN(Number(time))) {
-    //             alert('Ask Admin to set timer.');
-    //         } else {     
-    //             //Change the Prop to detecting 
-    //             this.props.toggleTapDetecting();
-
-    //             const time_ = parseInt(time)*1000;         
-    //           //  this.showInProgressTap(time_);
-    //            // setTimeout(() => {
-    //                 // //Send The Request to the server
-    //                 // this.tapStaticAgent(setting, true);
-    //                 //Filter the pending element extract the selected setting
-    //                 //const pendingStatics = this.state.pendingStatics.filter((stat) => stat.id != setting.id);
-    //                 //Change the state after filtering the selected setting item
-    //                 //this.setState({pendingStatics: pendingStatics, selectedPendingTapId: pendingStatics[0]?.id});
-    //                 // Again check the Tap
-    //                 //this.checkTapStaticState();
-    //                 //Change The Prop To Detecting Finished
-    //                 //this.props.toggleTapDetecting();
-    //           //  }, 10000);
-    //         }
-    //     }
-        
-        
-    // }
+    settingTimerCompletedAgent = (tapTimer: ITapTimer) => {
+        TapTimer.updateTapTimer(tapTimer)
+        .then(res => console.log(res));
+    }
 
     tapStaticAgent = (setting: IProjectSetting, detected: boolean) => {
         this.setState({tapStatus: undefined});
@@ -283,14 +270,10 @@ class TapListItem extends Component<IProps, IState> {
 
 
     showPendingTap = (id = this.state.selectedPendingTapId) => {
-        console.log(id);
-        console.log(this.props.tap);
         let setting = this.state.pendingStatics.find((stat)=> stat.id == id) as IProjectSetting;
-        console.log(this.state.tapTimers);
         let timer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
-        console.log(setting);
-        console.log(timer);
-        if (timer?.wirkzeit_status == false) {
+        if (timer?.wirkzeit_status == false && timer?.wirkzeit_timer_started == null) {
+            console.log('a');
             this.setState({
                 tapStatus: <div className="row">
                         <div className="col-md-6">
@@ -299,16 +282,16 @@ class TapListItem extends Component<IProps, IState> {
                         <div className="col-md-6">
                            <button 
                                className="tap-btn"
-                               onClick={(e) =>{ 
-                               //Show the timer
-                                this.showInProgressTap(setting.field_wirkzeit, SettingsField.wirkzeit, timer); 
-                                }}>
+                               onClick={this.showInProgressTap.bind(this, setting.field_wirkzeit, SettingsField.wirkzeit, timer, false)}>
                                     Start Wirkzeit
                             </button>
                         </div> 
                     </div>
             });
-        } else if (timer?.spulzeit_status == false) {
+        } else if(timer?.wirkzeit_status == false && timer?.wirkzeit_pending_timer != null) {
+            this.showInProgressTap(timer.wirkzeit_pending_timer, SettingsField.wirkzeit, timer, true);
+        }         
+        else if (timer?.spulzeit_status == false && timer?.spulzeit_pending_timer == null && timer?.wirkzeit_status  == true) {
             this.setState({
                 tapStatus: <div className="row">
                         <div className="col-md-6">
@@ -326,7 +309,12 @@ class TapListItem extends Component<IProps, IState> {
                         </div> 
                     </div>
             });
-        } else if(timer?.spulzeit_status === true && timer?.wirkzeit_status === true) {
+        } 
+        else if(timer?.spulzeit_status == false && timer?.spulzeit_pending_timer != null && timer?.wirkzeit_status == true) {
+            this.showInProgressTap(timer.spulzeit_pending_timer, SettingsField.spulzeit, timer, true);
+        }  
+        else if(timer?.spulzeit_status == true && timer?.wirkzeit_status == true) {
+            console.log('c');
             this.setState({tapStatus: <div className="row">
                                         <div className="col-md-6">
                                             {setting?.field_name} Detected
@@ -343,7 +331,12 @@ class TapListItem extends Component<IProps, IState> {
             });
 
         }
-       
+    }
+
+    componentWillUnmount() {
+        if(this.interval) {
+            clearInterval(this.interval);
+        }
     }
 
     render() {

@@ -67,7 +67,12 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $this->destroyToken();
+        try {
+            $this->destroyToken();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+       
 
         $this->guard()->logout();
 

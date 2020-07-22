@@ -72,7 +72,6 @@ class Floor extends Component<IProps, IState> {
     }
 
     toggleForm = () => {
-        console.log('abc');
         this.setState({ showFloorForm: !this.state.showFloorForm });
     }
 
@@ -94,6 +93,7 @@ class Floor extends Component<IProps, IState> {
        let floors = this.state.floors.filter((floor_)=> floor.id != floor_.id);
        this.setState({
            floors: floors,
+           toggleFloors: this.state.toggleFloors.filter((toggle) => toggle.id != floor.id),
        }) 
     }
 
@@ -112,7 +112,6 @@ class Floor extends Component<IProps, IState> {
 
     selectFloor = (floor: IProjectFloor, open: boolean | undefined = undefined) => {
         let toggleFloors = this.state.toggleFloors.map((floor_) => floor_.id == floor.id ? {id: floor_.id, open: open != undefined ? open : !floor_.open} : {id: floor_.id, open: false});
-        console.log(toggleFloors);
         this.setState({toggleFloors: toggleFloors});
     }
 

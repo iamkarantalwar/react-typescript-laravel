@@ -6,6 +6,7 @@ use Str;
 use Auth;
 use Validator;
 use App\User;
+use Exception;
 use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

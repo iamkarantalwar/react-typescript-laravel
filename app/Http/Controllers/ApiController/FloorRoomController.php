@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use Exception;
 use App\Models\Tap;
 use App\Models\RoomType;
 use App\Models\FloorRoom;

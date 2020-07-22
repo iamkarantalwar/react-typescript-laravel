@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ApiController;
 
 use Auth;
+use Exception;
 use App\Enums\UserRole;
 use App\Models\Project;
 use Illuminate\Http\Request;

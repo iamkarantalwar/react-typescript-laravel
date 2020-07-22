@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use Exception;
 use App\Taps;
 use Illuminate\Http\Request;
 

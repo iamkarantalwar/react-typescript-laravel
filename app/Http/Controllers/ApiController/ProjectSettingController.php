@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use Exception;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Models\ProjectSetting;

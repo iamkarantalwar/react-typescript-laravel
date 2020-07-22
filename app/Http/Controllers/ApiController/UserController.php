@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use Hash;
 use App\User;
+use Exception;
 use App\Models\UserRole as UserRoleModel;
 use App\Enums\UserRole;
 use Illuminate\Http\Request;
