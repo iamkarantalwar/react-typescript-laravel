@@ -48,7 +48,7 @@ export class ProjectForm extends Component<IProps, IState> {
     }
 
     defaultState = {
-        btnText: "Add Project",
+        btnText: "Projekt hinzufügen",
         errors: {
             project_name: "",
             description: "",
@@ -60,7 +60,7 @@ export class ProjectForm extends Component<IProps, IState> {
     componentDidMount() {
         let path = this.props.location.pathname.split('/');
         if(path[path.length-1] == "create") {
-            this.setState({btnText: "Create Project", showDescription: true});
+            this.setState({btnText: "Projekt erstellen", showDescription: true});
             const title = this.props.projectForm.project.project_name ? this.props.projectForm.project.project_name: this.props.title;
             this.props.changeTitle(title);
         }
@@ -101,13 +101,13 @@ export class ProjectForm extends Component<IProps, IState> {
             .then((res) => {
                 // this.props.afterAddNewProject(res);
                 this.setState({
-                    project_saved_message: "Project saved Successfully.",
+                    project_saved_message: "Projekt erfolgreich erstellt.",
                     errors:{
                         ...this.state.errors,
                         project_name: "",
                         description: "",
                     },
-                    btnText: "Add Project"
+                    btnText: "Projekt hinzufügen"
                 });
 
                 this.props.editProjectForm({project_name: "", description: ""}, false);
@@ -168,13 +168,13 @@ export class ProjectForm extends Component<IProps, IState> {
                     <div className="row align-items-center">
                         <div className="col-md-9 col-lg-9 col-xl-10">
                             <div className="form-group">
-                                <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>Projects Name</label>
+                                <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>Projektname</label>
                                 {
                                     this.isFloorWindow() ? <> <br/> {this.props.projectForm.project.project_name} </>
                                     :                                
                                     <input type="name" 
                                         className={`form-control ${this.state.errors.project_name ? 'is-invalid' : ''} ${this.state.project_saved_message ? 'is-valid' : ''}` } 
-                                        placeholder="Projects Name" 
+                                        placeholder="Projektname" 
                                         id="first-name"
                                         name="project_name"
                                         value={this.props.projectForm.project.project_name}
@@ -194,10 +194,11 @@ export class ProjectForm extends Component<IProps, IState> {
                                                   <div className="form-btn text-right mt-3">
                                                         <button 
                                                                 type={this.state.showDescription ? 'submit' : 'button'} 
-                                                                className="main-btn" 
+                                                                className="main-btn"
+                                                                style={{width: '156px'}} 
                                                                 onClick={(e) => 
                                                                 {
-                                                                    this.state.btnText != "Create Project" ? this.props.history.push('/project/create'): this.onSubmitHandler(e);
+                                                                    this.state.btnText != "Projekt erstellen" ? this.props.history.push('/project/create'): this.onSubmitHandler(e);
                                                                 }}>
                                                             {this.state.btnText}
                                                         </button>
@@ -211,7 +212,7 @@ export class ProjectForm extends Component<IProps, IState> {
                     <div className="row">
                     <div className="col-md-9 col-lg-9 col-xl-10">
                         <div className={`form-group ${this.state.showDescription ? 'd-block' : 'd-none'}`}>
-                            <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>Project Description</label>
+                            <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>Projektbeschreibung</label>
                             {
                                  this.isFloorWindow() ? <> <br/> {this.props.projectForm.project.description} </>
                                  :
@@ -238,7 +239,7 @@ export class ProjectForm extends Component<IProps, IState> {
                             this.isSettingsWindow() ?
                             <div className="col-md-2 col-lg-2 col-xl-2">
                                 <div className="form-btn text-right">
-                                    <Link to={`/project/${this.props.project?.id}`} className="main-btn">Floor Settings</Link>
+                                    <Link to={`/project/${this.props.project?.id}`} className="main-btn" style={{width: '145px'}}>Bodeneinstellungen</Link>
                                 </div>             
                             </div> : ""   
                         }  
@@ -246,7 +247,7 @@ export class ProjectForm extends Component<IProps, IState> {
                         {
                             userObject.role == UserRoles.ADMIN && this.props.project && !this.isSettingsWindow() ?
                                 <div className="form-btn text-right">
-                                    <Link to={`/project/${this.props.project?.id}/settings`} className="main-btn">Settings</Link>
+                                    <Link to={`/project/${this.props.project?.id}/settings`} className="main-btn">Einstellung</Link>
                                 </div>
                             : ""
                         }
@@ -256,7 +257,7 @@ export class ProjectForm extends Component<IProps, IState> {
                                 this.isFloorWindow() 
                                     ? 
                                 <div className="form-btn text-right">
-                                    <a href={void(0)} onClick={this.addFloor} className="main-btn">Add Floor</a>
+                                    <a href={void(0)} onClick={this.addFloor} className="main-btn" style={{width: '137px'}}>Böden hinzufügen</a>
                                 </div> : ""
                             }
                            

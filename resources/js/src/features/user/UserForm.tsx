@@ -123,7 +123,7 @@ class UserForm extends Component<IProps, IState> {
                     {this.state.added ? <div className="text-success">User Created Successfully.</div> : ""}
                            <div className="add-user-form d-flex align-items-end justify-content-between">                               
                               <div className="form-group col-md-5 px-1">
-                                 <label>Add New User</label>
+                                 <label>Neuen Benutzer hinzufügen</label>
                                  <input type="name" 
                                         className={`form-control ${this.state.errors.name ? "is-invalid" : ""}`}
                                         placeholder="Name"
@@ -139,7 +139,7 @@ class UserForm extends Component<IProps, IState> {
                                         readOnly={true} 
                                         placeholder="Shortcode"
                                         value={this.state.user.shortcode}/>
-                                 {this.state.errors.shortcode ? <span className="text-danger">{this.state.errors.shortcode}</span>:""}
+                                 {this.state.errors.shortcode ? <span className="text-danger" style={{width: '96%'}}>{this.state.errors.shortcode}</span>:""}
                               </div>
                            
                               <div className="form-group col-md-5 px-1">
@@ -153,22 +153,22 @@ class UserForm extends Component<IProps, IState> {
                               </div>
                            </div>
                            <div className="row align-items-end justify-content-between px-3 align-items-center mt-md-5">
-                              <div className="form-group col-md-7 px-1">
+                              <div className="form-group col-md-5 px-1">
                                  <input type="password" 
                                         className={` form-control ${this.state.errors.password ? "is-invalid" : ""} `}
-                                        placeholder="password"
+                                        placeholder="Passwort"
                                         value={this.state.user.password}
                                         onChange={ (e) => this.setState({ user:{...this.state.user, password: e.target.value} }) }
                                         />
                                 {this.state.errors.password ? <span className="text-danger">{this.state.errors.password}</span>:""}
                               </div>
-                              <div className="form-group col-md-2 px-1">
+                              <div className="form-group col-md-3 px-1">
                                  <select name="role" 
                                          className={`form-control ${this.state.errors.role_name ? "is-invalid" : ""}`}
                                          onChange={ (e) => this.setState({ user:{...this.state.user, role_name: e.target.value} }) }
                                          value={this.state.user.role_name}
                                          >
-                                    <option value="">Select Role</option>
+                                    <option value="">Wählen Sie Rolle</option>
                                     {
                                         this.props
                                         .roles.map((role) => <option key={role.role_name} value={role.role_name}>{role.role_name}</option>)
@@ -177,13 +177,13 @@ class UserForm extends Component<IProps, IState> {
                                  { this.state.errors.role_name ? <span className="text-danger">{this.state.errors.role_name}</span> : "" }
                               </div>
                            
-                              <div className="form-group col-md-2 px-1">
+                              <div className="form-group col-md-3 px-1">
                                  <select name="team" 
                                          className={`form-control ${this.state.errors.team_id ? "is-invalid" : ""}`} 
                                          value={this.state.user.team_id as string}                                        
                                          onChange={ (e) => this.setState({ user:{...this.state.user,team_id:e.target.value} }) }
                                          >
-                                    <option value="">Select Team</option>
+                                    <option value="">Team auswählen</option>
                                     {this.props
                                         .teams.map((team) => <option key={team.id} value={team.id}>{team.team_name}</option>)
                                     }
@@ -191,7 +191,7 @@ class UserForm extends Component<IProps, IState> {
                                   {this.state.errors.team_id ? <span className="text-danger">{this.state.errors.team_id}</span>:""}
                               </div>
                               <div className="form-btn form-group col-md-1 px-1 text-right">
-                                 <button type="submit" className="main-btn">Add</button>
+                                 <button type="submit" className="main-btn">Hinzufügen</button>
                               </div>
                            </div>
                     </form>

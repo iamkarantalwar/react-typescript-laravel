@@ -114,7 +114,7 @@ class UserListItem extends Component<IProps, IState> {
                         {this.state.errors.name ? <span className="text-danger">{this.state.errors.name}</span>:""}
                         {this.state.updated ?  <span className="text-success">This User Updated Successfully.</span> : ""}
                     </th>
-                    <td><span><input type="text" 
+                    <td><span className="shortcode-box"><input type="text" 
                                      className="team-input" 
                                      readOnly 
                                      value={this.state.user.shortcode}
@@ -128,7 +128,7 @@ class UserListItem extends Component<IProps, IState> {
                                 value={this.state.user.role_name}
                                 onChange={(e) => this.setState({user:{...this.state.user,role_name:e.target.value}, pencil: false})}
                                 defaultValue={this.props.user.role.role_name}>
-                            <option value="">Select Role</option>
+                            <option value="">Wählen Sie Rolle</option>
                             {this.props
                                 .roles
                                 .map(
@@ -145,7 +145,7 @@ class UserListItem extends Component<IProps, IState> {
                                 className="form-control"
                                 onChange={(e) => this.setState({user:{...this.state.user,team_id:e.target.value}, pencil: false})}
                                 defaultValue={this.props.user.team_id as string}>
-                            <option value="">Select Team</option>
+                            <option value="">Team auswählen</option>
                             {this.props
                                 .teams
                                 .map(

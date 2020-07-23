@@ -89,7 +89,7 @@ class FloorListItem extends Component<IProps, IState> {
       .updateProjectFloor(this.state.floor)
       .then((res) => {
         this.setState({
-          message: "Floor Updated Successfully",
+          message: "Etage erfolgreich aktualisiert",
           messageClass: "text-success",
           editFloor:false
         });
@@ -97,7 +97,7 @@ class FloorListItem extends Component<IProps, IState> {
         setTimeout(()=>{ this.setState({message: "", messageClass: ""})},2000);
       })
       .catch((error: AxiosError) =>{
-        let message = 'Something Went Wrong';
+        let message = 'Etwas ist schief gelaufen';
 
         if(error.response?.status==422) {
             let error_bags = error.response.data.errors;
@@ -157,13 +157,13 @@ class FloorListItem extends Component<IProps, IState> {
     }
 
     deleteFloor = (floor: IProjectFloor) => {
-      let confirm_: any = confirm("Are you sure you want to delete?");
+      let confirm_: any = confirm("Möchten Sie diese Etage wirklich löschen?");
       if(confirm_) {
           ProjectFloors
           .deleteProjectFloor(floor)
           .then((res) => {
               this.setState({
-                message: 'Floor Deleted Successfully',
+                message: 'Etage erfolgreich gelöscht.',
                 messageClass: 'text-danger'
               })
           });
@@ -217,7 +217,7 @@ class FloorListItem extends Component<IProps, IState> {
             afterUpdateRoom={this.afterUpdateRoom}
           />                            
         )
-      }) : <h4 className="ml-5 mb-2">No Rooms Assigned.</h4>;
+      }) : <h4 className="ml-5 mb-2">Keine Zimmer verfügbar.</h4>;
       return (
         <Fragment>
           {
@@ -249,7 +249,7 @@ class FloorListItem extends Component<IProps, IState> {
                                className={`status-select border border-${this.getStatusCssClass()}`}
                                onChange={this.statusChangeHandler}
                              >
-                               <option value={undefined}>Select Status</option>
+                               <option value={undefined}>Status auswählen</option>
                                {
                                  Object.entries(ProjectFloorStatus).map(([key, value]) => <option key={key} value={value}> {value} </option>)
                                }
@@ -265,7 +265,7 @@ class FloorListItem extends Component<IProps, IState> {
                                className="team-select"
                                onChange={this.teamChangeHandler}
                              >
-                              <option value=''>Select Team</option>
+                              <option value=''>Team auswählen</option>
                                {
                                  this.props.teams.map((team) => <option key={team.id} value={team.id}> {team.team_name} </option>)
                                }
@@ -283,7 +283,7 @@ class FloorListItem extends Component<IProps, IState> {
                                 this.props.selectFloor(this.props.floor, false);
                             }}
                            >
-                             <span><i className={`fa ${this.state.showRoomForm ? 'fa-minus' : 'fa-plus'} room-form-icon`} aria-hidden="true"></i></span> Room
+                             <span><i className={`fa ${this.state.showRoomForm ? 'fa-minus' : 'fa-plus'} room-form-icon`} aria-hidden="true"></i></span>Räume
                            </a>
                          </div>
                          <div className="room-btn">

@@ -38,7 +38,8 @@ class TeamRequest extends ApiRequest
     public function messages()
     {
         return [
-            'team_name.required' => 'Team name is Required',
+            'team_name.required' => 'Das Feld für den Teamnamen ist erforderlich',
+            'team_name.unique' => 'Der Teamname wurde bereits vergeben.',
         ];
     }
 

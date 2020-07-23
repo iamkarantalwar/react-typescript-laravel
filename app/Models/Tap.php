@@ -13,7 +13,15 @@ class Tap extends Model
     public $fillable = ['name', 'floor_room_id', 'room_type_id'];
 
     public function statics() {
-        return $this->hasMany("App\TapStatic");
+        return $this->hasMany("App\Models\TapStatic");
+    }
+
+    public function timers() {
+        return $this->hasMany("App\Models\TapTimer");
+    }
+
+    public function settings() {
+        
     }
 
 }

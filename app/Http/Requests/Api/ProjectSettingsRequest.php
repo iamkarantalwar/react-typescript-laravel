@@ -34,8 +34,8 @@ class ProjectSettingsRequest extends ApiRequest
 
     public function messages() {
         return [
-            '*.field_wirkzeit.required' => 'Field Wirkzeit Can\'t be empty',
-            '*.field_spulzeit.required' => 'Field Spulzeit Can\'t be empty',
+            '*.field_wirkzeit.required' => 'Feld Wirkzeit Kann nicht leer sein',
+            '*.field_spulzeit.required' => 'Feld Spulzeit Kann nicht leer sein',
         ];
     }
 }

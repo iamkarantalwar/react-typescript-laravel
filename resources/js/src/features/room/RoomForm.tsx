@@ -186,7 +186,7 @@ class RoomForm extends Component<IProps, IState> {
         return (
             <div className="rooms-form-area my-5" id="room-form">
                 <form className="add-rooms-form" onSubmit={this.submitHandler}>
-                    <h5 className="font-weight-bold">Add Rooms to {this.props.floor.floor_name}</h5>
+                    <h5 className="font-weight-bold">Zimmer zu {this.props.floor.floor_name} hinzufügen.</h5>
                     {this.state.message ? <span className={this.state.messageClass}><b>{this.state.message}</b></span> : ""}
                     <hr/>
                     <div className="add-room-details d-flex">
@@ -202,33 +202,33 @@ class RoomForm extends Component<IProps, IState> {
                         </div>
                         <div className="add-floor-number d-flex">
                             <div className="form-group">
-                                <label htmlFor="exampleInputEmail1">Quantity</label>
+                                <label htmlFor="exampleInputEmail1">Menge</label>
                                 <input 
                                     type="number" 
                                     className={`form-control ${this.state.errors.quantity ? 'is-invalid': ''}`} 
-                                    placeholder="Quantity" 
+                                    placeholder="Menge" 
                                     value={this.state.roomForm.quantity}
                                     onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, quantity: e.target.value}} )}     
                                 />
                                 {this.state.errors.quantity ? <span className='text-danger'>{this.state.errors.quantity}</span> : ""}
                             </div>
                             <div className="form-group">
-                                <label htmlFor="exampleInputEmail1">Form</label>
+                                <label htmlFor="exampleInputEmail1">Von</label>
                                 <input 
                                     type="number" 
                                     className={`form-control ${this.state.errors.from ? 'is-invalid': ''}`} 
-                                    placeholder="From"
+                                    placeholder="Von"
                                     value={this.state.roomForm.from}
                                     onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, from: e.target.value}} )}     
                                 />
                                 {this.state.errors.from ? <span className='text-danger'>{this.state.errors.from}</span> : ""}
                             </div>
                             <div className="form-group">
-                                <label htmlFor="exampleInputEmail1">To</label>
+                                <label htmlFor="exampleInputEmail1">Zu</label>
                                 <input 
                                     type="number" 
                                     className={`form-control ${this.state.errors.to ? 'is-invalid': ''}`} 
-                                    placeholder="To"
+                                    placeholder="Zu"
                                     value={this.state.roomForm.to}
                                     onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, to: e.target.value}} )} 
                                 />
@@ -242,10 +242,10 @@ class RoomForm extends Component<IProps, IState> {
                         
                         <div className="add-rooms-btns mt-3">
                             <div className="add-floor-create-btn">
-                                <button type="submit" className="main-btn mr-1">Add</button>
+                                <button type="submit" className="main-btn mr-1">Hinzufügen</button>
                             </div>
                             <div className="add-floor-cancel">
-                                <button type="reset" className="main-btn cancel" onClick={(e) => this.props.hideRoomForm()}>Cancel</button>
+                                <button type="reset" className="main-btn cancel" onClick={(e) => this.props.hideRoomForm()}>Stornieren</button>
                             </div>
                     </div>
                 </div>

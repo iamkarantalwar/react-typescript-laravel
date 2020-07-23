@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use Exception;
 use Carbon\Carbon;
+use App\Models\TapTimer;
 use App\Models\TapStatic;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,15 @@ class TapStaticController extends Controller
     {
         $collection = TapStatic::whereHas('taps', function($q) use($request) {
                     return $q->where('id', $request->tap_id);
-                })->with(['setting', 'user'])->get();
+                })->with(['setting', 'user'])
+                ->get()
+                ->map(function ($q) { 
+                    $timer = TapTimer::where('project_setting_id', $q->project_setting_id)->where('tap_id', $q->id)->first();
+                    //Add Timer With Collection
+                    $q->timer = $timer;
+                    return $q;
+                });
+
         return response()->json($collection);
     }
 

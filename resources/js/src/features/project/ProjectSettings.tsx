@@ -118,7 +118,7 @@ class ProjectSettings extends Component<IProps, IState> {
                 settings: res,
                 showLoader: false,
                 errors: this.defaultErrors,
-                message: "Settings Updated Successfully",
+                message: "Einstellungen erfolgreich aktualisiert",
                 messageClass: 'text-success',
             });
             setTimeout(()=> this.setState({message: "", messageClass:""}), 2000 );
@@ -152,7 +152,7 @@ class ProjectSettings extends Component<IProps, IState> {
             }
             this.setState({
                 showLoader: false,
-                message: 'Something Went Wrong',
+                message: 'Etwas ist schief gelaufen',
                 messageClass: 'text-danger'
             });
             setTimeout(()=> this.setState({message: "", messageClass:""}), 2000 );
@@ -165,11 +165,11 @@ class ProjectSettings extends Component<IProps, IState> {
                 <ProjectForm project={this.state.project as IProject}/>
                 <div className="start-form">
                     <div className="form-setting-option mt-4">
-                        <h4 className="setting-tittle pl-4">Settings</h4>
+                        <h4 className="setting-tittle pl-4">Einstellung</h4>
                         <hr/>
                         <form onSubmit={this.onSubmitHandler}>
                         <div className="main-table table-responsive">
-                                <table className="table">
+                                <table className="table settings-table">
                                     <caption><span className={this.state.messageClass}>{this.state.message}</span></caption>
                                     <thead>
                                         <tr>
@@ -229,7 +229,7 @@ class ProjectSettings extends Component<IProps, IState> {
                                 </table>                   
                         </div>
                         <div className="table-btn text-right my-4">
-                            <button type="submit" className="main-btn">Save</button>
+                            <button type="submit" className="main-btn">Sparen</button>
                         </div>
                         </form> 
                     </div>

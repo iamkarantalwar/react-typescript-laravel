@@ -43,4 +43,18 @@ class UserRequest extends ApiRequest
             ];
         }
     }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Das Namensfeld ist erforderlich',
+            'email.required' => 'Das E-Mail-Feld ist erforderlich.',
+            'email.unique' =>  'Die E-Mail-Adresse wird bereits verwendet.',
+            'password.required' => 'Das Passwortfeld ist erforderlich.',
+            'password.min' => 'Das Passwort muss mindestens 6 Zeichen lang sein',
+            'shortcode.required' => 'Das Shortcode-Feld ist erforderlich.',
+            'role_name.required' => 'Der Rollenname ist erforderlich.',
+            'team_id.required' => 'Das Feld Team-ID ist erforderlich.'
+        ];
+    }
 }

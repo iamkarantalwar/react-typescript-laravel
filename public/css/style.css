@@ -814,3 +814,23 @@ a{
 .cursor-pointer {
     cursor: pointer;
 }
+
+.settings-table tr td span {
+    position: relative;
+    left: -26px;
+}
+
+.team-add-form span {
+    position: relative;
+    left: -13px;
+    top: -15px;
+}
+
+.add-user-form .form-group {
+    margin-bottom: 1.7rem;
+}
+
+.team-name-box span:not(".shortcode-box"){
+    position: relative;
+    top: -22px;
+}

@@ -73,7 +73,23 @@ class TapStaticListItem extends Component<IProps, IState> {
                 <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                     <div className="card mb-0 border-0">
                         <div className={`card-header mb-1 border border-${this.state.messageClass ? this.state.messageClass : 'default'}`} data-toggle="collapse" >
+                        <div className="row">
+                                    <div className="col-sm-6">
+                                        <label className="label col-sm-3 font-weight-bold">
+                                             Wirzekuit: 
+                                        </label>
+                                        {tapStatic.timer?.wirkzeit_timer_started}
+                                    </div>
+                                    <div className="col-sm-6">
+                                        <label className="label col-sm-3 font-weight-bold">
+                                             Spulziet: 
+                                        </label>
+                                        {tapStatic.timer?.spulzeit_timer_started}
+                                    </div>
+                                </div>
+                                <hr className='m-1'/>
                             <div className="main-room-overview d-flex justify-content-between">
+                                
                                 <form className="w-100">
                                     <div className="overview-floor-list w-100">
                                         <div className="row container">

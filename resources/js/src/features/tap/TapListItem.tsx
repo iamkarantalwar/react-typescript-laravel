@@ -7,12 +7,11 @@ import { ITapStatic } from '../../app/models/tap-static.model';
 import { TapStaticStateEnum } from './TapStaticStateEnum';
 import { RootState } from '../../redux';
 import { connect } from 'react-redux';
-import { Accordion, Button } from 'react-bootstrap';
+import { Collapse } from 'react-bootstrap';
 import TapStaticListItem from './TapStaticListItem';
 import { ITapTimer } from '../../app/models/tap-timer.model';
 import { SettingsField } from '../../app/enums/settings-field.enum';
-import { time } from 'console';
-import { AnyMxRecord } from 'dns';
+
 
 
 interface RouteParam {
@@ -171,6 +170,13 @@ class TapListItem extends Component<IProps, IState> {
                 if(!this.interval) {
                     this.interval = setInterval(() => {
                         increment = increment + 1;
+                        let remaining_seconds = Number(timer)-increment;
+                        var hrs:any   = Math.floor(remaining_seconds / 3600);
+                        remaining_seconds  -= hrs*3600;
+                        const hours = hrs.toString().length == 1 ? `0${hrs}` : hrs;
+                        var mnts = Math.floor(remaining_seconds / 60);
+                        remaining_seconds  -= mnts*60;
+                        const minutes = mnts.toString().length == 1 ? `0${mnts}` : mnts;
                         const progressTap: JSX.Element = <div className="row">
                                                         <div className="col-md-4">
                                                             {current_date}
@@ -179,8 +185,8 @@ class TapListItem extends Component<IProps, IState> {
                                                             {current_time}
                                                         </div>
                                                         <div className="col-md-4">
-                                                            <i className="fa fa-clock"></i>
-                                                                {Number(timer)-increment}
+                                                            <i className="fa fa-clock-o mr-1"></i>
+                                                              {hours + ' : ' + minutes + ' : ' + remaining_seconds}
                                                         </div>
                                                     </div>;
                         if(Number(timer)-increment != 0) {
@@ -272,9 +278,10 @@ class TapListItem extends Component<IProps, IState> {
 
 
     showPendingTap = (id = this.state.selectedPendingTapId) => {
-        let setting = this.state.pendingStatics.find((stat)=> stat.id == id) as IProjectSetting;
+        let setting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;
         let timer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
-        if (timer?.wirkzeit_status == false && timer?.wirkzeit_timer_started == null) {
+        console.log(this.props.tap.name ,'---------', timer);
+        if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
             console.log('a');
             this.setState({
                 tapStatus: <div className="row">
@@ -290,10 +297,10 @@ class TapListItem extends Component<IProps, IState> {
                         </div> 
                     </div>
             });
-        } else if(timer?.wirkzeit_status == false && timer?.wirkzeit_pending_timer != null) {
+        } else if(timer.wirkzeit_status == false && timer.wirkzeit_pending_timer != null) {
             this.showInProgressTap(timer.wirkzeit_pending_timer, SettingsField.wirkzeit, timer, true);
         }         
-        else if (timer?.spulzeit_status == false && timer?.spulzeit_pending_timer == null && timer?.wirkzeit_status  == true) {
+        else if (timer.spulzeit_status == false && timer.spulzeit_pending_timer == null && timer.wirkzeit_status  == true) {
             this.setState({
                 tapStatus: <div className="row">
                         <div className="col-md-6">
@@ -309,10 +316,10 @@ class TapListItem extends Component<IProps, IState> {
                     </div>
             });
         } 
-        else if(timer?.spulzeit_status == false && timer?.spulzeit_pending_timer != null && timer?.wirkzeit_status == true) {
+        else if(timer.spulzeit_status == false && timer.spulzeit_pending_timer != null && timer.wirkzeit_status == true) {
             this.showInProgressTap(timer.spulzeit_pending_timer, SettingsField.spulzeit, timer, true);
         }  
-        else if(timer?.spulzeit_status == true && timer?.wirkzeit_status == true) {
+        else if(timer.spulzeit_status == true && timer.wirkzeit_status == true) {
             console.log('c');
             this.setState({tapStatus: <div className="row">
                                         <div className="col-md-6">
@@ -340,7 +347,7 @@ class TapListItem extends Component<IProps, IState> {
 
     render() {
         return (
-        <Accordion>
+        <Fragment>
             <div id=""  className="tap-card card-body pr-0 pt-2" data-parent="#accordion" style={{padding: '0 2rem !important'}}>
                 <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                     <div className="card mb-0 border-0">
@@ -357,9 +364,13 @@ class TapListItem extends Component<IProps, IState> {
                                         }
                                     </div>
                                     <div className="col-md-2">
-                                        <Accordion.Toggle as={Button} variant="link" eventKey="0" onClick={(e) => this.setState({showTapStatics: !this.state.showTapStatics})}>
-                                            <i className={`fa ${this.state.showTapStatics ? 'fa-angle-down' : 'fa-angle-up' } text-dark font-weight-bold ml-2`}></i>
-                                        </Accordion.Toggle> 
+                                            <i 
+                                                className={`fa ${this.state.showTapStatics ? 'fa-angle-down' : 'fa-angle-up' } text-dark font-weight-bold ml-2`}
+                                                aria-controls={`collapse${this.props.tap.id}`}
+                                                aria-expanded={this.state.showTapStatics}    
+                                                onClick={(e) => this.setState({showTapStatics: !this.state.showTapStatics})}
+                                            >
+                                            </i>
                                     </div>
                                 </div>                      
                             </div>     
@@ -368,16 +379,16 @@ class TapListItem extends Component<IProps, IState> {
                     </div>
                 </div>
             </div>
-            <Accordion.Collapse eventKey="0">
-                <Fragment>
+            <Collapse in={this.state.showTapStatics}>
+                <div className=" collapse" id={`collapse${this.props.tap.id}`}>
                 {
                    this.state.tapStatics.map((tap, index) => {
                             return <TapStaticListItem key={index} tapStatic={tap}/>;
                     })
                 }
-                </Fragment>
-            </Accordion.Collapse>
-        </Accordion>
+                </div>
+            </Collapse>
+        </Fragment>
         );
     }
 }

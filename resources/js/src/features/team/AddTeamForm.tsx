@@ -37,10 +37,10 @@ class AddTeamForm extends Component<IProps, IState> {
         let team_name = this.state.team.team_name;
         //Check if Team Name Is Not Empty
         if (team_name == "") {
-            this.setState({errors: {...this.state.errors, team_name: "Enter the team name"}});
+            this.setState({errors: {...this.state.errors, team_name: "Geben Sie den Teamnamen ein"}});
           
         } else if(this.props.teamNameExist(this.state.team)) {
-            this.setState({errors: {...this.state.errors, team_name: "This team name is already exist."}});
+            this.setState({errors: {...this.state.errors, team_name: "Dieser Teamname ist bereits vorhanden."}});
            
         } else {
             this.setState({showLoader: true});
@@ -48,13 +48,25 @@ class AddTeamForm extends Component<IProps, IState> {
             .saveTeam(this.state.team)
             .then((res) =>{ 
                 this.setState({errors: {...this.state.errors, team_name: ""}});
-                this.setState({success: "Team Created Successfully."});
+                this.setState({success: "Team erfolgreich erstellt."});
                 this.props.afterAddNewTeam(res);
                 this.setState({team:{...this.state.team, team_name:""}});
                 this.setState({showLoader: false});
                 setTimeout(()=>{ this.setState({success: ""})},2000);
+            })
+            .catch((res) => {
+                console.log(res.response);
+                console.log(res.request);            
+                if (res.response?.status == 422) {
+                    if(res.response.data.errors['team_name'])
+                    {
+                        this.setState({errors: {...this.state.errors, team_name: res.response.data.errors['team_name'][0]}});
+                       
+                    }
+                    this.setState({showLoader: false});
+                }
             });
-           
+          
         }
         
     }
@@ -67,7 +79,7 @@ class AddTeamForm extends Component<IProps, IState> {
                         <div className="row align-items-center justify-content-between">
                             <div className="add-new-team">
                                 <div className="form-group">
-                                <label>Add New Team</label>
+                                <label>Neues Team hinzufügen</label>
                                 <input 
                                     type="text" 
                                     name="team_name" 
@@ -79,7 +91,7 @@ class AddTeamForm extends Component<IProps, IState> {
                             </div>
                             <div className="team-form-btn">
                                 <div className="form-btn text-right mt-3">
-                                    <button className="main-btn" type="submit">Add</button>
+                                    <button className="main-btn" type="submit">Hinzufügen</button>
                                 </div>
                             </div>
                         </div>

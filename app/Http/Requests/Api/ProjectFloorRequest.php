@@ -31,4 +31,16 @@ class ProjectFloorRequest extends ApiRequest
             'project_id' => 'required|integer'
         ];
     }
+
+    public function messages() 
+    {
+        return [
+            'name.required' => 'Das Namensfeld ist erforderlich.',
+            'from.required' => 'Das Von Feld ist erforderlich.',
+            'from.lt' => 'Das Von Feld soll kleiner sein als das Zu Feld',
+            'quantity.required' => 'Das Mengenfeld ist erforderlich.',
+            'to.required' => 'Das Zu Feld ist erforderlich.',
+            'to.gt' => 'Das Feld An sollte größer sein als das Feld Von',
+        ];
+    }
 }

@@ -32,8 +32,8 @@ class ProjectRequest extends ApiRequest
     public function messages() 
     {
         return [
-            'project_name.required' => 'Project Name is required.',
-            'description.required'  => 'Project Description is required.'
+            'project_name.required' => 'Projektname ist erforderlich.',
+            'description.required'  => 'Projektbeschreibung ist erforderlich.'
         ];
     }
 }

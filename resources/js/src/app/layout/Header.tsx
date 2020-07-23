@@ -17,7 +17,7 @@ export class Header extends Component {
                         <div className="col-md-6">
                             <div className="top-bar-social-links text-right">
                                 <ul className="list-inline">
-                                    <li className="list-inline-item"><a href="#" className="text-dark">Hello, {localStorage.getItem('name')}</a></li>
+                                    <li className="list-inline-item"><a href="#" className="text-dark">Hallo, {localStorage.getItem('name')}</a></li>
                                     <li className="list-inline-item"><a href="#"><i className="fa fa-bell-o" aria-hidden="true"></i></a></li>
                                     <li className="list-inline-item"><a href="#"><i className="fa fa-calendar" aria-hidden="true"></i></a></li>
                                     <li className="list-inline-item"><a href="#"><i className="fa fa-th" aria-hidden="true"></i></a></li>
@@ -46,7 +46,7 @@ export class Header extends Component {
                                             return (
                                                 <Fragment>
                                                     <li className="nav-item">
-                                                        <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projects</Link>
+                                                        <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projekte</Link>
                                                     </li>                           
                                                     <li className="nav-item">
                                                         <Link className="nav-link mr-4" to="/users">User</Link>
@@ -60,7 +60,7 @@ export class Header extends Component {
                                             return (
                                                 <Fragment>
                                                     <li className="nav-item">
-                                                        <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projects</Link>
+                                                        <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projekte</Link>
                                                     </li> 
                                                 </Fragment>
                                             )
@@ -69,11 +69,11 @@ export class Header extends Component {
                                 }
                             </UserContext.Consumer>
                             <li className="nav-item active">
-                                    <a className="nav-link mr-4" href="/logout">Logout<span className="sr-only">(current)</span></a>
+                                    <a className="nav-link mr-4" href="/logout">Abmelden<span className="sr-only">(current)</span></a>
                             </li>
                             </ul>
                             <form className="form-inline my-2 my-lg-0">
-                                <input className="form-control mr-sm-2" type="search" placeholder="Search..." aria-label="Search"/>
+                                <input className="form-control mr-sm-2" type="search" placeholder="Suche..." aria-label="Search"/>
                                 <button className="btn btn-outline-success my-2 my-sm-0" type="submit"><i className="fa fa-search" aria-hidden="true"></i></button>
                             </form>
                         </div>

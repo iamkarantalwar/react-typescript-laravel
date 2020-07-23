@@ -1,5 +1,6 @@
 import { IProjectSetting } from "./project-setting.model";
 import { IUser } from "./user.model";
+import { ITapTimer } from "./tap-timer.model";
 
 export interface ITapStatic {
     id?: number;
@@ -13,4 +14,5 @@ export interface ITapStatic {
     created_at?:Date;
     date?:string;
     time?:string;
+    timer?:ITapTimer;
 }

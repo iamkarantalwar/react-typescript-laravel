@@ -87,7 +87,7 @@ class TeamListItem extends Component<IProps, IState> {
                             onChange={this.teamNameChangeHandler.bind(this)}
                         /><br/>
                         {this.state.errors.team_name ? <span className="text-danger">{this.state.errors.team_name}</span> : ""}
-                        {this.state.updated ? <span className="text-success">Team Name Updated Successfully.</span> : ""}
+                        {this.state.updated ? <span className="text-success">Teamname erfolgreich aktualisiert.</span> : ""}
                     </th>
                     <td>
                         <i className={`fa-btn fa ${this.state.updateState ? `fa-check` : `fa-pencil`}`} 

@@ -19,4 +19,15 @@ class TapStatic extends Model
     public function user() {
         return $this->belongsTo("App\User");
     }
+
+    // public function timers() {
+    //     return $this->hasOneThrough(
+    //         "App\Models\TapTimer",
+    //         "App\Models\ProjectSetting",
+    //         'project_setting_id',
+    //         'project_setting_id',
+    //         'id',
+    //         'id'
+    //     );
+    // }
 }

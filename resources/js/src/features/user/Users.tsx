@@ -82,13 +82,13 @@ class Users extends Component<IProps, IState> {
                         <div className="team-search mt-5 px-4 ml-3">
                            <div className="row align-items-center justify-content-between ">
                               <div className="add-new-team">
-                                 <h5 className="font-weight-bold">User</h5>
+                                 <h5 className="font-weight-bold">Benutzer</h5>
                               </div>
                               <div className="team-form-btn">
                                  <form className="form-inline my-2 my-lg-0">
                                     <input   className="form-control" 
                                              type="search" 
-                                             placeholder="Search..." 
+                                             placeholder="Suche..." 
                                              onChange={(e) => this.setState({searchInput: e.target.value})}
                                              aria-label="Search"/>
                                     <button className="btn s my-2 my-sm-0" 

@@ -29,7 +29,7 @@ class ProjectListItem extends Component<IProps, State> {
     }
 
     deleteProject = () => {
-       const conf = confirm("Are you sure you want to delete this project?"); 
+       const conf = confirm("Möchten Sie dieses Projekt wirklich löschen?"); 
        if (conf) {
         Project
         .deleteProject(this.props.project as IProject)

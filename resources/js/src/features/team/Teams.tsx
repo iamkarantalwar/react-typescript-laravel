@@ -87,7 +87,7 @@ class Teams extends Component<IProps, IState> {
                                         <form className="form-inline my-2 my-lg-0">
                                             <input className="form-control" 
                                                    type="search" 
-                                                   placeholder="Search..." 
+                                                   placeholder="Suche..." 
                                                    aria-label="Search"
                                                    onChange={(e) => this.setState({searchInput: e.target.value})}/>
                                             <button 

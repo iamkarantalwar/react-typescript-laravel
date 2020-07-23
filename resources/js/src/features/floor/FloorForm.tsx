@@ -63,8 +63,8 @@ class FloorForm extends Component<IProps, IState> {
 		{
 			
 			this.setState({
-				errors: {...this.state.errors,
-						quantity: `From quantity entered, Expected quantity should be ${(this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1}`,
+				errors: {...this.defaultState.errors,
+						quantity: `Von der angegebenen Menge sollte die erwartete Menge ${(this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1}`,
 				}
 			})
 			return;
@@ -78,9 +78,12 @@ class FloorForm extends Component<IProps, IState> {
 		.saveProjectFloor(this.state.projectFloorForm)
 		.then((res) => {
 			this.setState({
+				projectFloorForm: {
+						...this.defaultState.projectFloorForm
+				},
 				showLoader: false,
 				errors: this.defaultState.errors,
-				message: "Floor Created Successfully.",
+				message: "Fußböden erfolgreich erstellt.",
 				messageClass: "text-success",
 			});
 			
@@ -101,7 +104,7 @@ class FloorForm extends Component<IProps, IState> {
                   
             } else {
 				this.setState({
-					message: "Something went wrong. Try again later",
+					message: "Etwas ist schief gelaufen. Versuchen Sie es später noch einmal",
 					messageClass: "text-danger",
 					errors: this.defaultState.errors,
 				});
@@ -124,7 +127,7 @@ class FloorForm extends Component<IProps, IState> {
 				this.state.showLoader ? <LoaderBar/> :
 
 				<form className="add-floor" onSubmit={this.onSubmitHandler}>
-					<h4 className="font-weight-normal">Add Floor</h4>
+					<h4 className="font-weight-normal">Etage hinzufügen</h4>
 					<hr/>
 					<div className="form-group">
 						<label>Name</label>
@@ -132,6 +135,7 @@ class FloorForm extends Component<IProps, IState> {
 							type="name" 
 							className={`form-control ${this.state.errors.name ? 'is-invalid': ''} ${this.state.messageClass == 'text-success' ? 'is-valid' : ''}`}
 							placeholder="Name"
+							value={this.state.projectFloorForm.name}
 							onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, name: e.target.value}})}
 						/>
 						{ this.state.errors.name ? <span className="text-danger">{this.state.errors.name}</span> : "" }
@@ -140,31 +144,34 @@ class FloorForm extends Component<IProps, IState> {
 				<div className="add-floor-main d-flex align-items-center">
 					<div className="add-floor-number">
 						<div className="form-group">
-							<label>Quantity</label>
+							<label>Menge</label>
 							<input 
 								type="number" 
 								className={`form-control ${this.state.errors.quantity ? 'is-invalid': ''}`} 
-								placeholder="Quantity"
+								placeholder="Menge"
+								value={this.state.projectFloorForm.quantity == null ? '' : this.state.projectFloorForm.quantity}
 								onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, quantity: parseInt(e.target.value)}})}
 							/>
 							<span className="text-danger">{this.state.errors.quantity}</span>
 						</div>
 						<div className="form-group">
-							<label>Form</label>
+							<label>Von</label>
 							<input 
 								type="number" 
 								className={`form-control ${this.state.errors.from ? 'is-invalid': ''}`} 
-								placeholder="Form"
+								placeholder="Von"
+								value={this.state.projectFloorForm.from == null ? '' : this.state.projectFloorForm.from}
 								onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, from: parseInt(e.target.value)}})}
 							/>
 							{ this.state.errors.from ? <span className="text-danger">{this.state.errors.from}</span> : "" }
 						</div>
 						<div className="form-group">
-							<label>To</label>
+							<label>Zu</label>
 							<input 
 								type="number" 
 								className={`form-control ${this.state.errors.to ? 'is-invalid': ''}`} 
-								placeholder="To"
+								placeholder="Zu"
+								value={this.state.projectFloorForm.to == null ? '' : this.state.projectFloorForm.to}
 								onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, to: parseInt(e.target.value)}})}
 							/>
 							{ this.state.errors.to ? <span className="text-danger">{this.state.errors.to}</span> : "" }
@@ -172,10 +179,10 @@ class FloorForm extends Component<IProps, IState> {
 					</div>
 					<div className="add-floor-btns">
 						<div className="add-floor-create-btn">
-							<button type="submit" className="main-btn mr-1">Create</button>
+							<button type="submit" className="main-btn mr-1">Erstellen</button>
 						</div>
 						<div className="add-floor-cancel">
-							<button type="reset" className="main-btn cancel" onClick={(e) => this.props.toggleForm()}>Cancel</button>
+							<button type="reset" className="main-btn cancel" onClick={(e) => this.props.toggleForm()}>Stornieren</button>
 						</div>
 					</div>
 				</div>
