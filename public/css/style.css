@@ -834,3 +834,11 @@ a{
     position: relative;
     top: -22px;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator{
+    margin: 0;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator{
+    margin: 0;
+}

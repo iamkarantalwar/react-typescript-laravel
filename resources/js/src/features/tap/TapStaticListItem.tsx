@@ -99,15 +99,15 @@ class TapStaticListItem extends Component<IProps, IState> {
                 <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                     <div className="card mb-0 border-0">
                         <div className={`card-header mb-1 border border-${this.state.messageClass ? this.state.messageClass : 'default'}`} data-toggle="collapse" >
-                        <div className="row">
+                        <div className="row mr-1">
                                     <div className="col-md-6">
                                         <div className="row">
-                                            <label className="label col-sm-3 font-weight-bold">
-                                                Wirzekuit: 
-                                            </label>
+                                            <div className='col-sm-3'>
+                                                <b>Wirzekuit:</b>  
+                                            </div>                                            
                                             <div className='col-sm-3 p-0'>  
                                                 <input 
-                                                className='form-control'
+                                                className='form-control p-1'
                                                 type='date'
                                                 name='wirkzeit_timer_started_date'
                                                 onChange={this.changeSubstanceTimers}
@@ -115,7 +115,7 @@ class TapStaticListItem extends Component<IProps, IState> {
                                             </div>
                                             <div className='col-sm-3 p-0'>  
                                                 <input 
-                                                className='form-control'
+                                                className='form-control p-1'
                                                 type='time'
                                                 name='wirkzeit_timer_started_time'
                                                 onChange={this.changeSubstanceTimers}
@@ -136,12 +136,12 @@ class TapStaticListItem extends Component<IProps, IState> {
                                     </div>
                                     <div className="col-md-6">
                                         <div className="row">
-                                            <label className="label col-sm-3 font-weight-bold">
-                                                Spulziet: 
-                                            </label>
+                                            <div className='col-sm-3'>
+                                                <b>Spulziet: </b>  
+                                            </div> 
                                             <div className='col-sm-3 p-0'>  
                                                 <input 
-                                                className='form-control'
+                                                className='form-control p-1'
                                                 type='date'
                                                 onChange={this.changeSubstanceTimers}
                                                 name='spulzeit_timer_started_date'
@@ -149,7 +149,7 @@ class TapStaticListItem extends Component<IProps, IState> {
                                             </div>
                                             <div className='col-sm-3 p-0'>  
                                                 <input 
-                                                className='form-control'
+                                                className='form-control p-1'
                                                 type='time'
                                                 onChange={this.changeSubstanceTimers}
                                                 value={tapStatic.timer?.spulzeit_timer_started_time}/>

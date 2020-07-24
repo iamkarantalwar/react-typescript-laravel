@@ -290,12 +290,15 @@ class TapListItem extends Component<IProps, IState> {
     showPendingTap = (id = this.state.selectedPendingTapId) => {
         let setting : IProjectSetting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;;
         let timer : ITapTimer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
-        while (timer.wirkzeit_status == undefined) {
+        while (timer == undefined) {
             setting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;
             timer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
+            setTimeout(()=>{}, 200);
+            console.log('timer', '-------', timer);
+            console.log('settings', '-------', setting);
         }
         if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
-            this.setState({
+            this.setState({ 
                 tapStatus: <div className="row">
                         <div className="col-md-6">
                             {setting?.field_name}
