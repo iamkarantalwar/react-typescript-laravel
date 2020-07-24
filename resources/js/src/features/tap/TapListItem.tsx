@@ -95,7 +95,7 @@ class TapListItem extends Component<IProps, IState> {
             //Check If To Be Saved Has Any Object If it has then call the API
             if(tapTimersToBeStore.length > 0) {
                 TapTimer.saveTapTimers(tapTimersToBeStore)
-                .then((timers) => { tapTimers.push(...timers); this.setState({tapTimers: tapTimers}); })
+                .then((timers) => { this.setState({tapTimers: tapTimersToBeStore}); })
             } else {
                 this.setState({tapTimers: tapTimers});
             }               
@@ -347,16 +347,16 @@ class TapListItem extends Component<IProps, IState> {
             }
             
         } catch (error) {
-            if(err<2) {
-                this.showPendingTap(id);
-            }              
-
-            err++;    
             console.log('state-tap-timers', '---------', this.state.tapTimers);
             console.log('state-tap-settings', '---------', this.state.settings);
             console.log(id);
             console.log('timer', '-------', timer);
             console.log('settings', '-------', setting);
+            if(err<2) {
+                err++; 
+                this.showPendingTap(id);
+                
+            }              
         }
         
     
