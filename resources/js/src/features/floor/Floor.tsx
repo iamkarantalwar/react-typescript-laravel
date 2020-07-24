@@ -197,7 +197,7 @@ class Floor extends Component<IProps, IState> {
                     {  
                         this.state.loader ? 
                         <LoaderBar/> : 
-                        this.state.floors.length == 0 ? <h3 className="ml-md-5">No Floor Available.</h3> : floorListItems            
+                        this.state.floors.length == 0 ? <h3 className="ml-md-5">Kein Boden verfügbar.</h3> : floorListItems            
                     }
                     
                 </Fragment>

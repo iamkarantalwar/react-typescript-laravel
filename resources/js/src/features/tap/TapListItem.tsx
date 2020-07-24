@@ -95,7 +95,7 @@ class TapListItem extends Component<IProps, IState> {
             //Check If To Be Saved Has Any Object If it has then call the API
             if(tapTimersToBeStore.length > 0) {
                 TapTimer.saveTapTimers(tapTimersToBeStore)
-                .then((timers) => { this.setState({tapTimers: tapTimersToBeStore}); })
+                .then((timers) => { this.setState({tapTimers: tapTimersToBeStore}); console.log(this.props.tap.id, '----', tapTimersToBeStore) })
             } else {
                 this.setState({tapTimers: tapTimers});
             }               
@@ -284,12 +284,12 @@ class TapListItem extends Component<IProps, IState> {
             return 'bg-default';
         }
     }
-
+    err = 0;
 
     showPendingTap = (id = this.state.selectedPendingTapId) => {
-        let setting : IProjectSetting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;;
-        let timer : ITapTimer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
-        let err = 0;
+        let setting : IProjectSetting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;
+        let timer_index : number = this.state.tapTimers.findIndex((timer_) => timer_.project_setting_id == setting.id);
+        let timer : ITapTimer = this.state.tapTimers[timer_index];
         try {
             if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
                 this.setState({ 
@@ -347,16 +347,15 @@ class TapListItem extends Component<IProps, IState> {
             }
             
         } catch (error) {
-            console.log('state-tap-timers', '---------', this.state.tapTimers);
-            console.log('state-tap-settings', '---------', this.state.settings);
-            console.log(id);
-            console.log('timer', '-------', timer);
-            console.log('settings', '-------', setting);
-            if(err<2) {
-                err++; 
-                this.showPendingTap(id);
-                
-            }              
+           
+           
+                console.log('state-tap-timers', '---------', this.state.tapTimers);
+                console.log('state-tap-settings', '---------', this.state.settings);
+                console.log(id);
+                console.log('timer', '-------', timer);
+                console.log('settings', '-------', setting);
+                // this.showPendingTap(id);
+                            
         }
         
     
