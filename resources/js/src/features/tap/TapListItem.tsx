@@ -95,22 +95,31 @@ class TapListItem extends Component<IProps, IState> {
             //Check If To Be Saved Has Any Object If it has then call the API
             if(tapTimersToBeStore.length > 0) {
                 TapTimer.saveTapTimers(tapTimersToBeStore)
-                .then((timers) => { this.setState({tapTimers: tapTimersToBeStore}); console.log(this.props.tap.id, '----', tapTimersToBeStore) })
+                .then((timers) => { 
+                    this.setState({tapTimers: tapTimersToBeStore}); console.log(this.props.tap.id, '----', tapTimersToBeStore);
+                    TapStatic.getTapStatics(this.props.tap.id)
+                    .then((tapsStatics) => { 
+                        const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
+                        this.setState({ 
+                            tapStatics: tapsStatics,
+                            pendingStatics: pendingStatics,
+                        });
+                        this.checkTapStaticState(settings, pendingStatics);                
+                    });       
+                });
+            //Don't call the api just add the elemenst into tap Timers
             } else {
                 this.setState({tapTimers: tapTimers});
-            }               
-           
-
-            TapStatic.getTapStatics(this.props.tap.id)
-            .then((tapsStatics) => { 
-                const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
-                this.setState({ 
-                    tapStatics: tapsStatics,
-                    pendingStatics: pendingStatics,
-                });
-                this.checkTapStaticState(settings, pendingStatics);                
-            });           
-            
+                TapStatic.getTapStatics(this.props.tap.id)
+                .then((tapsStatics) => { 
+                    const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
+                    this.setState({ 
+                        tapStatics: tapsStatics,
+                        pendingStatics: pendingStatics,
+                    });
+                    this.checkTapStaticState(settings, pendingStatics);                
+                });      
+            }                 
         });
 
     }
