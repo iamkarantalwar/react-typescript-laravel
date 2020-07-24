@@ -103,7 +103,7 @@ export class Projects extends React.Component<Props, State> {
                                     <div className={`floors-tabbs ${this.state.showFloor ? 'd-block' : 'd-none'}`}>
                                         <div className="col-md-12">
                                             <div id="accordion" className="accordion">
-                                                <h4 className="floors-tittle font-weight-normal">Projekts</h4>
+                                                <h4 className="floors-tittle font-weight-normal">Projekte</h4>
                                                 {
                                                     this.state.showLoader ? 
                                                     <LoaderBar/> :

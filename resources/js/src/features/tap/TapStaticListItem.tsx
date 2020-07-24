@@ -99,76 +99,71 @@ class TapStaticListItem extends Component<IProps, IState> {
                 <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                     <div className="card mb-0 border-0">
                         <div className={`card-header mb-1 border border-${this.state.messageClass ? this.state.messageClass : 'default'}`} data-toggle="collapse" >
-                        <div className="row mr-1">
-                                    <div className="col-md-6">
-                                        <div className="row">
-                                            <div className='col-sm-3'>
-                                                <b>Wirzekuit:</b>  
-                                            </div>                                            
-                                            <div className='col-sm-3 p-0'>  
-                                                <input 
-                                                className='form-control p-1'
-                                                type='date'
-                                                name='wirkzeit_timer_started_date'
-                                                onChange={this.changeSubstanceTimers}
-                                                value={tapStatic.timer?.wirkzeit_timer_started_date}/>
-                                            </div>
-                                            <div className='col-sm-3 p-0'>  
-                                                <input 
-                                                className='form-control p-1'
-                                                type='time'
-                                                name='wirkzeit_timer_started_time'
-                                                onChange={this.changeSubstanceTimers}
-                                                value={tapStatic.timer?.wirkzeit_timer_started_time}/>
-                                            </div>
-                                            <div className='col-sm-3 p-0'>  
-                                               <select
-                                                className='form-control'
-                                                value={tapStatic.timer?.wirkzeit_timer_started_user_id as number}
-                                                name='wirkzeit_timer_started_user_id'
-                                                onChange={this.changeSubstanceTimers}>
-                                                    {
-                                                        this.props.users.users.map((user, index) => <option value={user.id}>{user.name}</option>)
-                                                    }
-                                                </select>
-                                            </div>
-                                        </div>                                       
+                            <div className="row mx-2">
+                                <div className='col-sm-3'>
+                                    <b>Wirzekuit:</b>  
+                                </div>                                            
+                                <div className='col-sm-3'>  
+                                    <input 
+                                    className='form-control p-1'
+                                    type='date'
+                                    name='wirkzeit_timer_started_date'
+                                    onChange={this.changeSubstanceTimers}
+                                    value={tapStatic.timer?.wirkzeit_timer_started_date}/>
+                                </div>
+                                <div className='col-sm-3'>  
+                                    <input 
+                                    className='form-control p-1'
+                                    type='time'
+                                    name='wirkzeit_timer_started_time'
+                                    onChange={this.changeSubstanceTimers}
+                                    value={tapStatic.timer?.wirkzeit_timer_started_time}/>
+                                </div>
+                                <div className='col-sm-3'>  
+                                    <select
+                                    className='form-control'
+                                    value={tapStatic.timer?.wirkzeit_timer_started_user_id as number}
+                                    name='wirkzeit_timer_started_user_id'
+                                    onChange={this.changeSubstanceTimers}>
+                                        {
+                                            this.props.users.users.map((user, index) => <option key={index} value={user.id}>{user.name}</option>)
+                                        }
+                                    </select>
+                                </div>
+                            </div>                                         
+                            <hr className="m-1"/>
+                            <div className="row mx-2">
+                                    <div className='col-sm-3'>
+                                        <b>Spulziet: </b>  
+                                    </div> 
+                                    <div className='col-sm-3'>  
+                                        <input 
+                                        className='form-control p-1'
+                                        type='date'
+                                        onChange={this.changeSubstanceTimers}
+                                        name='spulzeit_timer_started_date'
+                                        value={tapStatic.timer?.spulzeit_timer_started_date}/>
                                     </div>
-                                    <div className="col-md-6">
-                                        <div className="row">
-                                            <div className='col-sm-3'>
-                                                <b>Spulziet: </b>  
-                                            </div> 
-                                            <div className='col-sm-3 p-0'>  
-                                                <input 
-                                                className='form-control p-1'
-                                                type='date'
-                                                onChange={this.changeSubstanceTimers}
-                                                name='spulzeit_timer_started_date'
-                                                value={tapStatic.timer?.spulzeit_timer_started_date}/>
-                                            </div>
-                                            <div className='col-sm-3 p-0'>  
-                                                <input 
-                                                className='form-control p-1'
-                                                type='time'
-                                                onChange={this.changeSubstanceTimers}
-                                                value={tapStatic.timer?.spulzeit_timer_started_time}/>
-                                            </div>
-                                            <div className='col-sm-3 p-0'>  
-                                               <select
-                                                name='spulzeit_timer_started_user_id'
-                                                className='form-control'
-                                                value={tapStatic.timer?.spulzeit_timer_started_user_id as number}
-                                                onChange={this.changeSubstanceTimers}>
-                                                    {
-                                                        this.props.users.users.map((user, index) => <option value={user.id}>{user.name}</option>)
-                                                    }
-                                                </select>
-                                            </div>
-                                        </div>
+                                    <div className='col-sm-3'>  
+                                        <input 
+                                        className='form-control p-1'
+                                        type='time'
+                                        onChange={this.changeSubstanceTimers}
+                                        value={tapStatic.timer?.spulzeit_timer_started_time}/>
+                                    </div>
+                                    <div className='col-sm-3'>  
+                                        <select
+                                        name='spulzeit_timer_started_user_id'
+                                        className='form-control'
+                                        value={tapStatic.timer?.spulzeit_timer_started_user_id as number}
+                                        onChange={this.changeSubstanceTimers}>
+                                            {
+                                                this.props.users.users.map((user, index) => <option key={index} value={user.id}>{user.name}</option>)
+                                            }
+                                        </select>
                                     </div>
                                 </div>
-                                <hr className='m-1'/>
+                            <hr className='m-1'/>
                             <div className="main-room-overview d-flex justify-content-between">
                                 
                                 <form className="w-100">

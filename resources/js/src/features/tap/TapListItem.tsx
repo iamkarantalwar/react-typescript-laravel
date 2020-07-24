@@ -165,7 +165,6 @@ class TapListItem extends Component<IProps, IState> {
                 this.setState({detectingField: field});
 
                 const now = new Date();
-                const current_time = now.getHours() + ":" + now.getMinutes();
                 const current_date = now.getDate() + "/" + (now.getMonth()+1) + "/" + now.getFullYear();
                 let increment = -1;
                 if(!this.interval) {
@@ -183,7 +182,7 @@ class TapListItem extends Component<IProps, IState> {
                                                             {current_date}
                                                         </div>
                                                         <div className="col-md-4">
-                                                            {current_time}
+                                                          <b>{field == SettingsField.wirkzeit ? 'Wirkzeit' : 'Spulzeit'} </b>
                                                         </div>
                                                         <div className="col-md-4">
                                                             <i className="fa fa-clock-o mr-1"></i>
@@ -290,72 +289,83 @@ class TapListItem extends Component<IProps, IState> {
     showPendingTap = (id = this.state.selectedPendingTapId) => {
         let setting : IProjectSetting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;;
         let timer : ITapTimer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
-        while (timer == undefined) {
-            setting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;
-            timer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
-            setTimeout(()=>{}, 200);
+        let err = 0;
+        try {
+            if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
+                this.setState({ 
+                    tapStatus: <div className="row">
+                            <div className="col-md-6">
+                                {setting?.field_name}
+                            </div> 
+                            <div className="col-md-6">
+                               <button 
+                                   className="tap-btn"
+                                   onClick={this.showInProgressTap.bind(this, setting.field_wirkzeit, SettingsField.wirkzeit, timer, false)}>
+                                        Start Wirkzeit
+                                </button>
+                            </div> 
+                        </div>
+                });
+            } else if(timer.wirkzeit_status == false && timer.wirkzeit_pending_timer != null) {
+                this.showInProgressTap(timer.wirkzeit_pending_timer, SettingsField.wirkzeit, timer, true);
+            }         
+            else if (timer.spulzeit_status == false && timer.spulzeit_pending_timer == null && timer.wirkzeit_status  == true) {
+                this.setState({
+                    tapStatus: <div className="row">
+                            <div className="col-md-6">
+                                {setting?.field_name}
+                            </div> 
+                            <div className="col-md-6">
+                                <button
+                                    className="tap-btn" 
+                                    onClick={this.showInProgressTap.bind(this, setting.field_spulzeit, SettingsField.spulzeit, timer, false)}>
+                                        Start Spulzeit
+                                </button>
+                            </div> 
+                        </div>
+                });
+            } 
+            else if(timer.spulzeit_status == false && timer.spulzeit_pending_timer != null && timer.wirkzeit_status == true) {
+                this.showInProgressTap(timer.spulzeit_pending_timer, SettingsField.spulzeit, timer, true);
+            }  
+            else if(timer.spulzeit_status == true && timer.wirkzeit_status == true) {
+                this.setState({tapStatus: <div className="row">
+                                            <div className="col-md-6">
+                                                {setting?.field_name} Detected
+                                            </div> 
+                                            <div className="col-md-6">
+                                                <span className="tap-check mr-2" onClick={(e) => this.detected(setting)}>
+                                                    <i className="fa fa-check" ></i>
+                                                </span>
+                                                <span className="tap-times" onClick={(e) => this.notDetected(setting)}>
+                                                    <i className="fa fa-times" ></i>
+                                                </span>
+                                            </div> 
+                                        </div>
+                });
+    
+            }
+            
+        } catch (error) {
+            if(err<2) {
+                this.showPendingTap(id);
+            }              
+
+            err++;    
+            console.log('state-tap-timers', '---------', this.state.tapTimers);
+            console.log('state-tap-settings', '---------', this.state.settings);
+            console.log(id);
             console.log('timer', '-------', timer);
             console.log('settings', '-------', setting);
         }
-        if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
-            this.setState({ 
-                tapStatus: <div className="row">
-                        <div className="col-md-6">
-                            {setting?.field_name}
-                        </div> 
-                        <div className="col-md-6">
-                           <button 
-                               className="tap-btn"
-                               onClick={this.showInProgressTap.bind(this, setting.field_wirkzeit, SettingsField.wirkzeit, timer, false)}>
-                                    Start Wirkzeit
-                            </button>
-                        </div> 
-                    </div>
-            });
-        } else if(timer.wirkzeit_status == false && timer.wirkzeit_pending_timer != null) {
-            this.showInProgressTap(timer.wirkzeit_pending_timer, SettingsField.wirkzeit, timer, true);
-        }         
-        else if (timer.spulzeit_status == false && timer.spulzeit_pending_timer == null && timer.wirkzeit_status  == true) {
-            this.setState({
-                tapStatus: <div className="row">
-                        <div className="col-md-6">
-                            {setting?.field_name}
-                        </div> 
-                        <div className="col-md-6">
-                            <button
-                                className="tap-btn" 
-                                onClick={this.showInProgressTap.bind(this, setting.field_spulzeit, SettingsField.spulzeit, timer, false)}>
-                                    Start Spulzeit
-                            </button>
-                        </div> 
-                    </div>
-            });
-        } 
-        else if(timer.spulzeit_status == false && timer.spulzeit_pending_timer != null && timer.wirkzeit_status == true) {
-            this.showInProgressTap(timer.spulzeit_pending_timer, SettingsField.spulzeit, timer, true);
-        }  
-        else if(timer.spulzeit_status == true && timer.wirkzeit_status == true) {
-            this.setState({tapStatus: <div className="row">
-                                        <div className="col-md-6">
-                                            {setting?.field_name} Detected
-                                        </div> 
-                                        <div className="col-md-6">
-                                            <span className="tap-check mr-2" onClick={(e) => this.detected(setting)}>
-                                                <i className="fa fa-check" ></i>
-                                            </span>
-                                            <span className="tap-times" onClick={(e) => this.notDetected(setting)}>
-                                                <i className="fa fa-times" ></i>
-                                            </span>
-                                        </div> 
-                                    </div>
-            });
-
-        }
+        
+    
     }
 
     toggleTapStatics = (event: any) => {
-        if (event.target.tagName != 'button') 
+        if (event.target.tagName != 'BUTTON') {
             this.setState({showTapStatics: !this.state.showTapStatics});
+        }
     }
 
     componentWillUnmount() {

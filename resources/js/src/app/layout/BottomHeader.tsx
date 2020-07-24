@@ -25,6 +25,9 @@ export class BottomHeader extends Component<IProps> {
         let context:{title: string} = this.context;
         let title_ = path.length === 0 ? "Dashboard" : path.charAt(0).toUpperCase() + path.slice(1);
         title_ = this.props.title.title ? this.props.title.title : title_;
+        if(title_ == "Projects") {
+            title_  = "Projekte";
+        }
         return (
             <div>                
                 <section className="test-project mt-4">
