@@ -95,9 +95,11 @@ class TapListItem extends Component<IProps, IState> {
             //Check If To Be Saved Has Any Object If it has then call the API
             if(tapTimersToBeStore.length > 0) {
                 TapTimer.saveTapTimers(tapTimersToBeStore)
-                .then((timers) => { tapTimers.push(...timers); console.log('Tap Timer', tapTimers); })
-            }
-            this.setState({tapTimers: tapTimers});
+                .then((timers) => { tapTimers.push(...timers); this.setState({tapTimers: tapTimers}); })
+            } else {
+                this.setState({tapTimers: tapTimers});
+            }               
+           
 
             TapStatic.getTapStatics(this.props.tap.id)
             .then((tapsStatics) => { 
@@ -135,7 +137,6 @@ class TapListItem extends Component<IProps, IState> {
     }
 
     showInProgressTap = (timer: string, field: SettingsField, tapTimer: ITapTimer, detectingBeforeClosing: boolean = false) => {
-        console.log('clicked');
         let time: string = "";
         //Extract the numeric value from the Timer
             for(let i of timer.toString()) {
@@ -193,19 +194,21 @@ class TapListItem extends Component<IProps, IState> {
                             this.setState({tapStatus: progressTap, tapStaticState: TapStaticStateEnum.DETECTING});                        
                         } else if(Number(timer)-increment == 0) {
                             clearInterval(this.interval);
+                            //let tap timer
+                            let tapTimer_: ITapTimer = Object.assign({}, this.state.tapTimers.find((timer=>timer.id == tapTimer.id)));  
                             // Check the field and update the status
                             if(field == SettingsField.wirkzeit) {
                                 //Change the Status Of The Timer
-                                tapTimer.wirkzeit_status = true;
+                                tapTimer_.wirkzeit_status = true;
     
                             } else if(field == SettingsField.spulzeit) {
                                 //Change the Status Of The Timer
-                                tapTimer.spulzeit_status = true;
+                                tapTimer_.spulzeit_status = true;
                             }
                             //Call the Agent To Mark Completed in server 
-                            this.settingTimerCompletedAgent(tapTimer);
+                            this.settingTimerCompletedAgent(tapTimer_);
                             //Change The State of The Timer
-                            const timers: ITapTimer[] = this.state.tapTimers.map((tapTimer_) => tapTimer_.id == tapTimer.id ? tapTimer : tapTimer_);
+                            const timers: ITapTimer[] = this.state.tapTimers.map((timer) => timer.id == tapTimer_.id ? tapTimer_ : timer);
                             this.setState({tapTimers: timers});
                             //Recheck the status
                             this.checkTapStaticState();
@@ -222,7 +225,14 @@ class TapListItem extends Component<IProps, IState> {
 
     timerStartAgent = (field: SettingsField, tapTimer: ITapTimer) => {
         TapTimer.startTapTimer(field, tapTimer)
-        .then((res) => console.group(res));
+        .then((res) => {
+            const timerIndex = this.state.tapTimers.findIndex((timer) => timer.id == tapTimer.id);
+            let stateTimers = [
+                ...this.state.tapTimers
+            ];
+            stateTimers[timerIndex] = res;
+            this.setState( {tapTimers: stateTimers} );
+        });
     }
 
     notDetected = (setting: IProjectSetting) => {
@@ -278,11 +288,13 @@ class TapListItem extends Component<IProps, IState> {
 
 
     showPendingTap = (id = this.state.selectedPendingTapId) => {
-        let setting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;
-        let timer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
-        console.log(this.props.tap.name ,'---------', timer);
+        let setting : IProjectSetting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;;
+        let timer : ITapTimer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
+        while (timer.wirkzeit_status == undefined) {
+            setting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;
+            timer = this.state.tapTimers.find((timer_) => timer_.project_setting_id == setting.id) as ITapTimer;
+        }
         if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
-            console.log('a');
             this.setState({
                 tapStatus: <div className="row">
                         <div className="col-md-6">
@@ -320,7 +332,6 @@ class TapListItem extends Component<IProps, IState> {
             this.showInProgressTap(timer.spulzeit_pending_timer, SettingsField.spulzeit, timer, true);
         }  
         else if(timer.spulzeit_status == true && timer.wirkzeit_status == true) {
-            console.log('c');
             this.setState({tapStatus: <div className="row">
                                         <div className="col-md-6">
                                             {setting?.field_name} Detected
@@ -339,6 +350,11 @@ class TapListItem extends Component<IProps, IState> {
         }
     }
 
+    toggleTapStatics = (event: any) => {
+        if (event.target.tagName != 'button') 
+            this.setState({showTapStatics: !this.state.showTapStatics});
+    }
+
     componentWillUnmount() {
         if(this.interval) {
             clearInterval(this.interval);
@@ -348,7 +364,15 @@ class TapListItem extends Component<IProps, IState> {
     render() {
         return (
         <Fragment>
-            <div id=""  className="tap-card card-body pr-0 pt-2" data-parent="#accordion" style={{padding: '0 2rem !important'}}>
+            <div 
+                id=""  
+                className="tap-card card-body pr-0 pt-2 cursor-pointer" 
+                data-parent="#accordion" 
+                style={{padding: '0 2rem !important'}}
+                aria-controls={`collapse-tap-${this.props.tap.id}`}
+                aria-expanded={this.state.showTapStatics}    
+                onClick={(e) => this.toggleTapStatics(e)}>
+
                 <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                     <div className="card mb-0 border-0">
                     <div className={`card-header ${this.tapItemBackgroundClass()} mb-1`} data-toggle="collapse" >
@@ -365,11 +389,8 @@ class TapListItem extends Component<IProps, IState> {
                                     </div>
                                     <div className="col-md-2">
                                             <i 
-                                                className={`fa ${this.state.showTapStatics ? 'fa-angle-down' : 'fa-angle-up' } text-dark font-weight-bold ml-2`}
-                                                aria-controls={`collapse${this.props.tap.id}`}
-                                                aria-expanded={this.state.showTapStatics}    
-                                                onClick={(e) => this.setState({showTapStatics: !this.state.showTapStatics})}
-                                            >
+                                              className={`fa ${this.state.showTapStatics ? 'fa-angle-down' : 'fa-angle-up' } 
+                                              text-dark font-weight-bold ml-2`}>
                                             </i>
                                     </div>
                                 </div>                      
@@ -380,13 +401,18 @@ class TapListItem extends Component<IProps, IState> {
                 </div>
             </div>
             <Collapse in={this.state.showTapStatics}>
-                <div className=" collapse" id={`collapse${this.props.tap.id}`}>
+            <div className="collapse" id={`collapse-tap-${this.props.tap.id}`}>
                 {
-                   this.state.tapStatics.map((tap, index) => {
-                            return <TapStaticListItem key={index} tapStatic={tap}/>;
-                    })
+                  this.state.showTapStatics ?  
+                        <Fragment>
+                        {
+                            this.state.tapStatics.map((tap, index) => {
+                                        return <TapStaticListItem key={index} tapStatic={tap}/>;
+                                })
+                        }
+                        </Fragment> : ''
                 }
-                </div>
+            </div>
             </Collapse>
         </Fragment>
         );

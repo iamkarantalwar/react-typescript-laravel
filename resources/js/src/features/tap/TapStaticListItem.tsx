@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { ITapStatic } from '../../app/models/tap-static.model';
 import { connect } from 'react-redux';
 import { RootState } from '../../redux';
-import { TapStatic } from '../../app/api/agent';
+import { TapStatic, User } from '../../app/api/agent';
 import LoaderBar from '../../app/common/LoaderBar';
+import { ITapTimer } from '../../app/models/tap-timer.model';
+import { userObject } from '../../context/UserContext';
+import { UserRoles } from '../../app/models/role.model';
 
 const mapStateToProps = (state: RootState) => {
     return {
@@ -63,6 +66,29 @@ class TapStaticListItem extends Component<IProps, IState> {
             this.setState({loader: false});
         });
     }
+
+    changeSubstanceTimers = (event: any) => {
+        console.log(event);
+        let timer_: ITapTimer = {
+            ...this.state.tapStatic.timer
+        } as ITapTimer;
+        this.setState( {editable: true} );
+
+        if(event.target.name == 'wirkzeit_timer_started_date') {
+            this.setState( {tapStatic: {...this.state.tapStatic, timer : {...timer_, wirkzeit_timer_started_date: event.target.value} }});
+        } else if(event.target.name == 'wirkzeit_timer_started_time') {
+            this.setState( {tapStatic: {...this.state.tapStatic, timer : {...timer_, wirkzeit_timer_started_time: event.target.value} }});
+        } else if (event.target.name == 'spulzeit_timer_started_date') {
+            this.setState( {tapStatic: {...this.state.tapStatic, timer : {...timer_, spulzeit_timer_started_date: event.target.value} }});
+        } else if(event.target.name == 'spulzeit_timer_started_time') {
+            this.setState( {tapStatic: {...this.state.tapStatic, timer : {...timer_, spulzeit_timer_started_time: event.target.value} }});
+        } else if(event.target.name == 'wirkzeit_timer_started_user_id') {
+            this.setState( {tapStatic: {...this.state.tapStatic, timer : {...timer_, wirkzeit_timer_started_user_id: event.target.value} }});
+        } else if(event.target.name == 'spulzeit_timer_started_user_id') {
+            this.setState( {tapStatic: {...this.state.tapStatic, timer : {...timer_, spulzeit_timer_started_user_id: event.target.value} }});
+        }
+        
+    }
     
     render() {
         const users = this.props.users.users;
@@ -74,17 +100,72 @@ class TapStaticListItem extends Component<IProps, IState> {
                     <div className="card mb-0 border-0">
                         <div className={`card-header mb-1 border border-${this.state.messageClass ? this.state.messageClass : 'default'}`} data-toggle="collapse" >
                         <div className="row">
-                                    <div className="col-sm-6">
-                                        <label className="label col-sm-3 font-weight-bold">
-                                             Wirzekuit: 
-                                        </label>
-                                        {tapStatic.timer?.wirkzeit_timer_started}
+                                    <div className="col-md-6">
+                                        <div className="row">
+                                            <label className="label col-sm-3 font-weight-bold">
+                                                Wirzekuit: 
+                                            </label>
+                                            <div className='col-sm-3 p-0'>  
+                                                <input 
+                                                className='form-control'
+                                                type='date'
+                                                name='wirkzeit_timer_started_date'
+                                                onChange={this.changeSubstanceTimers}
+                                                value={tapStatic.timer?.wirkzeit_timer_started_date}/>
+                                            </div>
+                                            <div className='col-sm-3 p-0'>  
+                                                <input 
+                                                className='form-control'
+                                                type='time'
+                                                name='wirkzeit_timer_started_time'
+                                                onChange={this.changeSubstanceTimers}
+                                                value={tapStatic.timer?.wirkzeit_timer_started_time}/>
+                                            </div>
+                                            <div className='col-sm-3 p-0'>  
+                                               <select
+                                                className='form-control'
+                                                value={tapStatic.timer?.wirkzeit_timer_started_user_id as number}
+                                                name='wirkzeit_timer_started_user_id'
+                                                onChange={this.changeSubstanceTimers}>
+                                                    {
+                                                        this.props.users.users.map((user, index) => <option value={user.id}>{user.name}</option>)
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>                                       
                                     </div>
-                                    <div className="col-sm-6">
-                                        <label className="label col-sm-3 font-weight-bold">
-                                             Spulziet: 
-                                        </label>
-                                        {tapStatic.timer?.spulzeit_timer_started}
+                                    <div className="col-md-6">
+                                        <div className="row">
+                                            <label className="label col-sm-3 font-weight-bold">
+                                                Spulziet: 
+                                            </label>
+                                            <div className='col-sm-3 p-0'>  
+                                                <input 
+                                                className='form-control'
+                                                type='date'
+                                                onChange={this.changeSubstanceTimers}
+                                                name='spulzeit_timer_started_date'
+                                                value={tapStatic.timer?.spulzeit_timer_started_date}/>
+                                            </div>
+                                            <div className='col-sm-3 p-0'>  
+                                                <input 
+                                                className='form-control'
+                                                type='time'
+                                                onChange={this.changeSubstanceTimers}
+                                                value={tapStatic.timer?.spulzeit_timer_started_time}/>
+                                            </div>
+                                            <div className='col-sm-3 p-0'>  
+                                               <select
+                                                name='spulzeit_timer_started_user_id'
+                                                className='form-control'
+                                                value={tapStatic.timer?.spulzeit_timer_started_user_id as number}
+                                                onChange={this.changeSubstanceTimers}>
+                                                    {
+                                                        this.props.users.users.map((user, index) => <option value={user.id}>{user.name}</option>)
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <hr className='m-1'/>
@@ -133,9 +214,12 @@ class TapStaticListItem extends Component<IProps, IState> {
                                                     }
                                                 </select>                                     
                                             </div>
-                                            <div className="col-md-1">
-                                                <i onClick={this.submitHandler} className={`fa ${!this.state.editable ? 'fa-pencil' : 'fa-check'}`}></i>
-                                            </div>
+                                            {
+                                                userObject.role == UserRoles.ADMIN ?
+                                                <div className="col-md-1">
+                                                    <i onClick={this.submitHandler} className={`fa ${!this.state.editable ? 'fa-pencil' : 'fa-check'}`}></i>
+                                                </div> : ''
+                                            }                                            
                                         </div>                      
                                     </div> 
                                 </form>    

@@ -102,5 +102,5 @@ export const TapTimer = {
     getTapTimers: (tap: ITap): Promise<ITapTimer[]> => requests.get(`${enviorment.baseUrl}/${endPoints.tapRounds}?tap_id=${tap.id}`),
     saveTapTimers: (timers: ITapTimer[]) : Promise<ITapTimer[]> => requests.post(`${enviorment.baseUrl}/${endPoints.tapRounds}`, timers),
     updateTapTimer: (timer: ITapTimer): Promise<ITapTimer> => requests.put(`${enviorment.baseUrl}/${endPoints.tapRounds}/${timer.id}`, timer),
-    startTapTimer: (field: SettingsField, timer: ITapTimer): Promise<ITapTimer> => requests.put(`${enviorment.baseUrl}/${endPoints.tapRounds}/${timer.id}`, {'field': field}),
+    startTapTimer: (field: SettingsField, timer: ITapTimer): Promise<ITapTimer> => requests.put(`${enviorment.baseUrl}/${endPoints.tapRounds}/start-timer/${timer.id}`, {'field': field}),
 }

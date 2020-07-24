@@ -94,16 +94,50 @@ class TapTimerController extends Controller
     public function update(Request $request, TapTimer $timer)
     {
         $request = $request->all();
-        if(isset($request['field'])) {
-            if($request['field'] == ProjectSettingOption::wirkzeit) {
-                $request['wirkzeit_timer_started'] = Carbon::now();
-                array_merge($request, ['wirkzeit_timer_started' => Carbon::now()]);
-            } else if($request['field'] == ProjectSettingOption::spulzeit) {
-                $request['spulzeit_timer_started'] = Carbon::now();
-                array_merge($request, ['spulzeit_timer_started' => Carbon::now()]);
+        //Unset These Value Because They Are updating from another controller startTimer, updateStartTimer
+        unset($request['wirkzeit_timer_started']);
+        unset($request['wirkzeit_timer_started_user_id']);
+        unset($request['wirkzeit_timer_started_date']);
+        unset($request['wirkzeit_timer_started_time']);
+        unset($request['spulzeit_timer_started']);      
+        unset($request['spulzeit_timer_started_user_id']);  
+        unset($request['spulzeit_timer_started_date']); 
+        unset($request['spulzeit_timer_started_time']);   
+
+        $update = $timer->update($request);
+        if($update) {
+            return response()->json($timer, 200);
+        } else {
+            throw new Exception("Error Processing Request", 1);
+        }
+    }
+
+    public function startTimer(Request $request, TapTimer $timer) 
+    {
+        $now = Carbon::now();
+        $update = null;
+        if($request->field == ProjectSettingOption::wirkzeit) {
+            $update = $timer->update([
+                'wirkzeit_timer_started' => $now,
+                'wirkzeit_timer_started_date' => $now->toDateString(),
+                'wirkzeit_timer_started_time' => $now->toTimeString(),
+                'wirkzeit_timer_started_user_id' => $request->user()->id,
+            ]);          
+
+        } else if($request->field == ProjectSettingOption::spulzeit) {
+            $update = $timer->update([
+                'spulzeit_timer_started' => $now,
+                'spulzeit_timer_started_user_id' => $request->user()->id,
+                'spulzeit_timer_started_date' => $now->toDateString(),
+                'spulzeit_timer_started_time' => $now->toTimeString(),
+            ]);
+            if($update) {
+                return response()->json($timer, 200);
+            } else {
+                throw new Exception("Error Processing Request", 1);
             }
         }
-        $update = $timer->update($request);
+
         if($update) {
             return response()->json($timer, 200);
         } else {

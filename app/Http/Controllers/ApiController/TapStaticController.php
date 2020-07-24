@@ -22,7 +22,7 @@ class TapStaticController extends Controller
                 })->with(['setting', 'user'])
                 ->get()
                 ->map(function ($q) { 
-                    $timer = TapTimer::where('project_setting_id', $q->project_setting_id)->where('tap_id', $q->id)->first();
+                    $timer = TapTimer::where('project_setting_id', $q->project_setting_id)->where('tap_id', $q->taps_id)->first();
                     //Add Timer With Collection
                     $q->timer = $timer;
                     return $q;
@@ -57,6 +57,7 @@ class TapStaticController extends Controller
         $tapStatic = TapStatic::create($data);
         if($tapStatic) {
             $result = TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
+            $result->timer = TapTimer::where('project_setting_id', $result->project_setting_id)->where('tap_id', $result->taps_id)->first();
             return response()->json($result);
         } else {
             throw new Exception("Error Processing Request", 1);
@@ -94,12 +95,31 @@ class TapStaticController extends Controller
      */
     public function update(Request $request, TapStatic $tapStatic)
     {
-        $update = $tapStatic->update($request->all());
-        if($update) {
-            $result =  TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
-            return response()->json($result);
-        } else {
-            throw new Exception("Something went wrong", 1);
+    
+        if($request->timer) {
+            $timerRequest = $request->timer;
+            $timer = TapTimer::where('id', $timerRequest['id'])->first();
+            $update = $timer->update([
+                'wirkzeit_timer_started_date' => $timerRequest['wirkzeit_timer_started_date'],
+                'wirkzeit_timer_started_time' => $timerRequest['wirkzeit_timer_started_time'],
+                'spulzeit_timer_started_date' => $timerRequest['spulzeit_timer_started_date'],
+                'spulzeit_timer_started_time' => $timerRequest['spulzeit_timer_started_time'],
+                'wirkzeit_timer_started_user_id' => $timerRequest['wirkzeit_timer_started_user_id'],
+                'spulzeit_timer_started_user_id' => $timerRequest['spulzeit_timer_started_user_id'],
+                
+            ]);          
+            if($update) {
+                $update = $tapStatic->update($request->all());
+                if($update) {
+                    $result =  TapStatic::with(['setting', 'user'])->where('id', $tapStatic->id)->first();
+                    $result->timer = TapTimer::where('project_setting_id', $result->project_setting_id)->where('tap_id', $result->taps_id)->first();
+                    return response()->json($result);
+                } else {
+                    throw new Exception("Something went wrong", 1);
+                }
+            } else {
+                throw new Exception("Error Processing Request", 1);
+            }
         }
     }
 

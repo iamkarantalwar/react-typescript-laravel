@@ -21,7 +21,13 @@ class CreateTapTimersTable extends Migration
             $table->string('wirkzeit_pending_timer')->nullable();
             $table->string('spulzeit_pending_timer')->nullable();
             $table->timestamp('wirkzeit_timer_started')->nullable();
+            $table->date('wirkzeit_timer_started_date')->nullable();
+            $table->time('wirkzeit_timer_started_time')->nullable();
             $table->timestamp('spulzeit_timer_started')->nullable();
+            $table->date('spulzeit_timer_started_date')->nullable();
+            $table->time('spulzeit_timer_started_time')->nullable();
+            $table->string('wirkzeit_timer_started_user_id')->nullable();
+            $table->string('spulzeit_timer_started_user_id')->nullable();
             $table->string('project_setting_id');
             $table->boolean('completed')->default(false);
             $table->timestamps();
