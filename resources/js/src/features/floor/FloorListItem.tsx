@@ -71,7 +71,7 @@ class FloorListItem extends Component<IProps, IState> {
           editFloor: true,
         })
     }
-    
+
     getStatusCssClass = () : string => {
       if(this.state.floor.status == ProjectFloorStatus.PENDING) {
         return 'primary';
@@ -110,7 +110,7 @@ class FloorListItem extends Component<IProps, IState> {
           messageClass: "text-danger",
           floor: this.props.floor
         });
-       
+
         setTimeout(()=>{ this.setState({message: "", messageClass: ""})}, 2000);
       })
       .finally(()=>{
@@ -130,7 +130,7 @@ class FloorListItem extends Component<IProps, IState> {
                 floor: {...this.state.floor, status: value[1]},
                 editFloor: true
               });
-          }         
+          }
       })
     }
 
@@ -173,7 +173,7 @@ class FloorListItem extends Component<IProps, IState> {
 
     hideRoomForm = () => {
       this.setState({showRoomForm: false});
-    } 
+    }
 
     toggleCollapse = (target: any) => {
       if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editFloor))
@@ -197,7 +197,7 @@ class FloorListItem extends Component<IProps, IState> {
       this.setState({showRoomForm:false, showRooms: open == undefined ? true : open});
       this.props.selectFloor(this.props.floor);
     }
-  
+
 
     componentDidMount() {
      //this.props.fetchRooms(this.props.floor);
@@ -207,32 +207,32 @@ class FloorListItem extends Component<IProps, IState> {
       // .catch((errors) => console.log(errors));
     }
 
-    render() {     
+    render() {
       let roomsList = this.props.rooms.rooms.length>0 ? this.props.rooms.rooms.map((room, index) => {
         return(
-          <RoomListItem 
+          <RoomListItem
             room={room as IFloorRoom}
             key={index}
             toggleRoom={this.state.toggleRooms[index]}
             afterUpdateRoom={this.afterUpdateRoom}
-          />                            
+          />
         )
       }) : <h4 className="ml-5 mb-2">Keine Zimmer verfügbar.</h4>;
       return (
         <Fragment>
           {
             this.state.showLoader ? <LoaderBar/> :
-            <div className='mb-2'> 
-               <div 
-                className={`floor-one-box card-header d-flex align-items-center justify-content-between cursor-pointer 
-                            ${this.state.messageClass == 'text-danger' ? 'border border-danger' : ''} 
+            <div className='mb-2'>
+               <div
+                className={`floor-one-box card-header d-flex align-items-center justify-content-between cursor-pointer
+                            ${this.state.messageClass == 'text-danger' ? 'border border-danger' : ''}
                             ${this.state.messageClass == 'text-success' ? 'border border-success' : ''}`}
                 onClick={(e) => this.toggleCollapse(e.target)}
                >
                  <div className="floors-tittle">
-                   
-                     <h6 className="mb-0"> 
-                       <input 
+
+                     <h6 className="mb-0">
+                       <input
                            type='text'
                            value={this.state.floor.floor_name}
                            readOnly={!this.state.editFloor}
@@ -243,9 +243,9 @@ class FloorListItem extends Component<IProps, IState> {
                  </div>
                  <div className="floor-overviwe-btn d-flex align-items-center">
                          <div className="team-btn mr-1">
-                             <select 
-                               name="team" 
-                               defaultValue={this.props.floor.status} 
+                             <select
+                               name="team"
+                               defaultValue={this.props.floor.status}
                                className={`status-select border border-${this.getStatusCssClass()}`}
                                onChange={this.statusChangeHandler}
                              >
@@ -256,12 +256,12 @@ class FloorListItem extends Component<IProps, IState> {
                              </select>
                          </div>
                          {
-                           userObject.role == UserRoles.ADMIN ? 
+                           userObject.role == UserRoles.ADMIN ?
                          <Fragment>
                          <div className="team-btn mr-1">
-                             <select 
-                               name="team" 
-                               value={this.state.floor.team_id || ''} 
+                             <select
+                               name="team"
+                               value={this.state.floor.team_id || ''}
                                className="team-select"
                                onChange={this.teamChangeHandler}
                              >
@@ -272,12 +272,12 @@ class FloorListItem extends Component<IProps, IState> {
                              </select>
                          </div>
                          <div className="room-btn">
-                           <a 
+                           <a
                              href={void(0)}
                              className="overview-flor-btn bg-transparent"
                              onClick={(e) => {
                                 this.setState({
-                                  showRoomForm: !this.state.showRoomForm, 
+                                  showRoomForm: !this.state.showRoomForm,
                                   showRooms: false
                                 });
                                 this.props.selectFloor(this.props.floor, false);
@@ -287,10 +287,10 @@ class FloorListItem extends Component<IProps, IState> {
                            </a>
                          </div>
                          <div className="room-btn">
-                            <i 
-                              style={{cursor:'pointer'}} 
-                              onClick={(e) => {this.deleteFloor(this.props.floor);this.props.selectFloor(this.props.floor);}} 
-                              className="fa fa-trash ml-2" aria-hidden="true">                            
+                            <i
+                              style={{cursor:'pointer'}}
+                              onClick={(e) => {this.deleteFloor(this.props.floor);this.props.selectFloor(this.props.floor);}}
+                              className="fa fa-trash ml-2" aria-hidden="true">
                             </i>
                          </div>
                          </Fragment>
@@ -298,18 +298,18 @@ class FloorListItem extends Component<IProps, IState> {
                          <div className="room-btn">
                            <i style={{cursor:'pointer'}} onClick={this.state.editFloor? this.onSubmitHandler : this.enableEditFloor} className={`fa ${this.state.editFloor ? 'fa-check' : 'fa-pencil'} ml-2`}></i>
                          </div>
-                         <div 
-                          className="room-btn" 
+                         <div
+                          className="room-btn"
                           onClick={(e) => {
                            this.toggleRoomsList(true)
                           }}
                           aria-controls={`collapse${this.props.floor.id}`}
                           aria-expanded={this.state.showRooms}
                         >
-                          <i style={{cursor:'pointer'}} className={`fa ${this.props.toggleFloor?.open ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>                      
+                          <i style={{cursor:'pointer'}} className={`fa ${this.props.toggleFloor?.open ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>
                          </div>
-                 </div> 
-                 
+                 </div>
+
                </div>
                {
                  this.state.message ? <span className={this.state.messageClass}>{this.state.message}</span> : ""
@@ -320,7 +320,7 @@ class FloorListItem extends Component<IProps, IState> {
                     this.props.rooms.loader ? <LoaderBar/> : roomsList
                   }
                   </div>
-                </Collapse>               
+                </Collapse>
             </div>
           }
            { this.state.showRoomForm == true ? <RoomForm hideRoomForm={this.hideRoomForm} afterRoomsAdded={this.toggleRoomsList} floor={this.state.floor}/> : "" }

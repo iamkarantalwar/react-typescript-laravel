@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 
 class TapTimerController extends Controller
 {
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         if($request->tap_id) {
             $timers = TapTimer::where('tap_id', $request->tap_id)->get();
@@ -74,7 +74,7 @@ class TapTimerController extends Controller
         }
     }
 
-    public function store(Request $request) 
+    public function store(Request $request)
     {
        $timers = [];
        foreach($request->all() as $timer) {
@@ -88,7 +88,6 @@ class TapTimerController extends Controller
                 throw new Exception("Error Processing Request", 1);
             }
         }
-        sleep(5);
         return response()->json($timers, 200);
     }
 
@@ -100,10 +99,10 @@ class TapTimerController extends Controller
         unset($request['wirkzeit_timer_started_user_id']);
         unset($request['wirkzeit_timer_started_date']);
         unset($request['wirkzeit_timer_started_time']);
-        unset($request['spulzeit_timer_started']);      
-        unset($request['spulzeit_timer_started_user_id']);  
-        unset($request['spulzeit_timer_started_date']); 
-        unset($request['spulzeit_timer_started_time']);   
+        unset($request['spulzeit_timer_started']);
+        unset($request['spulzeit_timer_started_user_id']);
+        unset($request['spulzeit_timer_started_date']);
+        unset($request['spulzeit_timer_started_time']);
 
         $update = $timer->update($request);
         if($update) {
@@ -113,7 +112,7 @@ class TapTimerController extends Controller
         }
     }
 
-    public function startTimer(Request $request, TapTimer $timer) 
+    public function startTimer(Request $request, TapTimer $timer)
     {
         $now = Carbon::now();
         $update = null;
@@ -123,7 +122,7 @@ class TapTimerController extends Controller
                 'wirkzeit_timer_started_date' => $now->toDateString(),
                 'wirkzeit_timer_started_time' => $now->toTimeString(),
                 'wirkzeit_timer_started_user_id' => $request->user()->id,
-            ]);          
+            ]);
 
         } else if($request->field == ProjectSettingOption::spulzeit) {
             $update = $timer->update([

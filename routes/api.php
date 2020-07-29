@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/usera', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:web')->namespace('ApiController')->group(function(){
+Route::namespace('ApiController')->group(function(){
 
     Route::resource('team', 'TeamController');
 

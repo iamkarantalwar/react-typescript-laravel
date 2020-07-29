@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\ApiController;
 
 use Exception;
-use App\Taps;
+use App\Models\Tap;
 use Illuminate\Http\Request;
 
 class TapsController extends Controller
@@ -45,7 +45,7 @@ class TapsController extends Controller
      * @param  \App\Taps  $taps
      * @return \Illuminate\Http\Response
      */
-    public function show(Taps $taps)
+    public function show(Tap $taps)
     {
         //
     }
@@ -56,7 +56,7 @@ class TapsController extends Controller
      * @param  \App\Taps  $taps
      * @return \Illuminate\Http\Response
      */
-    public function edit(Taps $taps)
+    public function edit(Tap $taps)
     {
         //
     }
@@ -68,7 +68,7 @@ class TapsController extends Controller
      * @param  \App\Taps  $taps
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Taps $taps)
+    public function update(Request $request, Tap $taps)
     {
         //
     }
@@ -79,7 +79,7 @@ class TapsController extends Controller
      * @param  \App\Taps  $taps
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Taps $taps)
+    public function destroy(Tap $taps)
     {
         //
     }

@@ -49,17 +49,17 @@ class FloorRoomController extends Controller
             $rooms = [];
 
             $room_details  = $request->post('room_details');
-    
+
             $from = intval($request->post('from'));
             $to = intval($request->post('to'));
-    
+
             for($k=$from; $k<=$to; $k++)
             {
                 $room = FloorRoom::create([
                     'floor_id' => $request->post('floor_id'),
                     'room_name' => $request->name.' '.$k,
                 ]);
-    
+
                 for($i=0; $i<count($request->post('room_details')); $i++) {
                     if ($room_details[$i]['quantity'] != null) {
                         for($j=0; $j<$room_details[$i]['quantity']; $j++)
@@ -70,17 +70,17 @@ class FloorRoomController extends Controller
                                 'name' => RoomType::where('id', $room_details[$i]['room_type']['id'])->first()->room_type.' '.($j+1),
                             ]);
                             $from++;
-                        } 
-                    }          
+                        }
+                    }
                 }
-    
+
                 array_push($rooms, $room);
             }
             return response()->json($rooms);
         } catch (\Throwable $th) {
             throw $th;
         }
-      
+
     }
 
     /**

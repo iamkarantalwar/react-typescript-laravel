@@ -21,7 +21,7 @@ class TapStaticController extends Controller
                     return $q->where('id', $request->tap_id);
                 })->with(['setting', 'user'])
                 ->get()
-                ->map(function ($q) { 
+                ->map(function ($q) {
                     $timer = TapTimer::where('project_setting_id', $q->project_setting_id)->where('tap_id', $q->taps_id)->first();
                     //Add Timer With Collection
                     $q->timer = $timer;
@@ -95,7 +95,7 @@ class TapStaticController extends Controller
      */
     public function update(Request $request, TapStatic $tapStatic)
     {
-    
+
         if($request->timer) {
             $timerRequest = $request->timer;
             $timer = TapTimer::where('id', $timerRequest['id'])->first();
@@ -106,8 +106,8 @@ class TapStaticController extends Controller
                 'spulzeit_timer_started_time' => $timerRequest['spulzeit_timer_started_time'],
                 'wirkzeit_timer_started_user_id' => $timerRequest['wirkzeit_timer_started_user_id'],
                 'spulzeit_timer_started_user_id' => $timerRequest['spulzeit_timer_started_user_id'],
-                
-            ]);          
+
+            ]);
             if($update) {
                 $update = $tapStatic->update($request->all());
                 if($update) {

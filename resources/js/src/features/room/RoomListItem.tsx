@@ -45,16 +45,15 @@ class RoomListItem extends Component<IProps,IState> {
         this.setState({
             editRoom: false,
         });
-       
+
     }
 
     showTaps = (target: any) => {
-        console.log(target);
         if(target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editRoom)) {
             this.setState({showTaps: this.state.showTaps === true ? false : true});
         }
     }
-    
+
     render() {
         return (
                 <Fragment>
@@ -80,13 +79,13 @@ class RoomListItem extends Component<IProps,IState> {
                                                 <a href={void(0)} className="text-dark" onClick={(e) => !this.state.editRoom ? this.setState({editRoom: true}) : this.updateRoomHandler(e) }>
                                                     <i className={`fa ${!this.state.editRoom ? 'fa-pencil' : 'fa-check' }`} aria-hidden="true"></i>
                                                 </a> : ""
-                                            }                                            
-                                                <i 
+                                            }
+                                                <i
                                                     className={`fa ${this.state.showTaps ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}
                                                     aria-controls={`collapse${this.props.room.id}`}
                                                     aria-expanded={this.state.showTaps}
                                                     onClick={(e) => this.setState({showTaps: !this.state.showTaps})}
-                                                ></i> 
+                                                ></i>
                                         </div>
                                     </div>
                                 </div>
@@ -101,8 +100,8 @@ class RoomListItem extends Component<IProps,IState> {
                                 <Fragment>
                                 {
                                     this.props.room?.taps?.map(tap => {
-                                            return <TapListItem 
-                                                        key={tap.id} 
+                                            return <TapListItem
+                                                        key={tap.id}
                                                         tap={tap}
                                                         tapDetecting={this.state.tapDetecting}
                                                         toggleTapDetecting={this.toggleTapDetecting}/>
