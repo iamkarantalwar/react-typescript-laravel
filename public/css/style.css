@@ -68,24 +68,24 @@ select.team-select {
 .fancy-radio:hover input ~ .checkmark {
     background-color: #ccc;
   }
-  
+
   /* When the radio button is checked, add a blue background */
   .fancy-radio input:checked ~ .checkmark {
     background-color: #2196F3;
   }
-  
+
   /* Create the indicator (the dot/circle - hidden when not checked) */
   .checkmark:after {
     content: "";
     position: absolute;
     display: none;
   }
-  
+
   /* Show the indicator (dot/circle) when checked */
   .fancy-radio input:checked ~ .checkmark:after {
     display: block;
   }
-  
+
   /* Style the indicator (dot/circle) */
 .fancy-radio .checkmark:after {
        top: 9px;
@@ -253,12 +253,12 @@ a.main-btn.cancel:hover {
 
 /*floors tabbs*/
 .floors-tabbs .accordion .card-header span {
-    font-family: 'FontAwesome';  
+    font-family: 'FontAwesome';
     /* content: "\f013"; */
-    float: right; 
+    float: right;
 }
 /* .floors-tabbs .accordion .card-header.collapsed:after {
-   
+
     content: "\f013";
 } */
 
@@ -394,11 +394,11 @@ a.main-btn.cancel:hover {
 /*Floor Overview section*/
 
 .floor-overviwe .accordion .card-header:after {
-    font-family: 'FontAwesome';  
+    font-family: 'FontAwesome';
     content: "\f078"; /* fa-chevron-down */
     position: absolute;
     top: 12px;
-    right: 10px; 
+    right: 10px;
 }
 .floor-overviwe .accordion .card-header.collapsed:after {
     /* symbol for "collapsed" panels */
@@ -438,7 +438,7 @@ a.overview-flor-btn {
 .rooms-form-area .add-rooms-btns {
 	display: flex;
     justify-content: flex-end;
-} 
+}
 
 .rooms-form-area .add-room-details .form-group {
     width: 50%;
@@ -541,17 +541,17 @@ background-color: #f8f8fa;
 
 /* Track */
 .main-team-area .team-name-box .main-table::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #f1f1f1;
 }
- 
+
 /* Handle */
 .main-team-area .team-name-box .main-table::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 /* Handle on hover */
 .main-team-area .team-name-box .main-table::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 
 
@@ -594,7 +594,7 @@ background-color: #f8f8fa;
     }
 
 	.form-setting-option h4 {
-     margin-left: 0px; 
+     margin-left: 0px;
   }
 	.add-floor-tabs {
     width: 100%;
@@ -629,7 +629,7 @@ background-color: #f8f8fa;
 }
 .rooms-form-area .add-room-details .form-group {
     width: 100%;
-  } 
+  }
   .rooms-form-area .add-room-details .add-floor-number {
     width: 100%;
 }
@@ -681,9 +681,9 @@ background-color: #f8f8fa;
 }
 
 @media (min-width: 767px) and  (max-width: 1024px) {
-    
+
 	.form-setting-option h4 {
-     margin-left: 0px; 
+     margin-left: 0px;
    }
       .add-floor-tabs {
     width: 100%;
@@ -762,11 +762,11 @@ a{
 }
 
 #toggle-btn::after{
-    font-family: 'FontAwesome';  
+    font-family: 'FontAwesome';
     content: "\f078"; /* fa-chevron-down */
     position: absolute;
     top: 12px;
-    right: 10px; 
+    right: 10px;
 }
 
 
@@ -841,4 +841,8 @@ input[type="date"]::-webkit-calendar-picker-indicator{
 
 input[type="time"]::-webkit-calendar-picker-indicator{
     margin: 0;
+}
+.mycheckBox{
+    height: 26px;
+    width: 26px;
 }

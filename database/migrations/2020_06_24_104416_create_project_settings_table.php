@@ -19,8 +19,8 @@ class CreateProjectSettingsTable extends Migration
             $table->bigIncrements('id');
             $table->string('project_id');
             $table->enum('field_name', array_keys(ProjectSettingField::FIELDS));
-            $table->string('field_wirkzeit');
-            $table->string('field_spulzeit');
+            $table->string('field_wirkzeit')->nullable();
+            $table->string('field_spulzeit')->nullable();
             $table->enum('aktiv', ['ACTIVE', 'INACTIVE']);
             $table->softDeletes();
             $table->timestamps();

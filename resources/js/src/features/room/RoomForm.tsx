@@ -69,8 +69,8 @@ class RoomForm extends Component<IProps, IState> {
             this.setState({
                 roomTypes: res,
                 roomForm: {
-                            ...this.state.roomForm, 
-                            room_details: roomDetails, 
+                            ...this.state.roomForm,
+                            room_details: roomDetails,
                             floor_id: this.props.floor.id.toString()
                 },
             });
@@ -94,11 +94,11 @@ class RoomForm extends Component<IProps, IState> {
                 }
                 return type;
         });
-        
+
         this.setState({
             roomForm: {...this.state.roomForm,room_details: room_details}
         });
-    } 
+    }
 
     submitHandler = (event: any) => {
         event.preventDefault();
@@ -117,12 +117,12 @@ class RoomForm extends Component<IProps, IState> {
                 messageClass: 'text-success',
                 roomForm: this.defaultState.roomForm,
             });
-            setTimeout(()=>{ this.setState({message: '', messageClass: ''}); 
-                             this.props.hideRoomForm(); 
+            setTimeout(()=>{ this.setState({message: '', messageClass: ''});
+                             this.props.hideRoomForm();
                              this.props.afterRoomsAdded(true);
-                            }, 
+                            },
                             2000);
-            
+
         })
         .catch((error: AxiosError) => {
             let error_array = error.response?.data.errors;
@@ -132,21 +132,21 @@ class RoomForm extends Component<IProps, IState> {
                             quantity:error_array?.quantity != undefined ? error_array?.quantity[0] : "",
                             from: error_array?.from != undefined ? error_array?.from[0]: "",
                             to: error_array?.to != undefined ? error_array?.to[0] : "",
-                           
+
                         },
                         message: error_array?.room_details != undefined && error_array?.quantity == undefined ? error_array?.room_details[0] : "Check the fields.",
                         messageClass: 'text-danger'
                 });
-                
+
         })
         .finally(()=>{
             this.setState({
                 showLoader: false
-            }); 
-           
+            });
+
         })
     }
-    
+
     render() {
         let column:any = [];
         let row:any  =[];
@@ -157,15 +157,15 @@ class RoomForm extends Component<IProps, IState> {
                 {
                     row.push(<div key={i} className="room-quantity d-flex justify-content-between">
                                     {column}
-                                </div>);  
-                    column = [];                                  
+                                </div>);
+                    column = [];
                 } else {
                     column.push(
                         <div key={i} className="form-group">
                             <label htmlFor="exampleInputEmail1">{type.room_type}</label>
-                            <input type="number" 
+                            <input type="number"
                                 className="form-control"
-                                placeholder="Quantity"
+                                placeholder="Menge"
                                 value={this.state.roomForm.room_details[i].quantity}
                                 onChange={(e) => this.roomTypeChangeHandler(e, type)}
                             />
@@ -179,10 +179,10 @@ class RoomForm extends Component<IProps, IState> {
         if(column.length>0) {
             row.push(<div key={i} className="room-quantity d-flex justify-content-between">
                                     {column}
-                                </div>);  
-            column = [];      
+                                </div>);
+            column = [];
         }
-        
+
         return (
             <div className="rooms-form-area my-5" id="room-form">
                 <form className="add-rooms-form" onSubmit={this.submitHandler}>
@@ -192,54 +192,54 @@ class RoomForm extends Component<IProps, IState> {
                     <div className="add-room-details d-flex">
                         <div className="form-group">
                             <label htmlFor="exampleInputEmail1">Name</label>
-                            <input 
-                                type="name" 
-                                className={`form-control ${this.state.errors.name ? 'is-invalid': ''}`} 
+                            <input
+                                type="name"
+                                className={`form-control ${this.state.errors.name ? 'is-invalid': ''}`}
                                 value={this.state.roomForm.name}
-                                onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, name: e.target.value}} )} 
+                                onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, name: e.target.value}} )}
                             />
                             {this.state.errors.name ? <span className='text-danger'>{this.state.errors.name}</span> : ""}
                         </div>
                         <div className="add-floor-number d-flex">
                             <div className="form-group">
                                 <label htmlFor="exampleInputEmail1">Menge</label>
-                                <input 
-                                    type="number" 
-                                    className={`form-control ${this.state.errors.quantity ? 'is-invalid': ''}`} 
-                                    placeholder="Menge" 
+                                <input
+                                    type="number"
+                                    className={`form-control ${this.state.errors.quantity ? 'is-invalid': ''}`}
+                                    placeholder="Menge"
                                     value={this.state.roomForm.quantity}
-                                    onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, quantity: e.target.value}} )}     
+                                    onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, quantity: e.target.value}} )}
                                 />
                                 {this.state.errors.quantity ? <span className='text-danger'>{this.state.errors.quantity}</span> : ""}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="exampleInputEmail1">Von</label>
-                                <input 
-                                    type="number" 
-                                    className={`form-control ${this.state.errors.from ? 'is-invalid': ''}`} 
+                                <input
+                                    type="number"
+                                    className={`form-control ${this.state.errors.from ? 'is-invalid': ''}`}
                                     placeholder="Von"
                                     value={this.state.roomForm.from}
-                                    onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, from: e.target.value}} )}     
+                                    onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, from: e.target.value}} )}
                                 />
                                 {this.state.errors.from ? <span className='text-danger'>{this.state.errors.from}</span> : ""}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="exampleInputEmail1">Zu</label>
-                                <input 
-                                    type="number" 
-                                    className={`form-control ${this.state.errors.to ? 'is-invalid': ''}`} 
+                                <input
+                                    type="number"
+                                    className={`form-control ${this.state.errors.to ? 'is-invalid': ''}`}
                                     placeholder="Zu"
                                     value={this.state.roomForm.to}
-                                    onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, to: e.target.value}} )} 
+                                    onChange={(e) => this.setState( {roomForm: {...this.state.roomForm, to: e.target.value}} )}
                                 />
                                 {this.state.errors.to ? <span className='text-danger'>{this.state.errors.to}</span> : ""}
                             </div>
                         </div>
                     </div>
                     <div className="room-quantity-area my-4">
-                        
+
                         {this.state.showLoader ? <LoaderBar/> : row}
-                        
+
                         <div className="add-rooms-btns mt-3">
                             <div className="add-floor-create-btn">
                                 <button type="submit" className="main-btn mr-1">Hinzufügen</button>
@@ -250,7 +250,7 @@ class RoomForm extends Component<IProps, IState> {
                     </div>
                 </div>
             </form>
-      </div>   
+      </div>
         );
     }
 }

@@ -26,16 +26,16 @@ class ProjectSettingsRequest extends ApiRequest
         return [
             '*.project_id' => 'required',
             '*.field_name' => 'required',
-            '*.field_wirkzeit' => 'required',
-            '*.field_spulzeit' => 'required',
+            '*.field_wirkzeit' => 'required_if:*.aktiv,==,ACTIVE',
+            '*.field_spulzeit' => 'required_if:*.aktiv,==,ACTIVE',
             '*.aktiv' => 'required'
         ];
     }
 
     public function messages() {
         return [
-            '*.field_wirkzeit.required' => 'Feld Wirkzeit Kann nicht leer sein',
-            '*.field_spulzeit.required' => 'Feld Spulzeit Kann nicht leer sein',
+            '*.field_wirkzeit.required_if' => 'Feld Wirkzeit Kann nicht leer sein',
+            '*.field_spulzeit.required_if' => 'Feld Spulzeit Kann nicht leer sein',
         ];
     }
 }

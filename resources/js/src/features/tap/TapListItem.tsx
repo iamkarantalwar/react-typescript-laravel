@@ -96,7 +96,9 @@ class TapListItem extends Component<IProps, IState> {
             if(tapTimersToBeStore.length > 0) {
                 TapTimer.saveTapTimers(tapTimersToBeStore)
                 .then((timers) => { 
-                    this.setState({tapTimers: tapTimersToBeStore}); console.log(this.props.tap.id, '----', tapTimersToBeStore);
+                    //Push the store elements to the existing tap timers
+                    tapTimers.push(...tapTimersToBeStore);
+                    this.setState({tapTimers: tapTimers}); console.log(this.props.tap.id, '----', tapTimersToBeStore);
                     TapStatic.getTapStatics(this.props.tap.id)
                     .then((tapsStatics) => { 
                         const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
@@ -161,7 +163,7 @@ class TapListItem extends Component<IProps, IState> {
             alert("Another tap is Detecting. Please Wait");
         }  else {
             //Check if the Field Wirzekut have valid Value 
-            if(Number(time)==0) {
+            if(timer == "") {
                 alert('Ask Admin to set timer.');
             } else {     
                 //Tell The Agent To Store It In The Back-end

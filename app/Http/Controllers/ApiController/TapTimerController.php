@@ -88,6 +88,7 @@ class TapTimerController extends Controller
                 throw new Exception("Error Processing Request", 1);
             }
         }
+        sleep(5);
         return response()->json($timers, 200);
     }
 

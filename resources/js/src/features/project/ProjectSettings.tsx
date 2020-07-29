@@ -58,7 +58,7 @@ class ProjectSettings extends Component<IProps, IState> {
 
         Project
         .getProject(this.props.match.params.id)
-        .then((project) => { 
+        .then((project) => {
             this.setState({project: project});
             this.props.changeTitle(project.project_name);
         })
@@ -93,7 +93,7 @@ class ProjectSettings extends Component<IProps, IState> {
                 }
                 return setting;
             }
-            else 
+            else
             {
                 return setting;
             }
@@ -124,7 +124,7 @@ class ProjectSettings extends Component<IProps, IState> {
             setTimeout(()=> this.setState({message: "", messageClass:""}), 2000 );
         })
         .catch((error: AxiosError) => {
-            
+
             if (error.response?.status == 422) {
                 this.setState({
                     errors: this.defaultErrors
@@ -158,10 +158,10 @@ class ProjectSettings extends Component<IProps, IState> {
             setTimeout(()=> this.setState({message: "", messageClass:""}), 2000 );
         });
     }
-    
+
     render() {
         return (
-            <div className="container"> 
+            <div className="container">
                 <ProjectForm project={this.state.project as IProject}/>
                 <div className="start-form">
                     <div className="form-setting-option mt-4">
@@ -189,7 +189,7 @@ class ProjectSettings extends Component<IProps, IState> {
                                                             <tr >
                                                                 <th scope="row" className="text-left">{setting.field_name}</th>
                                                                 <td>
-                                                                    <input 
+                                                                    <input
                                                                         type="text"
                                                                         className={`form-control ${this.state.errors[index].field_wirkzeit ? 'is-invalid' : ''}`}
                                                                         value={setting.field_wirkzeit}
@@ -200,7 +200,7 @@ class ProjectSettings extends Component<IProps, IState> {
                                                                     { this.state.errors[index].field_wirkzeit ? <span className='text-danger'>{this.state.errors[index].field_wirkzeit}</span> : ""}
                                                                 </td>
                                                                 <td>
-                                                                    <input 
+                                                                    <input
                                                                             type="text"
                                                                             className={`form-control ${this.state.errors[index].field_spulzeit ? 'is-invalid' : ''}`}
                                                                             value={setting.field_spulzeit}
@@ -209,31 +209,30 @@ class ProjectSettings extends Component<IProps, IState> {
                                                                     />
                                                                     { this.state.errors[index].field_spulzeit ? <span className='text-danger'>{this.state.errors[index].field_spulzeit}</span> : ""}
                                                                 </td>
-                                                                <td><label className="table-custom-checkbox">
-                                                                    <input 
-                                                                        type="checkbox" 
+                                                                <td>
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        className="mycheckBox"
                                                                         checked={setting.aktiv == ProjectSettingStatus.ACTIVE}
                                                                         name='aktiv'
                                                                         onChange={(e) => this.inputChangeHandler(e, index)}
                                                                     />
-                                                                    <span className="checkmark"></span>
-                                                                    </label>
                                                                 </td>
-                                                            </tr>   
-                                                            </Fragment>  
+                                                            </tr>
+                                                            </Fragment>
                                                         )
                                                     })
-                                                }                                                                         
+                                                }
                                         </tbody>
                                     }
-                                </table>                   
+                                </table>
                         </div>
                         <div className="table-btn text-right my-4">
-                            <button type="submit" className="main-btn">Sparen</button>
+                            <button type="submit" className="main-btn">Speichern</button>
                         </div>
-                        </form> 
+                        </form>
                     </div>
-                  
+
             </div>
         </div>
         );
