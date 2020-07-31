@@ -27,7 +27,6 @@ class TapStaticController extends Controller
                     $q->timer = $timer;
                     return $q;
                 });
-
         return response()->json($collection);
     }
 

@@ -29,8 +29,8 @@ type ReduxProps = ReturnType<typeof mapStateToProps>;
 
 interface IProps extends ReduxProps,RouteComponentProps<RouteParam> {
     tap: ITap;
-    tapDetecting: boolean;
-    toggleTapDetecting: () => void;
+    tapTimers: ITapTimer[],
+    tapStatics: ITapStatic[],
 }
 
 interface IState {
@@ -52,12 +52,12 @@ class TapListItem extends Component<IProps, IState> {
         this.state = {
             pendingStatics: [],
             settings: [],
-            tapStatics: [],
+            tapStatics: this.props.tapStatics,
             tapStaticState: undefined,
             selectedPendingTapId: undefined,
             tapStatus: undefined,
             showTapStatics: false,
-            tapTimers: [],
+            tapTimers: this.props.tapTimers,
             detectingField: undefined,
             timer:0,
         }
@@ -66,70 +66,61 @@ class TapListItem extends Component<IProps, IState> {
     interval: any;
 
     componentDidMount() {
-        const projectId = this.props.match.params.id;
         const settings = this.props.projectSettings.projectSettings.filter((setting)=> setting.aktiv == ProjectSettingStatus.ACTIVE);
         this.setState({settings: settings});
 
+        const timers:ITapTimer[] = this.state.tapTimers;
+        const tapsStatics: ITapStatic[] = this.state.tapStatics;
 
+        //Make Two Objects TimersToBeStore and TapTimers
+        let tapTimersToBeStore : ITapTimer[]  = [];
+        let tapTimers: ITapTimer[] = [];
 
-        axios.all<any>([
-            TapTimer.getTapTimers(this.props.tap),
-            TapStatic.getTapStatics(this.props.tap.id),
-            // TapTimer.saveTapTimers(this.)
-        ]).then(axios.spread((...requests) => {
-            console.log('accepted');
-                const timers:ITapTimer[] = requests[0];
-                const tapsStatics: ITapStatic[] = requests[1];
-                      //Make Two Objects TimersToBeStore and TapTimers
-                 let tapTimersToBeStore : ITapTimer[]  = [];
-                 let tapTimers: ITapTimer[] = [];
+        settings.forEach((setting) => {
+            const match = timers.find(timer_ => timer_.project_setting_id == setting.id);
+            if(!match) {
+                let timer_: ITapTimer = {
+                    project_setting_id: setting.id as number,
+                    spulzeit_status: false,
+                    wirkzeit_status: false,
+                    tap_id: this.props.tap.id,
+                    spulzeit_pending_timer: null,
+                    wirkzeit_pending_timer: null,
+                    spulzeit_timer_started: null,
+                    wirkzeit_timer_started: null,
+                }
+                tapTimersToBeStore.push(timer_);
+            } else {
+                tapTimers.push(match);
+            }
+        });
 
-                 settings.forEach((setting) => {
-                     const match = timers.find(timer_ => timer_.project_setting_id == setting.id);
-                     if(!match) {
-                         let timer_: ITapTimer = {
-                             project_setting_id: setting.id as number,
-                             spulzeit_status: false,
-                             wirkzeit_status: false,
-                             tap_id: this.props.tap.id,
-                             spulzeit_pending_timer: null,
-                             wirkzeit_pending_timer: null,
-                             spulzeit_timer_started: null,
-                             wirkzeit_timer_started: null,
-                         }
-                         tapTimersToBeStore.push(timer_);
-                     } else {
-                         tapTimers.push(match);
-                     }
-                 });
+        //Check If To Be Saved Has Any Object If it has then call the API
+        if(tapTimersToBeStore.length > 0) {
+            TapTimer.saveTapTimers(tapTimersToBeStore)
+            .then((timers) => {
+            tapTimers.push(...tapTimersToBeStore);
+            this.setState({tapTimers: tapTimers});
+                //Push the store elements to the existing tap timers
+            const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
+            this.setState({
+                tapStatics: tapsStatics,
+                pendingStatics: pendingStatics,
+            });
+            this.checkTapStaticState(settings, pendingStatics);
+            }).catch(() => {
 
-                 //Check If To Be Saved Has Any Object If it has then call the API
-                 if(tapTimersToBeStore.length > 0) {
-                     TapTimer.saveTapTimers(tapTimersToBeStore)
-                     .then((timers) => {
-                        tapTimers.push(...tapTimersToBeStore);
-                        this.setState({tapTimers: tapTimers});
-                         //Push the store elements to the existing tap timers
-                        const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
-                        this.setState({
-                            tapStatics: tapsStatics,
-                            pendingStatics: pendingStatics,
-                        });
-                        this.checkTapStaticState(settings, pendingStatics);
-                     }).catch(() => {
-
-                     });
-                 //Don't call the api just add the elemenst into tap Timers
-                 } else {
-                        this.setState({tapTimers: tapTimers});
-                        const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
-                        this.setState({
-                             tapStatics: tapsStatics,
-                             pendingStatics: pendingStatics,
-                        });
-                        this.checkTapStaticState(settings, pendingStatics);
-                 }
-        }))
+            });
+        //Don't call the api just add the elemenst into tap Timers
+        } else {
+            this.setState({tapTimers: tapTimers});
+            const pendingStatics = settings.filter((setting) => !tapsStatics.some((tapStatic) => tapStatic.project_setting_id == setting.id));
+            this.setState({
+                    tapStatics: tapsStatics,
+                    pendingStatics: pendingStatics,
+            });
+            this.checkTapStaticState(settings, pendingStatics);
+        }
     }
     checkTapStaticState = (settings = this.state.settings, pendingStatics = this.state.pendingStatics) => {
         let tapStaticState: TapStaticStateEnum | undefined;
@@ -152,7 +143,7 @@ class TapListItem extends Component<IProps, IState> {
         this.setState({tapStatus: <div></div>});
     }
 
-    showInProgressTap = async (timer: string, field: SettingsField, tapTimer: ITapTimer, detectingBeforeClosing: boolean = false) => {
+    showInProgressTap = (timer: string, field: SettingsField, tapTimer: ITapTimer, detectingBeforeClosing: boolean = false) => {
         let time: string = "";
         //Extract the numeric value from the Timer
             for(let i of timer.toString()) {
@@ -163,7 +154,7 @@ class TapListItem extends Component<IProps, IState> {
 
 
         //Check If Other Tap Is detecting
-        if (this.props.tapDetecting) {
+        if (1!=1) {
             //Alert The message Annother Tap Is Detecting
             alert("Another tap is Detecting. Please Wait");
         }  else {
@@ -303,7 +294,7 @@ class TapListItem extends Component<IProps, IState> {
     err = 0;
 
     showPendingTap = (id = this.state.selectedPendingTapId) => {
-        let setting : IProjectSetting = this.state.settings.find((stat)=> stat.id == id) as IProjectSetting;
+        let setting : IProjectSetting = this.props.projectSettings.projectSettings.find((stat)=> stat.id == id) as IProjectSetting;
         let timer_index : number = this.state.tapTimers.findIndex((timer_) => timer_.project_setting_id == setting.id);
         let timer : ITapTimer = this.state.tapTimers[timer_index];
         try {

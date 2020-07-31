@@ -5,6 +5,7 @@ import { Accordion, Button, Collapse } from 'react-bootstrap';
 import TapListItem from '../tap/TapListItem';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
+import Taps from '../tap/Taps';
 
 
 interface IProps {
@@ -97,17 +98,7 @@ class RoomListItem extends Component<IProps,IState> {
                             <Fragment>
                             {
                                 this.state.showTaps ?
-                                <Fragment>
-                                {
-                                    this.props.room?.taps?.map(tap => {
-                                            return <TapListItem
-                                                        key={tap.id}
-                                                        tap={tap}
-                                                        tapDetecting={this.state.tapDetecting}
-                                                        toggleTapDetecting={this.toggleTapDetecting}/>
-                                    })
-                                }
-                                </Fragment> : <></>
+                                 <Taps taps={this.props.room?.taps}/>: <></>
                             }
                             </Fragment>
                         </div>

@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import AxiosObservable from 'axios-observable';
 import { IProject } from '../models/project.model';
 import {enviorment} from '../../../enviorment';
 import { ITeam } from '../models/team.model';
@@ -14,6 +15,8 @@ import { ITapStatic } from '../models/tap-static.model';
 import { ITap } from '../models/tap.model';
 import { ITapTimer } from '../models/tap-timer.model';
 import { SettingsField } from '../enums/settings-field.enum';
+import { Observable } from 'rxjs';
+import { lazy } from 'react';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -32,7 +35,14 @@ const requests = {
     del: (url: string) => axios.delete(url).then(responseBody),
 };
 
-const endPoints = {
+const lazyLoadRequest = {
+    get: (url: string) => AxiosObservable.get(url),
+    post: (url: string, body: {}) => AxiosObservable.post(url, body),
+    put: (url: string, body: {}) => AxiosObservable.put(url, body),
+    del: (url: string) => AxiosObservable.delete(url),
+}
+
+export const endPoints = {
     project: 'project',
     team: 'team',
     user: 'user',
@@ -60,9 +70,9 @@ export const Team = {
 
 export const User = {
     fetchUser: () : Promise<IUser> => requests.get(`${enviorment.baseUrl}/usera`),
-    getUsers: () : Promise<IUser[]> => requests.get(`${enviorment.baseUrl}/${endPoints.user}`),  
-    saveUser: (user : IUser) : Promise<IUser> => requests.post(`${enviorment.baseUrl}/${endPoints.user}`, user),  
-    updateUser: (user : IUser) : Promise<IUser> => requests.put(`${enviorment.baseUrl}/${endPoints.user}/${user.id}`, user),  
+    getUsers: () : Promise<IUser[]> => requests.get(`${enviorment.baseUrl}/${endPoints.user}`),
+    saveUser: (user : IUser) : Promise<IUser> => requests.post(`${enviorment.baseUrl}/${endPoints.user}`, user),
+    updateUser: (user : IUser) : Promise<IUser> => requests.put(`${enviorment.baseUrl}/${endPoints.user}/${user.id}`, user),
 }
 
 export const Role = {
@@ -71,7 +81,7 @@ export const Role = {
 
 export const ProjectSetting = {
     getProjectSettings: (projectId: string) : Promise<IProjectSetting[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectSettings}/${projectId}`),
-    saveProjectSettings: (projectSettings: IProjectSetting[], projectId: string) : Promise<IProjectSetting[]> => requests.put(`${enviorment.baseUrl}/${endPoints.projectSettings}/${projectId}`, projectSettings), 
+    saveProjectSettings: (projectSettings: IProjectSetting[], projectId: string) : Promise<IProjectSetting[]> => requests.put(`${enviorment.baseUrl}/${endPoints.projectSettings}/${projectId}`, projectSettings),
 }
 
 export const ProjectFloors = {
@@ -88,14 +98,14 @@ export const RoomType = {
 export const FloorRooms = {
     getAllRooms: () : Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}`),
     getFloorRooms: (projectFloor: IProjectFloor): Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?floor_id=${projectFloor.id}`),
-    saveFloorRooms : (floorRooms: IRoomForm) => requests.post(`${enviorment.baseUrl}/${endPoints.floorRooms}`, floorRooms), 
+    saveFloorRooms : (floorRooms: IRoomForm) => requests.post(`${enviorment.baseUrl}/${endPoints.floorRooms}`, floorRooms),
     updateFloorRoom : (floorRoom: IFloorRoom): Promise<IFloorRoom> => requests.put(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`, floorRoom),
 }
 
 export const TapStatic = {
     createTapStatic : (stat: ITapStatic) : Promise<ITapStatic> => requests.post(`${enviorment.baseUrl}/${endPoints.tapStatics}`, stat),
-    getTapStatics: (tapId: string | number): Promise<ITapStatic[]> => requests.get(`${enviorment.baseUrl}/${endPoints.tapStatics}?tap_id=${tapId}`),  
-    updateTapStatic: (stat: ITapStatic): Promise<ITapStatic> => requests.put(`${enviorment.baseUrl}/${endPoints.tapStatics}/${stat.id}`, stat), 
+    getTapStatics: (tapId: string | number): Promise<ITapStatic[]> => requests.get(`${enviorment.baseUrl}/${endPoints.tapStatics}?tap_id=${tapId}`),
+    updateTapStatic: (stat: ITapStatic): Promise<ITapStatic> => requests.put(`${enviorment.baseUrl}/${endPoints.tapStatics}/${stat.id}`, stat),
 }
 
 export const TapTimer = {
@@ -103,4 +113,12 @@ export const TapTimer = {
     saveTapTimers: (timers: ITapTimer[]) : Promise<ITapTimer[]> => requests.post(`${enviorment.baseUrl}/${endPoints.tapRounds}`, timers),
     updateTapTimer: (timer: ITapTimer): Promise<ITapTimer> => requests.put(`${enviorment.baseUrl}/${endPoints.tapRounds}/${timer.id}`, timer),
     startTapTimer: (field: SettingsField, timer: ITapTimer): Promise<ITapTimer> => requests.put(`${enviorment.baseUrl}/${endPoints.tapRounds}/start-timer/${timer.id}`, {'field': field}),
+}
+
+export const TapTimerObservable = {
+    getTapTimers: (tap: ITap)   => lazyLoadRequest.get(`${enviorment.baseUrl}/${endPoints.tapRounds}?tap_id=${tap.id}`),
+}
+
+export const TapStaticObservable = {
+    getTapTimers: (tap: ITap) => lazyLoadRequest.get(`${enviorment.baseUrl}/${endPoints.tapRounds}?tap_id=${tap.id}`),
 }
