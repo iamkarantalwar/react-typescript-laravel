@@ -18,7 +18,7 @@ class TapStaticController extends Controller
     public function index(Request $request)
     {
         $collection = TapStatic::whereHas('taps', function($q) use($request) {
-                    return $q->where('id', $request->tap_id);
+                    return $q->whereIn('id', explode(',', $request->tap_id));
                 })->with(['setting', 'user'])
                 ->get()
                 ->map(function ($q) {

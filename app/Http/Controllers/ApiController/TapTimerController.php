@@ -16,7 +16,7 @@ class TapTimerController extends Controller
     public function index(Request $request)
     {
         if($request->tap_id) {
-            $timers = TapTimer::where('tap_id', $request->tap_id)->get();
+            $timers = TapTimer::whereIn('tap_id', explode(',', $request->tap_id))->get();
             //Get Current Time Stamp
             $current_time_stamp = Carbon::now();
             //Iterate through each timer
