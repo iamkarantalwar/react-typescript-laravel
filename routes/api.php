@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+// use Illuminate\Routing\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,17 @@ Route::namespace('ApiController')->group(function(){
 
     Route::resource('team', 'TeamController');
 
-    Route::resource('project', 'ProjectController');
+    Route::group(['prefix' => 'project'], function () {
+
+        Route::resource('', 'ProjectController');
+
+        Route::get('/{project}/settings', 'ProjectSettingController@projectSettings');
+        Route::put('/{project}/settings', 'ProjectSettingController@updateProjectSettings');
+
+        Route::get('/{project}/settings/pumpstart', 'PumpstartOfProductController@index');
+        Route::post('/{project}/settings/pumpstart', 'PumpstartOfProductController@store');
+        Route::put('/{project}/settings/pumpstart/{pumpstart}', 'PumpstartOfProductController@update');
+    });
 
     Route::resource('project-settings', 'ProjectSettingController');
 

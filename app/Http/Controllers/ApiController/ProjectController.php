@@ -29,8 +29,8 @@ class ProjectController extends Controller
                     return $q->where('team_id', $request->user()->team_id);
                 }])->get();
             }
-           
-        }        
+
+        }
     }
 
     /**
@@ -58,10 +58,10 @@ class ProjectController extends Controller
                 $fields = ProjectSettingField::FIELDS;
                 foreach ($fields as $key => $value) {
                     $project->settings()->create([
-                        'project_id' => $project->id, 
-                        'field_name' => $key, 
-                        'field_wirkzeit' => '', 
-                        'field_spulzeit' => '', 
+                        'project_id' => $project->id,
+                        'field_name' => $key,
+                        'field_wirkzeit' => '',
+                        'field_spulzeit' => '',
                         'aktiv' => 'ACTIVE'
                     ]);
                 }
@@ -72,7 +72,7 @@ class ProjectController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-       
+
     }
 
     /**
@@ -130,4 +130,5 @@ class ProjectController extends Controller
             throw new Exception("Error Processing Request", 1);
         }
     }
+
 }

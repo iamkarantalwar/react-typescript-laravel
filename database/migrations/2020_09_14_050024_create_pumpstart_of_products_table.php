@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTapsTable extends Migration
+class CreatePumpstartOfProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateTapsTable extends Migration
      */
     public function up()
     {
-        Schema::create('taps', function (Blueprint $table) {
+        Schema::create('pumpstart_of_products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('floor_room_id');
-            $table->bigInteger('room_type_id');
-            $table->string('name');
-            $table->softDeletes();
+            $table->bigInteger('project_id');
+            $table->bigInteger('project_setting_id');
+            $table->date('pumpstart_date')->nullable();
+            $table->time('pumpstart_time')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateTapsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('taps');
+        Schema::dropIfExists('pumpstart_of_products');
     }
 }

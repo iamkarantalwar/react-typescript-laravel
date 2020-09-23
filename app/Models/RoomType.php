@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RoomType extends Model
 {
+    protected $fillable = ['room_type'];
+
     use SoftDeletes;
 }

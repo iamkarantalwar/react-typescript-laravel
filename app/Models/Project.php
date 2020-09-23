@@ -16,7 +16,7 @@ class Project extends Model
         return $this->hasMany("App\Models\ProjectFloor");
     }
 
-    public function settings() 
+    public function settings()
     {
         return $this->hasMany("App\Models\ProjectSetting");
     }

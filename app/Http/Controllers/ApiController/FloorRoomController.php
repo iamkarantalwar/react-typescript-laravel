@@ -130,6 +130,15 @@ class FloorRoomController extends Controller
      */
     public function destroy(FloorRoom $floorRoom)
     {
-        return abort(404);
+       $delete = $floorRoom->delete();
+       if($delete) {
+           return response()->json([
+               'message' => 'Room Deleted Successfully.'
+           ], 200);
+       } else {
+           return response()->json([
+               'message' => 'Something Went Wrong. Try Again Later.'
+           ], 400);
+       }
     }
 }

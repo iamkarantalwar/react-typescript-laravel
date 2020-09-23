@@ -9,7 +9,7 @@ class ProjectFloor extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['project_id', 'floor_name', 'status', 'team_id']; 
+    protected $fillable = ['project_id', 'floor_name', 'status', 'team_id'];
 
     public function rooms()
     {

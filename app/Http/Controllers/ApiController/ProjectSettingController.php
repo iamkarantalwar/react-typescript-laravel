@@ -39,7 +39,14 @@ class ProjectSettingController extends Controller
      */
     public function store(Request $request)
     {
-        return abort(404);
+        $projectSetting = ProjectSetting::create($request->all());
+        if($projectSetting) {
+            return response()->json($projectSetting, 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later. '
+            ], 200);
+        }
     }
 
     /**
@@ -48,10 +55,9 @@ class ProjectSettingController extends Controller
      * @param  \App\ProjectSetting  $projectSetting
      * @return \Illuminate\Http\Response
      */
-    public function show(Project $projectSetting, Request $request)
+    public function show(ProjectSetting $projectSetting, Request $request)
     {
-        $result = $projectSetting->settings;
-        return response()->json($result);
+        return response()->json($projectSetting, 200);
     }
 
     /**
@@ -72,7 +78,50 @@ class ProjectSettingController extends Controller
      * @param  \App\ProjectSetting  $projectSetting
      * @return \Illuminate\Http\Response
      */
-    public function update(ProjectSettingsRequest $request, Project $projectSetting)
+    public function update(Request $request, ProjectSetting $projectSetting)
+    {
+        try {
+            $update = $projectSetting->update($request->all());
+            if($update) {
+                return response()->json($projectSetting, 200);
+            } else {
+                return response()->json([
+                    'message' => 'Something went wrong. Try again later.'
+                ], 500);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\ProjectSetting  $projectSetting
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(ProjectSetting $projectSetting)
+    {
+        $delete = $projectSetting->delete();
+        if($delete) {
+            return response()->json([
+                'message' => 'Product Deleted Successfully.'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Something Went Wrong. Try Again Later.'
+            ], 500);
+        }
+    }
+
+    public function projectSettings(Project $project)
+    {
+        $result = $project->settings;
+        return response()->json($result);
+    }
+
+    public function updateProjectSettings(ProjectSettingsRequest $request, Project $projectSetting)
     {
         try {
             //code...
@@ -85,17 +134,7 @@ class ProjectSettingController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-       
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\ProjectSetting  $projectSetting
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(ProjectSetting $projectSetting)
-    {
-        //
-    }
 }

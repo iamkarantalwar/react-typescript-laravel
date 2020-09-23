@@ -8,7 +8,7 @@ import { IRole } from '../models/role.model';
 import { IProjectSetting } from '../models/project-setting.model';
 import { IProjectFloorForm } from '../models/project-floor-form.model';
 import { IProjectFloor } from '../models/project-floor.model';
-import { IRoomType } from '../models/room-type';
+import { IRoomType } from '../models/room-type.model';
 import { IRoomForm } from '../models/room-form.model';
 import { IFloorRoom } from '../models/floor-room.model';
 import { ITapStatic } from '../models/tap-static.model';
@@ -80,11 +80,16 @@ export const Role = {
 }
 
 export const ProjectSetting = {
-    getProjectSettings: (projectId: string) : Promise<IProjectSetting[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectSettings}/${projectId}`),
-    saveProjectSettings: (projectSettings: IProjectSetting[], projectId: string) : Promise<IProjectSetting[]> => requests.put(`${enviorment.baseUrl}/${endPoints.projectSettings}/${projectId}`, projectSettings),
+    getProjectSetting: (settingId: string) : Promise<IProjectSetting> => requests.get(`${enviorment.baseUrl}/${endPoints.projectSettings}/${settingId}`),
+    deleteProjectSetting: (ProjectSetting: IProjectSetting) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.projectSettings}/${ProjectSetting.id}`),
+    createProjectSetting: (projectSetting: IProjectSetting): Promise<IProjectSetting> => requests.post(`${enviorment.baseUrl}/${endPoints.projectSettings}`, projectSetting),
+    updateProjectSetting: (projectSetting: IProjectSetting): Promise<IProjectSetting> => requests.put(`${enviorment.baseUrl}/${endPoints.projectSettings}/${projectSetting.id}`, projectSetting),
+    getProjectSettings: (projectId: string) : Promise<IProjectSetting[]> => requests.get(`${enviorment.baseUrl}/${endPoints.project}/${projectId}/settings`),
+    saveProjectSettings: (projectSettings: IProjectSetting[], projectId: string) : Promise<IProjectSetting[]> => requests.put(`${enviorment.baseUrl}/${endPoints.project}/${projectId}/settings `, projectSettings),
 }
 
 export const ProjectFloors = {
+    getAllFloors: () : Promise<IProjectFloor[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectFloor}`),
     getProjectFloors: (projectId: string) : Promise<IProjectFloor[]> => requests.get(`${enviorment.baseUrl}/${endPoints.projectFloor}?project_id=${projectId}`),
     saveProjectFloor: (projectFloorForm: IProjectFloorForm): Promise<IProjectFloor[]> => requests.post(`${enviorment.baseUrl}/${endPoints.projectFloor}`, projectFloorForm),
     updateProjectFloor: (floor: IProjectFloor): Promise<IProjectFloor> => requests.put(`${enviorment.baseUrl}/${endPoints.projectFloor}/${floor.id}`, floor),
@@ -92,7 +97,9 @@ export const ProjectFloors = {
 }
 
 export const RoomType = {
-    getRoomTypes: () : Promise<IRoomType[]> => requests.get(`${enviorment.baseUrl}/${endPoints.roomTypes}`)
+    getRoomTypes: () : Promise<IRoomType[]> => requests.get(`${enviorment.baseUrl}/${endPoints.roomTypes}`),
+    saveRoomType: (roomType: IRoomType) : Promise<IRoomType> => requests.post(`${enviorment.baseUrl}/${endPoints.roomTypes}`, roomType),
+    updateRoomType: (roomType: IRoomType) : Promise<IRoomType> => requests.put(`${enviorment.baseUrl}/${endPoints.roomTypes}/${roomType.id}`, roomType),
 }
 
 export const FloorRooms = {
@@ -100,6 +107,7 @@ export const FloorRooms = {
     getFloorRooms: (projectFloor: IProjectFloor): Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?floor_id=${projectFloor.id}`),
     saveFloorRooms : (floorRooms: IRoomForm) => requests.post(`${enviorment.baseUrl}/${endPoints.floorRooms}`, floorRooms),
     updateFloorRoom : (floorRoom: IFloorRoom): Promise<IFloorRoom> => requests.put(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`, floorRoom),
+    deleteFloorRoom: (floorRoom: IFloorRoom) => requests.del(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`),
 }
 
 export const TapStatic = {

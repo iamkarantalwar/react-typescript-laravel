@@ -1,6 +1,6 @@
 import React, {Fragment, useContext} from 'react';
 import ReactDOM from 'react-dom';
-import {Header} from './src/app/layout/Header';
+import Header from './src/app/layout/Header';
 import {Dashboard} from './src/features/dashboard/Dashboard';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 import Teams from './src/features/team/Teams';
@@ -16,6 +16,9 @@ import store from './src/redux/store';
 import ProjectSettings from './src/features/project/ProjectSettings';
 import Floor from './src/features/floor/Floor';
 import ProjectForm from './src/features/project/ProjectForm';
+import Taps from './src/features/tap/Taps';
+import TapTypes from './src/features/tapTypes/TapsTypes';
+import ProjectSettingForm from './src/features/project/ProjectSettingForm';
 
 interface IProps {}
 
@@ -34,35 +37,37 @@ export default class App extends React.Component<IProps, IState>{
    changeTitle = (title: string | null) => {
       this.setState({title: title});
    }
-   
+
   render(): any{
      return(
          <Fragment>
-            <Provider store={store}>              
-            <BrowserRouter> 
+            <Provider store={store}>
+            <BrowserRouter>
                <UserContext.Provider value={userObject}>
-                  <Header/>     
-               </UserContext.Provider>  
+                  <Header/>
+               </UserContext.Provider>
                <TitleContext.Provider value={{ title:this.state.title as string, changeTitle: this.changeTitle}}>
-                     <BottomHeader/>   
+                     <BottomHeader/>
                   </TitleContext.Provider>
-                  {/* <Route exact path='/' component={Dashboard} />  */}
+                  <Route exact path='/' component={Dashboard} />
                   <Route
                      path={'/(.+)'}
-                     render={() => ( 
-                     
-                        <Switch>  
-                           <Route exact path="/" component={Authorization(Dashboard, [UserRoles.ADMIN])}/>
-                           <Route exact path="/projects" component={Authorization(Projects, [UserRoles.ADMIN, UserRoles.USER])}/>
-                           <Route exact path="/project/create" component={Authorization(ProjectForm, [UserRoles.ADMIN])}/>
-                           <Route exact path="/project/:id/settings" component={Authorization(ProjectSettings, [UserRoles.ADMIN])}/>
-                           <Route exact path="/project/:id" component={Authorization(Floor, [UserRoles.ADMIN, UserRoles.USER])}/>
-                           <Route exact path="/project/:id/floors/:floorid" component={Authorization(Floor, [UserRoles.ADMIN, UserRoles.USER])}/>
-                           <Route exact path="/teams" component={Authorization(Teams, [UserRoles.ADMIN])}/>
-                           <Route exact path="/users" component={Authorization(Users, [UserRoles.ADMIN])}/>
+                     render={() => (
+                        <Switch>
+                           <Route path="/projects" component={Authorization(Projects, [UserRoles.ADMIN, UserRoles.USER])}/>
+                           <Route path="/project/create" component={Authorization(ProjectForm, [UserRoles.ADMIN])}/>
+                           <Route path="/project/:id/settings/:settingId/edit" component={Authorization(ProjectSettingForm, [UserRoles.ADMIN])}/>
+                           <Route path="/project/:id/settings/create" component={Authorization(ProjectSettingForm, [UserRoles.ADMIN])}/>
+                           <Route path="/project/:id/settings" component={Authorization(ProjectSettings, [UserRoles.ADMIN])}/>
+                           <Route path="/project/:id/create" component={Authorization(Floor, [UserRoles.ADMIN])}/>
+                           <Route path="/project/:id" component={Authorization(Floor, [UserRoles.ADMIN, UserRoles.USER])}/>
+                           <Route path="/project/:id/floors/:floorid" component={Authorization(Floor, [UserRoles.ADMIN, UserRoles.USER])}/>
+                           <Route path="/teams" component={Authorization(Teams, [UserRoles.ADMIN])}/>
+                           <Route path="/users" component={Authorization(Users, [UserRoles.ADMIN])}/>
+                           <Route path="/taps" component={Authorization(TapTypes, [UserRoles.ADMIN])}/>
                         </Switch>
                      )}
-                  />    
+                  />
                </BrowserRouter>
             </Provider>
          </Fragment>

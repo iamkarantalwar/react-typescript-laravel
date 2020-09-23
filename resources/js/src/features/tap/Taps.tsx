@@ -30,19 +30,19 @@ class Taps extends Component<IProps, IState> {
         }
     }
 
-    getTimers(): Observable<any[]> {
+    getTimers(): Observable<ITapTimer[]> {
         const taps = this.props.taps as ITap[];
-        return combineLatest(taps.map(tap => ajax.getJSON(`${enviorment.baseUrl}/${endPoints.tapRounds}?tap_id=${tap.id}`)));
+        return ajax.getJSON(`${enviorment.baseUrl}/${endPoints.tapRounds}?tap_id=${taps.map((tap) => tap.id).join(',')}`);
       }
 
-      getTapStatics(): Observable<any[]> {
+      getTapStatics(): Observable<ITapStatic[]> {
         const taps = this.props.taps as ITap[];
-        return combineLatest(taps.map(tap => ajax.getJSON(`${enviorment.baseUrl}/${endPoints.tapStatics}?tap_id=${tap.id}`)));
+        return ajax.getJSON(`${enviorment.baseUrl}/${endPoints.tapStatics}?tap_id=${taps.map((tap) => tap.id).join(',')}`);
       }
 
      getTapDetails  = () =>{
 
-         return (combineLatest(this.getTimers(), this.getTapStatics()));
+         return (forkJoin(this.getTimers(), this.getTapStatics()));
      }
 
      tapListItems: any[]  = [];
@@ -52,13 +52,13 @@ class Taps extends Component<IProps, IState> {
         // this.getTimers().subscribe((res) => { console.log(res)})
 
         this.getTapDetails().subscribe((res) => {
-            for(let i=0; i<res[0].length; i++)
+            const taps = this.props.taps as ITap[];
+            for(let i=0; i<taps.length; i++)
             {
-                const taps = this.props.taps as ITap[];
-                const tapTimers = res[0][i] as ITapTimer[];
-                const tapStatics = res[1][i] as ITapStatic[];
-                console.log(taps[i]);
-                this.tapListItems.push(<TapListItem key={i} tapTimers={tapTimers} tapStatics={tapStatics} tap={taps[i]}/>)
+                const tap = taps[i];
+                const tapTimers = res[0].filter((timer) => timer.tap_id == tap.id);
+                const tapStatics = res[1].filter((stat) => stat.taps_id == tap.id);
+                this.tapListItems.push(<TapListItem key={i} tapTimers={tapTimers} tapStatics={tapStatics} tap={tap}/>)
             }
             this.setState({
                 subscribed: true,
@@ -66,8 +66,9 @@ class Taps extends Component<IProps, IState> {
         });
     }
     render() {
-
+        console.log(this.tapListItems, this.state.subscribed);
         return (
+
             this.state.subscribed ? this.tapListItems : <LoaderBar/>
         );
     }

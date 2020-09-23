@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TapStatic extends Model
 {
     public $fillable = ['taps_id', 'project_setting_id', 'date', 'time', 'user_id', 'detected'];
-    
+
     public function taps() {
         return $this->belongsTo("App\Models\Tap");
     }

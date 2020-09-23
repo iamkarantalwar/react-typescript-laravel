@@ -17,8 +17,8 @@ class CreateProjectSettingsTable extends Migration
     {
         Schema::create('project_settings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('project_id');
-            $table->enum('field_name', array_keys(ProjectSettingField::FIELDS));
+            $table->bigInteger('project_id');
+            $table->string('field_name');
             $table->string('field_wirkzeit')->nullable();
             $table->string('field_spulzeit')->nullable();
             $table->enum('aktiv', ['ACTIVE', 'INACTIVE']);

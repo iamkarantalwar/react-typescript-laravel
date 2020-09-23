@@ -1,9 +1,27 @@
 import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import { UserRoles } from '../models/role.model';
+import { RouteComponentProps } from 'react-router';
 
-export class Header extends Component {
+interface IProps extends RouteComponentProps { }
+
+interface IState {
+    search: string;
+}
+
+export class Header extends Component<IProps, IState> {
+    constructor(props: IProps) {
+        super(props);
+        this.state = {
+            search: "",
+        }
+    }
+
+    searchProject = () => {
+        this.props.history.push(`/projects?search=${this.state.search}`);
+    }
+
     render() {
             return (
                 <div className="top-bar py-3">
@@ -32,7 +50,7 @@ export class Header extends Component {
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>
                         </button>
-        
+
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav mr-auto">
                             <li className="nav-item active">
@@ -47,12 +65,15 @@ export class Header extends Component {
                                                 <Fragment>
                                                     <li className="nav-item">
                                                         <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projekte</Link>
-                                                    </li>                           
+                                                    </li>
                                                     <li className="nav-item">
                                                         <Link className="nav-link mr-4" to="/users">User</Link>
                                                     </li>
                                                     <li className="nav-item">
                                                         <Link className="nav-link mr-4" to="/teams">Teams</Link>
+                                                    </li>
+                                                    <li className="nav-item">
+                                                        <Link className="nav-link mr-4" to="/taps">Taps</Link>
                                                     </li>
                                                 </Fragment>
                                             )
@@ -61,7 +82,7 @@ export class Header extends Component {
                                                 <Fragment>
                                                     <li className="nav-item">
                                                         <Link className="nav-link mr-4" onClick={(e) => this.forceUpdate()} to="/projects">Projekte</Link>
-                                                    </li> 
+                                                    </li>
                                                 </Fragment>
                                             )
                                         }
@@ -72,8 +93,8 @@ export class Header extends Component {
                                     <a className="nav-link mr-4" href="/logout">Abmelden<span className="sr-only">(current)</span></a>
                             </li>
                             </ul>
-                            <form className="form-inline my-2 my-lg-0">
-                                <input className="form-control mr-sm-2" type="search" placeholder="Suche..." aria-label="Search"/>
+                            <form className="form-inline my-2 my-lg-0" action="/projects" onSubmit={this.searchProject}>
+                                <input className="form-control mr-sm-2" onChange={(e) => this.setState({search: e.target.value})} type="search" name="search" placeholder="Suche..." aria-label="Search"/>
                                 <button className="btn btn-outline-success my-2 my-sm-0" type="submit"><i className="fa fa-search" aria-hidden="true"></i></button>
                             </form>
                         </div>
@@ -81,10 +102,10 @@ export class Header extends Component {
                     </div>
                    </header>
                 </div>
-                
+
             );
-        
+
     }
 }
 
-export default Header;
+export default withRouter(Header);

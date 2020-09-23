@@ -17,10 +17,11 @@ interface IProps extends RouteComponentProps,ReduxProps {}
 
 export class BottomHeader extends Component<IProps> {
     constructor(props: IProps) {
-        super(props);        
+        super(props);
     }
 
     render() {
+        console.log('path');
         const path = this.props.location.pathname.split("/")[1];
         let context:{title: string} = this.context;
         let title_ = path.length === 0 ? "Dashboard" : path.charAt(0).toUpperCase() + path.slice(1);
@@ -29,7 +30,7 @@ export class BottomHeader extends Component<IProps> {
             title_  = "Projekte";
         }
         return (
-            <div>                
+            <div>
                 <section className="test-project mt-4">
                         <div className="container">
                             <div className="row align-items-center">
@@ -41,9 +42,9 @@ export class BottomHeader extends Component<IProps> {
                                 </div>
                                 <div className="col-md-6">
                                 </div>
-                            </div>            
+                            </div>
                         </div>
-                </section>                
+                </section>
             </div>
         );
     }

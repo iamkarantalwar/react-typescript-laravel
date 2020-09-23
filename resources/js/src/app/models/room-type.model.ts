@@ -1,4 +1,4 @@
 export interface IRoomType {
-    id: number;
+    id?: number;
     room_type: string;
 }

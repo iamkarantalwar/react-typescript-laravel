@@ -42,7 +42,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-    
+
         $user = User::create([
             "name"     => $request->post("name"),
             "email"    => $request->post("email"),
@@ -117,7 +117,7 @@ class UserController extends Controller
             return ["message" => "Something went wrong. Try again later."];
         }
 
-       
+
     }
 
     /**
@@ -133,8 +133,9 @@ class UserController extends Controller
 
     public function getUserRoles() {
         $result = [
-            ['role_name' => UserRole::ADMIN], 
-            ['role_name' => UserRole::USER]
+            ['role_name' => UserRole::ADMIN],
+            ['role_name' => UserRole::USER],
+            ['role_name' => UserRole::TEAM_LEADER]
         ];
         return response()->json($result);
     }

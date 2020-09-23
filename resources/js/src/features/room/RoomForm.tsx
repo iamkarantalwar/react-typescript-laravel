@@ -1,5 +1,5 @@
 import React, { Component, ChangeEvent } from 'react';
-import { IRoomType } from '../../app/models/room-type';
+import { IRoomType } from '../../app/models/room-type.model';
 import { RoomType, FloorRooms } from '../../app/api/agent';
 import { AxiosError } from 'axios';
 import { IRoomForm, RoomDetails } from '../../app/models/room-form.model';
@@ -148,29 +148,30 @@ class RoomForm extends Component<IProps, IState> {
     }
 
     render() {
+        console.log( this.state.roomTypes);
         let column:any = [];
         let row:any  =[];
         let i=0;
         this.state.roomTypes.forEach((type, index) => {
             if(column!= null && column!=undefined ) {
+                column.push(
+                    <div key={i} className="form-group">
+                        <label htmlFor="exampleInputEmail1">{type.room_type}</label>
+                        <input type="number"
+                            className="form-control"
+                            placeholder="Menge"
+                            value={this.state.roomForm.room_details[i].quantity}
+                            onChange={(e) => this.roomTypeChangeHandler(e, type)}
+                        />
+                    </div>
+                );
+
                 if((index+1)%4==0)
                 {
                     row.push(<div key={i} className="room-quantity d-flex justify-content-between">
                                     {column}
                                 </div>);
                     column = [];
-                } else {
-                    column.push(
-                        <div key={i} className="form-group">
-                            <label htmlFor="exampleInputEmail1">{type.room_type}</label>
-                            <input type="number"
-                                className="form-control"
-                                placeholder="Menge"
-                                value={this.state.roomForm.room_details[i].quantity}
-                                onChange={(e) => this.roomTypeChangeHandler(e, type)}
-                            />
-                        </div>
-                    );
                 }
                 i = i+1;
             }
@@ -180,6 +181,7 @@ class RoomForm extends Component<IProps, IState> {
             row.push(<div key={i} className="room-quantity d-flex justify-content-between">
                                     {column}
                                 </div>);
+
             column = [];
         }
 

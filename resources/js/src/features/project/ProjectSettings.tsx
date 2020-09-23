@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 import LoaderBar from '../../app/common/LoaderBar';
 import { connect } from 'react-redux';
 import { RootState, changeTitle } from '../../redux';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
 import ProjectForm from './ProjectForm';
 
 
@@ -159,13 +159,38 @@ class ProjectSettings extends Component<IProps, IState> {
         });
     }
 
+    settingDeleteHandler = (setting: IProjectSetting) => {
+        const c = confirm('Are you sure you want to delete this setting ?');
+        if(c) {
+            ProjectSetting.deleteProjectSetting(setting)
+                .then((res) => {
+                    let settings = [
+                        ...this.state.settings
+                    ];
+
+                    this.setState({settings: settings.filter( (set: IProjectSetting) => set.id != setting.id ) });
+                })
+                .catch((res) => alert('Something went wrong. Try again later.'));
+        }
+    }
+
     render() {
         return (
             <div className="container">
                 <ProjectForm project={this.state.project as IProject}/>
                 <div className="start-form">
                     <div className="form-setting-option mt-4">
-                        <h4 className="setting-tittle pl-4">Einstellung</h4>
+                        <div className="row">
+                            <div className="col-md-4">
+                                <h4 className="setting-tittle pl-4">Einstellung</h4>
+                            </div>
+                            <div className="col-md-4"></div>
+                            <div className="col-md-4">
+                                <Link to={`/project/${this.props.match.params.id}/settings/create`}>
+                                <button type="button" className="main-btn">Add Product</button>
+                            </Link>
+                            </div>
+                        </div>
                         <hr/>
                         <form onSubmit={this.onSubmitHandler}>
                         <div className="main-table table-responsive">
@@ -177,6 +202,7 @@ class ProjectSettings extends Component<IProps, IState> {
                                         <th scope="col">Wirkzeit</th>
                                         <th scope="col">Spulzeit</th>
                                         <th scope="col">Aktiv?</th>
+                                        <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     {
@@ -216,6 +242,16 @@ class ProjectSettings extends Component<IProps, IState> {
                                                                         checked={setting.aktiv == ProjectSettingStatus.ACTIVE}
                                                                         name='aktiv'
                                                                         onChange={(e) => this.inputChangeHandler(e, index)}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <i
+                                                                        className='fa fa-trash cursor-pointer'
+                                                                        onClick={(e) => this.settingDeleteHandler(setting)}
+                                                                    />
+                                                                     <i
+                                                                        className='fa fa-pencil cursor-pointer ml-2'
+                                                                        onClick={(e) => this.props.history.push(`/project/${this.props.match.params.id}/settings/${setting.id}/edit`)}
                                                                     />
                                                                 </td>
                                                             </tr>

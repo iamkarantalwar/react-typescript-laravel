@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use App\Http\Requests\Api\RoomTypeRequest;
 use Exception;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
@@ -34,9 +35,16 @@ class RoomTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoomTypeRequest $request)
     {
-        return $request;
+        $roomType = RoomType::create($request->all());
+        if($roomType) {
+            return response()->json($roomType, 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later.'
+            ], 500);
+        }
     }
 
     /**
@@ -68,9 +76,16 @@ class RoomTypeController extends Controller
      * @param  \App\RoomType  $roomType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, RoomType $roomType)
+    public function update(RoomTypeRequest $request, RoomType $roomType)
     {
-        //
+        $update = $roomType->update($request->all());
+        if($update) {
+            return response()->json($roomType, 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later.'
+            ], 500);
+        }
     }
 
     /**

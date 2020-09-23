@@ -6,10 +6,11 @@ import ProjectListItem from './ProjectListItem';
 import LoaderBar from '../../app/common/LoaderBar';
 import { FormType } from '../../app/common/FormType';
 import Floor from '../floor/Floor';
-import { useLocation} from 'react-router-dom';
+import { useLocation, withRouter, RouteComponentProps} from 'react-router-dom';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import { connect } from 'react-redux';
+import QueryString from 'query-string';
 
 enum ProjectWindow {
     ADDFLOOR,
@@ -26,14 +27,13 @@ interface State {
     formType: FormType;
     projectWindow: ProjectWindow;
     selectedProject: IProject | null;
+    search?: any;
 }
 
-interface Props {
+interface IProps extends RouteComponentProps { }
 
-}
+export class Projects extends React.Component<IProps, State> {
 
-export class Projects extends React.Component<Props, State> {
-    
     defaultState : State = {
         projects: [],
         showDescription: false,
@@ -68,25 +68,34 @@ export class Projects extends React.Component<Props, State> {
             projects: [...this.state.projects, project]
         });
     }
-    
+
     componentDidMount() {
-        this.setState({showLoader: true});
+        const search = QueryString.parse(window.location.search).search as string;
+        this.setState({ search:  search});
+        this.setState({ showLoader: true });
 
         Project
         .getProjects()
-        .then((res) => 
+        .then((res) => {
+            let projects: IProject[];
+            //If user search for any project
+            if(search) {
+                projects = res.filter(e => e.project_name.toLowerCase().includes(search.toLowerCase()));
+            } else {
+                projects = res;
+            }
             this.setState({
-                projects: res,
+                projects: projects,
                 showLoader: false,
             })
-        );
+        });
     }
 
     afterDeleteProject = (project: IProject)=> {
       this.setState({
           projects: this.state.projects.filter((project_) => project.id != project_.id),
-      });  
-    } 
+      });
+    }
 
     render() {
         return (
@@ -105,40 +114,42 @@ export class Projects extends React.Component<Props, State> {
                                             <div id="accordion" className="accordion">
                                                 <h4 className="floors-tittle font-weight-normal">Projekte</h4>
                                                 {
-                                                    this.state.showLoader ? 
+
+                                                    this.state.showLoader ?
                                                     <LoaderBar/> :
                                                     <div className="card mb-0 border-0">
                                                         { userObject.role == UserRoles.ADMIN ?
                                                             this.state.projects.map((project: IProject) => {
                                                                 return(
-                                                                    <ProjectListItem 
-                                                                                key={project.id} 
+                                                                    <ProjectListItem
+                                                                                key={project.id}
                                                                                 project={project}
                                                                                 afterDeleteProject={this.afterDeleteProject}
                                                                     />
                                                                 );
-                                                            }) 
+                                                            })
                                                             :
                                                             this.state.projects.map((project: IProject) => {
+
                                                                 return project.floors != undefined && project.floors?.length > 0 ?
-                                                                    <ProjectListItem 
-                                                                                key={project.id} 
+                                                                    <ProjectListItem
+                                                                                key={project.id}
                                                                                 project={project}
                                                                                 afterDeleteProject={this.afterDeleteProject}
                                                                     />
-                                                                 : "" 
-                                                            })              
-                                                       }                               
+                                                                 : ""
+                                                            })
+                                                       }
                                                     </div>
                                                 }
-                                            
+
                                             </div>
                                         </div>
                                     </div>
                                 </Fragment>
                             );
                         }
-                                       
+
                          else if(this.state.projectWindow == ProjectWindow.ADDFLOOR && userObject.role == UserRoles.ADMIN) {
                             return <Floor/>;
                         }
@@ -150,4 +161,4 @@ export class Projects extends React.Component<Props, State> {
     }
 }
 
-export default connect(null)(Projects);
+export default connect(null)(withRouter(Projects));

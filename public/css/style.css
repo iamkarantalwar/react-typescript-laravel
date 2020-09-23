@@ -846,3 +846,107 @@ input[type="time"]::-webkit-calendar-picker-indicator{
     height: 26px;
     width: 26px;
 }
+
+
+.overviwe-progress .progress {
+    width: 160px;
+    height: 160px;
+    line-height: 160px;
+    background: none;
+    box-shadow: none;
+    position: relative;
+  }
+  .overviwe-progress .progress:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid #d0f7f5;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .overviwe-progress .progress > span {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+  }
+  .overviwe-progress .progress .progress-left {
+    left: 0;
+  }
+  .overviwe-progress .progress .progress-bar {
+    width: 100%;
+    height: 100%;
+    background: none;
+    border-width: 8px;
+    border-style: solid;
+    position: absolute;
+    top: 0;
+    border-color: #60d6ca;
+  }
+  .overviwe-progress .progress .progress-left .progress-bar {
+    left: 100%;
+    border-top-right-radius: 80px;
+    border-bottom-right-radius: 80px;
+    border-left: 0;
+    -webkit-transform-origin: center left;
+    transform-origin: center left;
+  }
+  .overviwe-progress .progress .progress-right {
+    right: 0;
+  }
+  .overviwe-progress .progress .progress-right .progress-bar {
+    left: -100%;
+    border-top-left-radius: 80px;
+    border-bottom-left-radius: 80px;
+    border-right: 0;
+    -webkit-transform-origin: center right;
+    transform-origin: center right;
+  }
+  .overviwe-progress .progress .progress-value {
+    display: flex;
+    border-radius: 50%;
+    font-size: 28px;
+    text-align: center;
+    line-height: 20px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    font-weight: 700;
+  }
+  .overviwe-progress .progress .progress-value span {
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .text-blue {
+    color: #537fb0;
+  }
+
+  .overviwe-form {
+      display: block;
+      width: 100%;
+      height: calc(2.25rem + 2px);
+      padding: .375rem .75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #495057;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid #ced4da;
+      border-radius: .25rem;
+      transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  }
+
+  .overview-search-btn .main-btn {
+    background-color: #e0f0ff;
+    color: #537fb0;
+    border-color: #e0f0ff;
+  }
+  .overview-search-btn .main-btn:hover {
+    color: #537fb0;
+  }

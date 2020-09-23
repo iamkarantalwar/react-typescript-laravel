@@ -1,4 +1,4 @@
-import { IRoomType } from "./room-type";
+import { IRoomType } from "./room-type.model";
 
 export type RoomDetails = {room_type: IRoomType, quantity: string}
 

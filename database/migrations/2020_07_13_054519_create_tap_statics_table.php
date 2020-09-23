@@ -15,11 +15,11 @@ class CreateTapStaticsTable extends Migration
     {
         Schema::create('tap_statics', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('taps_id');
-            $table->string('project_setting_id');
+            $table->bigInteger('taps_id');
+            $table->bigInteger('project_setting_id');
             $table->date('date')->nullable();
             $table->time('time')->nullable();
-            $table->string('user_id');
+            $table->bigInteger('user_id');
             $table->boolean('detected');
             $table->timestamps();
         });
