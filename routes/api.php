@@ -55,6 +55,8 @@ Route::namespace('ApiController')->group(function(){
         Route::put('/start-timer/{timer}', 'TapTimerController@startTimer');
     });
 
+    Route::resource('sections', 'SectionController');
+
 });
 
 

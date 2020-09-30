@@ -950,3 +950,10 @@ input[type="time"]::-webkit-calendar-picker-indicator{
   .overview-search-btn .main-btn:hover {
     color: #537fb0;
   }
+
+.lang-selector {
+    background: transparent;
+    border: 0;
+    color: #647b83 !important;
+    cursor: pointer;
+}

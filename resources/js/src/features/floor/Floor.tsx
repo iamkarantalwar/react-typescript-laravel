@@ -82,7 +82,7 @@ class Floor extends Component<IProps, IState> {
             old_floors.push(floor);
             toggleFloors.push({id: floor.id, open:false});
         });
-        
+
         this.setState({
             floors: old_floors,
             toggleFloors: toggleFloors,
@@ -94,7 +94,7 @@ class Floor extends Component<IProps, IState> {
        this.setState({
            floors: floors,
            toggleFloors: this.state.toggleFloors.filter((toggle) => toggle.id != floor.id),
-       }) 
+       })
     }
 
     afterUpdateFloor = (floor: IProjectFloor) => {
@@ -128,7 +128,7 @@ class Floor extends Component<IProps, IState> {
 
         ProjectFloors
         .getProjectFloors(this.props.match.params.id)
-        .then((res) => { 
+        .then((res) => {
             this.setState({floors: res, loader: false});
             const toggleFloors = res.map((floor) =>{ return {id: floor.id, open:false} });
             this.setState({toggleFloors: toggleFloors});
@@ -159,16 +159,16 @@ class Floor extends Component<IProps, IState> {
 
     afterAddOfRooms = (rooms : IFloorRoom) => {
 
-    } 
-    
+    }
+
     render() {
-        
+
         const floorListItems: any = this.state.floors.map((floor, index) => {
-            return <FloorListItem 
+            return <FloorListItem
                         deleteFloor={this.deleteFloor}
                         selectFloor={this.selectFloor}
                         toggleFloor={this.state.toggleFloors[index]}
-                        key={floor.id} 
+                        key={floor.id}
                         floor={floor}
                         teams={this.state.teams}
                         afterUpdateFloor={this.afterUpdateFloor}
@@ -183,25 +183,25 @@ class Floor extends Component<IProps, IState> {
                         <Fragment>
                             <ProjectForm toggleFloorForm={this.toggleForm} project={this.state.project}/>
                             {
-                                this.state.showFloorForm ? 
-                                <FloorForm 
+                                this.state.showFloorForm ?
+                                <FloorForm
                                     toggleForm = {this.toggleForm}
-                                    project={this.state.project as IProject} 
+                                    project={this.state.project as IProject}
                                     afterAddOfFloors={this.afterAddOfFloors}
                                 />  : ""
                             }
                         </Fragment>
                         : ""
                     }
-                    
-                    {  
-                        this.state.loader ? 
-                        <LoaderBar/> : 
-                        this.state.floors.length == 0 ? <h3 className="ml-md-5">Kein Boden verfügbar.</h3> : floorListItems            
-                    }
-                    
+                     <img src={require('../../../../images/coming-soon.jpg')} width={'100%'}/>
+                    {/* {
+                        this.state.loader ?
+                        <LoaderBar/> :
+                        this.state.floors.length == 0 ? <h3 className="ml-md-5">Kein Boden verfügbar.</h3> : floorListItems
+                    } */}
+
                 </Fragment>
-            </div> 
+            </div>
         );
     }
 }

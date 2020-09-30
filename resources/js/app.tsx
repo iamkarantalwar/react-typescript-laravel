@@ -16,10 +16,9 @@ import store from './src/redux/store';
 import ProjectSettings from './src/features/project/ProjectSettings';
 import Floor from './src/features/floor/Floor';
 import ProjectForm from './src/features/project/ProjectForm';
-import Taps from './src/features/tap/Taps';
 import TapTypes from './src/features/tapTypes/TapsTypes';
 import ProjectSettingForm from './src/features/project/ProjectSettingForm';
-
+import './src/i8n';
 interface IProps {}
 
 interface IState {
@@ -74,4 +73,8 @@ export default class App extends React.Component<IProps, IState>{
      );
   }
 }
-ReactDOM.render(<App/>,document.getElementById('root'));
+
+if(document.getElementById('root')) {
+    ReactDOM.render(<App/>,document.getElementById('root'));
+}
+

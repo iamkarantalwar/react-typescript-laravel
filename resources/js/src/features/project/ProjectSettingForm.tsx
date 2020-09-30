@@ -2,13 +2,11 @@ import React, { Component, Fragment } from 'react';
 import { IProject } from '../../app/models/project.model';
 import { ProjectSetting, Project } from '../../app/api/agent';
 import { IProjectSetting,  ProjectSettingStatus} from '../../app/models/project-setting.model';
-import { AxiosError } from 'axios';
-import LoaderBar from '../../app/common/LoaderBar';
 import { connect } from 'react-redux';
 import { RootState, changeTitle } from '../../redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ProjectForm from './ProjectForm';
-import { settings } from 'cluster';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 
 interface MatchParams {
@@ -24,7 +22,7 @@ const mapDispatchToProps = { changeTitle };
 
 type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-interface IProps extends ReduxProps, RouteComponentProps<MatchParams>{ }
+interface IProps extends ReduxProps, RouteComponentProps<MatchParams>, WithTranslation{ }
 
 interface IState {
     project?: IProject;
@@ -89,48 +87,52 @@ class ProjectSettingForm extends Component<IProps, IState> {
         if(!this.state.setting.id) {
             ProjectSetting.createProjectSetting(this.state.setting)
             .then(res => {
-                alert('Setting Added Successfully');
+                alert(this.props.t('Setting Added Successfully'));
                 this.props.history.push(`/project/${this.props.match.params.id}/settings`)
             })
-            .catch(err => alert('Something went wrong. Try again later.'));
+            .catch(err => alert(this.props.t('swr')));
         } else {
             ProjectSetting.updateProjectSetting(this.state.setting)
             .then(res => {
                 alert('Setting Updated Successfully');
                 this.props.history.push(`/project/${this.props.match.params.id}/settings`)
             })
-            .catch(err => alert('Something went wrong. Try again later.'));
+            .catch(err => alert(this.props.t('swr')));
         }
 
     }
 
 
     render() {
+        const t = this.props.t;
         return (
             <div className="container">
                 <ProjectForm project={this.state.project as IProject}/>
                 <div className="start-form">
                     <div className="form-setting-option mt-4">
-                        <h4 className="ml-4">{this.state.setting.id ? 'Edit' : 'Create'} Product</h4>
+                        <h4 className="ml-4">{t(this.state.setting.id ? 'Edit' : 'Create')} {t('Product')}</h4>
                         <hr/>
                         <form onSubmit={this.onSubmitHandler.bind(this)}>
                             <div className="col-md-12 mt-4">
                                 <div className="row align-items-center">
                                     <div className="col-md-9 col-lg-10">
                                         <div className="form-group">
-                                            <label htmlFor="exampleInputEmail1">Project Setting Name</label>
+                                            <label htmlFor="exampleInputEmail1">{t('Product')} Name</label>
                                             <input
                                                 type="name"
                                                 className="form-control"
-                                                placeholder="Project Setting Name"
+                                                placeholder={t('Product') + " name"}
                                                 onChange={(e) => this.setState({ setting: { ...this.state.setting, field_name: e.target.value}})}
                                                 value={this.state.setting.field_name}
                                             />
                                         </div>
+                                        {
+                                            this.state.message ? <span className={`text-${this.state.messageClass}`}>{this.state.message}</span> : null
+                                        }
                                     </div>
                                     <div className="col-md-3 col-lg-2">
                                         <div className="form-btn text-right mt-3">
-                                            <button type="submit" className="main-btn">{this.state.setting.id ? 'Update' : 'Add'}  Setting</button>
+                                            <button type="submit" style={{height:'43px'}} className="main-btn">{t(this.state.setting.id ? 'Update' : 'Add')}  {t('Product')}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -142,4 +144,4 @@ class ProjectSettingForm extends Component<IProps, IState> {
         );
     }
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectSettingForm));
+export default withTranslation()(withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectSettingForm)));

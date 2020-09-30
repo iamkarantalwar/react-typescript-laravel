@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
     title: webTitleReducer,
     rooms: roomsReducer,
     project: projectReducer,
-    projectSettings: projectSettingsReducer
+    projectSettings: projectSettingsReducer,
 });
 
 export default rootReducer;

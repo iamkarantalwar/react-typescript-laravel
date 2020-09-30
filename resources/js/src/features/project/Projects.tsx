@@ -10,6 +10,7 @@ import { useLocation, withRouter, RouteComponentProps} from 'react-router-dom';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import { connect } from 'react-redux';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import QueryString from 'query-string';
 
 enum ProjectWindow {
@@ -30,7 +31,7 @@ interface State {
     search?: any;
 }
 
-interface IProps extends RouteComponentProps { }
+interface IProps extends RouteComponentProps, WithTranslation { }
 
 export class Projects extends React.Component<IProps, State> {
 
@@ -98,6 +99,7 @@ export class Projects extends React.Component<IProps, State> {
     }
 
     render() {
+        const t = this.props.t;
         return (
             <div className="container">
                 {
@@ -112,7 +114,7 @@ export class Projects extends React.Component<IProps, State> {
                                     <div className={`floors-tabbs ${this.state.showFloor ? 'd-block' : 'd-none'}`}>
                                         <div className="col-md-12">
                                             <div id="accordion" className="accordion">
-                                                <h4 className="floors-tittle font-weight-normal">Projekte</h4>
+                                                <h4 className="floors-tittle font-weight-normal">{t('Projects')}</h4>
                                                 {
 
                                                     this.state.showLoader ?
@@ -161,4 +163,4 @@ export class Projects extends React.Component<IProps, State> {
     }
 }
 
-export default connect(null)(withRouter(Projects));
+export default withTranslation()(connect(null)(withRouter(Projects)));

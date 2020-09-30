@@ -6,8 +6,9 @@ import { ITeam } from '../../app/models/team.model';
 import UserListItem from './UserListItem';
 import UserForm from './UserForm';
 import LoaderBar from '../../app/common/LoaderBar';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-interface IProps{}
+interface IProps extends WithTranslation {}
 
 interface IState {
    roles: IRole[];
@@ -30,9 +31,9 @@ class Users extends Component<IProps, IState> {
          showLoader: false,
       }
    }
-   
+
    componentDidMount() {
-      
+
       this.setState({showLoader: true});
 
       Role
@@ -46,8 +47,8 @@ class Users extends Component<IProps, IState> {
       User
       .getUsers()
       .then((res) => this.setState({
-                                       users: res, 
-                                       elements: res, 
+                                       users: res,
+                                       elements: res,
                                        showLoader:false
                                     })
       ).catch((res) => this.setState({showLoader: false}) );
@@ -61,7 +62,7 @@ class Users extends Component<IProps, IState> {
       } else {
           this.setState({elements:this.state.users});
       }
-     
+
   }
   afterAddNewUser(user: IUser) {
    this.setState({
@@ -71,27 +72,28 @@ class Users extends Component<IProps, IState> {
   }
 
     render() {
+        const t = this.props.t;
         return (
             <div>
                <div className="add-new-user">
                   <div className="container">
                      <div className="main-team-area">
-                        <UserForm roles={this.state.roles} 
+                        <UserForm roles={this.state.roles}
                                   teams={this.state.teams}
                                   afterAddNewUser={this.afterAddNewUser.bind(this)}/>
                         <div className="team-search mt-5 px-4 ml-3">
                            <div className="row align-items-center justify-content-between ">
                               <div className="add-new-team">
-                                 <h5 className="font-weight-bold">Benutzer</h5>
+                                <h5 className="font-weight-bold">{t('Users')}</h5>
                               </div>
                               <div className="team-form-btn">
                                  <form className="form-inline my-2 my-lg-0">
-                                    <input   className="form-control" 
-                                             type="search" 
-                                             placeholder="Suche..." 
+                                    <input   className="form-control"
+                                             type="search"
+                                             placeholder={t('Search')}
                                              onChange={(e) => this.setState({searchInput: e.target.value})}
                                              aria-label="Search"/>
-                                    <button className="btn s my-2 my-sm-0" 
+                                    <button className="btn s my-2 my-sm-0"
                                              type="button"
                                              onClick={this.filterListItems.bind(this)}
                                     ><i className="fa fa-search" aria-hidden="true"></i></button>
@@ -100,8 +102,8 @@ class Users extends Component<IProps, IState> {
                            </div>
                            <hr/>
                         </div>
-                        { 
-                           this.state.showLoader ? <LoaderBar/> : 
+                        {
+                           this.state.showLoader ? <LoaderBar/> :
                            <div className="team-name-box">
                            <div className="main-table table-responsive">
                               <table className="table">
@@ -116,17 +118,17 @@ class Users extends Component<IProps, IState> {
                                  </thead>
                                  <tbody>
                                          {this.state.elements
-                                         .map((user) => <UserListItem 
+                                         .map((user) => <UserListItem
                                                             key={user.id}
                                                             roles={this.state.roles}
                                                             teams={this.state.teams}
                                                             user={user}/>
-                                         )}    
+                                         )}
                                  </tbody>
                               </table>
                            </div>
                            </div>
-                        }                        
+                        }
                      </div>
                   </div>
                </div>
@@ -135,4 +137,4 @@ class Users extends Component<IProps, IState> {
     }
 }
 
-export default Users;
+export default withTranslation()(Users);

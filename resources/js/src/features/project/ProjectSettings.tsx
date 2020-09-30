@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { RootState, changeTitle } from '../../redux';
 import { RouteComponentProps, withRouter, Link } from 'react-router-dom';
 import ProjectForm from './ProjectForm';
-
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface MatchParams {
     id: string;
@@ -22,7 +22,7 @@ const mapDispatchToProps = { changeTitle };
 
 type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-interface IProps extends ReduxProps, RouteComponentProps<MatchParams>{ }
+interface IProps extends ReduxProps, RouteComponentProps<MatchParams>, WithTranslation{ }
 
 interface IState {
     project?: IProject;
@@ -175,6 +175,7 @@ class ProjectSettings extends Component<IProps, IState> {
     }
 
     render() {
+        const t = this.props.t;
         return (
             <div className="container">
                 <ProjectForm project={this.state.project as IProject}/>
@@ -182,13 +183,13 @@ class ProjectSettings extends Component<IProps, IState> {
                     <div className="form-setting-option mt-4">
                         <div className="row">
                             <div className="col-md-4">
-                                <h4 className="setting-tittle pl-4">Einstellung</h4>
+                                <h4 className="setting-tittle pl-4">{t('Settings')}</h4>
                             </div>
                             <div className="col-md-4"></div>
                             <div className="col-md-4">
                                 <Link to={`/project/${this.props.match.params.id}/settings/create`}>
-                                <button type="button" className="main-btn">Add Product</button>
-                            </Link>
+                                    <button type="button" style={{width:'154px'}} className="main-btn">{t('Add product')}</button>
+                                </Link>
                             </div>
                         </div>
                         <hr/>
@@ -201,7 +202,7 @@ class ProjectSettings extends Component<IProps, IState> {
                                         <th scope="col" className="text-left">Name</th>
                                         <th scope="col">Wirkzeit</th>
                                         <th scope="col">Spulzeit</th>
-                                        <th scope="col">Aktiv?</th>
+                                        <th scope="col">{t('Active')}?</th>
                                         <th scope="col"></th>
                                         </tr>
                                     </thead>
@@ -264,7 +265,7 @@ class ProjectSettings extends Component<IProps, IState> {
                                 </table>
                         </div>
                         <div className="table-btn text-right my-4">
-                            <button type="submit" className="main-btn">Speichern</button>
+                            <button type="submit" className="main-btn"> {t('Save')}</button>
                         </div>
                         </form>
                     </div>
@@ -274,4 +275,4 @@ class ProjectSettings extends Component<IProps, IState> {
         );
     }
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectSettings));
+export default withTranslation()(withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectSettings)));

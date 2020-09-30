@@ -3,8 +3,9 @@ import { ITeam } from '../../app/models/team.model';
 import { Team, RoomType } from '../../app/api/agent';
 import LoaderBar from '../../app/common/LoaderBar';
 import { IRoomType } from '../../app/models/room-type.model';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-interface IProps {
+interface IProps extends WithTranslation {
     tapTypeNameExist : (tapType: IRoomType) => boolean;
     afterAddNewTap: (tapType: IRoomType) => void;
 }
@@ -38,10 +39,10 @@ class AddTapTypeForm extends Component<IProps, IState> {
         let tapTypeName = this.state.tapType.room_type;
         //Check if Team Name Is Not Empty
         if (tapTypeName == "") {
-            this.setState({errors: {...this.state.errors, room_type: "Geben Sie den Teamnamen ein"}});
+            this.setState({errors: {...this.state.errors, room_type: 'Enter the tap type'}});
 
         } else if(this.props.tapTypeNameExist(this.state.tapType)) {
-            this.setState({errors: {...this.state.errors, room_type: "Dieser Teamname ist bereits vorhanden."}});
+            this.setState({errors: {...this.state.errors, room_type: 'This tap type is already exist'}});
 
         } else {
             this.setState({showLoader: true});
@@ -56,8 +57,6 @@ class AddTapTypeForm extends Component<IProps, IState> {
                 setTimeout(()=>{ this.setState({success: ""})},2000);
             })
             .catch((res) => {
-                console.log(res.response);
-                console.log(res.request);
                 if (res.response?.status == 422) {
                     if(res.response.data.errors['team_name'])
                     {
@@ -65,6 +64,8 @@ class AddTapTypeForm extends Component<IProps, IState> {
 
                     }
                     this.setState({showLoader: false});
+                } else {
+                    this.setState({errors: {...this.state.errors, room_type: "swr"}})
                 }
             });
 
@@ -73,6 +74,7 @@ class AddTapTypeForm extends Component<IProps, IState> {
     }
 
     render() {
+        const t = this.props.t;
         return (
             <div className="team-add-form px-4">
                     <form onSubmit={this.onSubmitHandler.bind(this)}>
@@ -80,7 +82,7 @@ class AddTapTypeForm extends Component<IProps, IState> {
                         <div className="row align-items-center justify-content-between">
                             <div className="add-new-team">
                                 <div className="form-group">
-                                <label>Neues Team hinzufügen</label>
+                                    <label>{t('Tap') + ' ' + t('Type')}</label>
                                 <input
                                     type="text"
                                     name="team_name"
@@ -92,11 +94,11 @@ class AddTapTypeForm extends Component<IProps, IState> {
                             </div>
                             <div className="team-form-btn">
                                 <div className="form-btn text-right mt-3">
-                                    <button className="main-btn" type="submit">Hinzufügen</button>
+                                    <button className="main-btn" type="submit">{t('Save')}</button>
                                 </div>
                             </div>
                         </div>
-                        {this.state.errors.room_type ? <span className="text-danger">{this.state.errors.room_type}</span>: ""}
+                        {this.state.errors.room_type ? <span className="text-danger">{t(this.state.errors.room_type.toString())}</span>: ""}
                         {this.state.success ? <p className="text-primary">{this.state.success}</p> : ""}
                     </form>
             </div>
@@ -104,4 +106,4 @@ class AddTapTypeForm extends Component<IProps, IState> {
     }
 }
 
-export default AddTapTypeForm;
+export default withTranslation()(AddTapTypeForm);

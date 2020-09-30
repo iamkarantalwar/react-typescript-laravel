@@ -5,9 +5,9 @@ import { IUser } from '../../app/models/user.model';
 import { User } from '../../app/api/agent';
 import { AxiosError } from 'axios';
 import LoaderBar from '../../app/common/LoaderBar';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-
-interface IProps {
+interface IProps extends WithTranslation {
     roles: IRole[];
     teams: ITeam[];
     afterAddNewUser: (team: IUser) => void;
@@ -53,7 +53,7 @@ class UserForm extends Component<IProps, IState> {
 
     nameChangeHandler(event: any) {
       let value :string  = event.target.value;
-      let shortcode_arr = value.split(" "); 
+      let shortcode_arr = value.split(" ");
       let shortcode = "";
       for(var i of shortcode_arr) {
           shortcode = shortcode + i.charAt(0).toUpperCase();
@@ -74,7 +74,7 @@ class UserForm extends Component<IProps, IState> {
                             password:"",
                             shortcode:"",
                             team_id: "",
-                            role_name:"",  
+                            role_name:"",
                         }
                 });
 
@@ -87,13 +87,13 @@ class UserForm extends Component<IProps, IState> {
                                 password:"",
                                 shortcode:"",
                                 team_id: "",
-                                role_name:"",  
+                                role_name:"",
                             },
                             added: true,
                     });
                     this.setState({showLoader: false});
                     setTimeout(()=>{ this.setState({added: false})},2000);
-                
+
         })
         .catch((error: AxiosError) => {
             if (error.response?.status == 422) {
@@ -105,47 +105,46 @@ class UserForm extends Component<IProps, IState> {
                                 password: error_array?.password != undefined ? error_array?.password[0]: "",
                                 shortcode: error_array?.shortcode != undefined ? error_array?.shortcode[0] : "",
                                 team_id: error_array.team_id != undefined ? error_array.team_id[0] : "",
-                                role_name: error_array.role_name != undefined ? error_array.role_name[0] : "",  
+                                role_name: error_array.role_name != undefined ? error_array.role_name[0] : "",
                             }
                     });
-                    this.setState({showLoader: false}); 
+                    this.setState({showLoader: false});
             }
         });
-       
+
     }
-    
+
     render() {
+        const t = this.props.t;
         return (
             <Fragment>
- 
                   <form onSubmit={this.onSubmitHandler.bind(this)}>
                     {this.state.showLoader?<LoaderBar></LoaderBar> : ""}
                     {this.state.added ? <div className="text-success">User Created Successfully.</div> : ""}
-                           <div className="add-user-form d-flex align-items-end justify-content-between">                               
+                           <div className="add-user-form d-flex align-items-end justify-content-between">
                               <div className="form-group col-md-5 px-1">
-                                 <label>Neuen Benutzer hinzufügen</label>
-                                 <input type="name" 
+                                 <input type="name"
                                         className={`form-control ${this.state.errors.name ? "is-invalid" : ""}`}
-                                        placeholder="Name"
+                                        placeholder={t('Name')}
                                         value={this.state.user.name}
                                         onChange={this.nameChangeHandler.bind(this)}
                                         />
                                         {this.state.errors.name ? <span className="text-danger">{this.state.errors.name}</span>:""}
                               </div>
-                           
+
                               <div className="form-group col-md-2 px-1">
-                                 <input type="shortcode" 
+                                 <input type="shortcode"
                                         className={`form-control ${this.state.errors.shortcode ? "is-invalid" : ""}`}
-                                        readOnly={true} 
-                                        placeholder="Shortcode"
+                                        readOnly={true}
+                                        placeholder={t('Shortcode')}
                                         value={this.state.user.shortcode}/>
                                  {this.state.errors.shortcode ? <span className="text-danger" style={{width: '96%'}}>{this.state.errors.shortcode}</span>:""}
                               </div>
-                           
+
                               <div className="form-group col-md-5 px-1">
-                                 <input type="email" 
+                                 <input type="email"
                                         className={`form-control ${this.state.errors.email ? "is-invalid" : ""}`}
-                                        placeholder="Email"
+                                        placeholder={t('Email')}
                                         value={this.state.user.email}
                                         onChange={(e) => this.setState({user:{...this.state.user, email: e.target.value}})}
                                         />
@@ -154,21 +153,21 @@ class UserForm extends Component<IProps, IState> {
                            </div>
                            <div className="row align-items-end justify-content-between px-3 align-items-center mt-md-5">
                               <div className="form-group col-md-5 px-1">
-                                 <input type="password" 
+                                 <input type="password"
                                         className={` form-control ${this.state.errors.password ? "is-invalid" : ""} `}
-                                        placeholder="Passwort"
+                                        placeholder={t('Password')}
                                         value={this.state.user.password}
                                         onChange={ (e) => this.setState({ user:{...this.state.user, password: e.target.value} }) }
                                         />
                                 {this.state.errors.password ? <span className="text-danger">{this.state.errors.password}</span>:""}
                               </div>
                               <div className="form-group col-md-3 px-1">
-                                 <select name="role" 
+                                 <select name="role"
                                          className={`form-control ${this.state.errors.role_name ? "is-invalid" : ""}`}
                                          onChange={ (e) => this.setState({ user:{...this.state.user, role_name: e.target.value} }) }
                                          value={this.state.user.role_name}
                                          >
-                                    <option value="">Wählen Sie Rolle</option>
+                                    <option value="">{t('Select role')}</option>
                                     {
                                         this.props
                                         .roles.map((role) => <option key={role.role_name} value={role.role_name}>{role.role_name}</option>)
@@ -176,14 +175,14 @@ class UserForm extends Component<IProps, IState> {
                                  </select>
                                  { this.state.errors.role_name ? <span className="text-danger">{this.state.errors.role_name}</span> : "" }
                               </div>
-                           
+
                               <div className="form-group col-md-3 px-1">
-                                 <select name="team" 
-                                         className={`form-control ${this.state.errors.team_id ? "is-invalid" : ""}`} 
-                                         value={this.state.user.team_id as string}                                        
+                                 <select name="team"
+                                         className={`form-control ${this.state.errors.team_id ? "is-invalid" : ""}`}
+                                         value={this.state.user.team_id as string}
                                          onChange={ (e) => this.setState({ user:{...this.state.user,team_id:e.target.value} }) }
                                          >
-                                    <option value="">Team auswählen</option>
+                                    <option value="">{t('Select team')}</option>
                                     {this.props
                                         .teams.map((team) => <option key={team.id} value={team.id}>{team.team_name}</option>)
                                     }
@@ -191,7 +190,7 @@ class UserForm extends Component<IProps, IState> {
                                   {this.state.errors.team_id ? <span className="text-danger">{this.state.errors.team_id}</span>:""}
                               </div>
                               <div className="form-btn form-group col-md-1 px-1 text-right">
-                                 <button type="submit" className="main-btn">Hinzufügen</button>
+                                <button type="submit" className="main-btn">{t('Add')}</button>
                               </div>
                            </div>
                     </form>
@@ -200,4 +199,4 @@ class UserForm extends Component<IProps, IState> {
     }
 }
 
-export default UserForm;
+export default withTranslation()(UserForm);

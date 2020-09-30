@@ -4,6 +4,7 @@ import TeamListItem from './TeamListItem';
 import { ITeam } from '../../app/models/team.model';
 import { Team } from '../../app/api/agent';
 import LoaderBar from '../../app/common/LoaderBar';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface IState {
     teamList: ITeam[];
@@ -12,7 +13,7 @@ interface IState {
     showLoader:boolean;
 }
 
-interface IProps {}
+interface IProps extends WithTranslation{}
 
 class Teams extends Component<IProps, IState> {
 
@@ -41,7 +42,7 @@ class Teams extends Component<IProps, IState> {
             teamList:[...this.state.teamList, team]
         })
     }
-    
+
 
     componentDidMount() {
         this.setState({showLoader:true});
@@ -68,30 +69,31 @@ class Teams extends Component<IProps, IState> {
     }
 
     render() {
+        const t = this.props.t;
         return (
             <div>
                 <div className="start-form">
                     <div className="container">
                         <div className="main-team-area">
-                            <AddTeamForm 
-                                teamNameExist={this.teamNameExist.bind(this)} 
+                            <AddTeamForm
+                                teamNameExist={this.teamNameExist.bind(this)}
                                 afterAddNewTeam={this.afterAddNewTeam.bind(this)}
                             />
                             <div className="team-search mt-5 px-4 ml-3">
                                 <div className="row align-items-center justify-content-between ">
                                     <div className="add-new-team">
-                                        <h5 className="font-weight-bold">Teams</h5>
+                                        <h5 className="font-weight-bold">{t('Teams')}</h5>
                                     </div>
-                                  
+
                                     <div className="team-form-btn">
                                         <form className="form-inline my-2 my-lg-0">
-                                            <input className="form-control" 
-                                                   type="search" 
-                                                   placeholder="Suche..." 
+                                            <input className="form-control"
+                                                   type="search"
+                                                   placeholder={t('Search')}
                                                    aria-label="Search"
                                                    onChange={(e) => this.setState({searchInput: e.target.value})}/>
-                                            <button 
-                                                className="btn s my-2 my-sm-0" 
+                                            <button
+                                                className="btn s my-2 my-sm-0"
                                                 type="button"
                                                 onClick={this.filterListItems.bind(this)}
                                             >
@@ -103,19 +105,19 @@ class Teams extends Component<IProps, IState> {
                                 <hr/>
                             </div>
                             {
-                                this.state.showLoader ? <LoaderBar/> : 
+                                this.state.showLoader ? <LoaderBar/> :
                                 <div className="team-name-box">
                                     <h5 className="ml-4">Teamname</h5>
                                     <div className="main-table table-responsive">
                                         <table className="table">
-                                            
+
                                             <tbody>
                                                 {
-                                                this.state.elements                                           
-                                                .map((team) => <TeamListItem 
-                                                key={team.id} 
-                                                team={team}                                                               
-                                                />)}                                
+                                                this.state.elements
+                                                .map((team) => <TeamListItem
+                                                key={team.id}
+                                                team={team}
+                                                />)}
                                             </tbody>
                                         </table>
                                     </div>
@@ -123,10 +125,10 @@ class Teams extends Component<IProps, IState> {
                             }
                         </div>
                     </div>
-                </div>       
+                </div>
             </div>
         );
     }
 }
 
-export default Teams;
+export default withTranslation()(Teams);

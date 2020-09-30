@@ -23,7 +23,7 @@ class ProjectController extends Controller
             return Project::where('id', $request->project_id)->first();
         } else {
             if ($request->user()->role->role_name==UserRole::ADMIN) {
-                return Project::with(['floors', 'floors.rooms'])->get();
+                return Project::with(['floors'])->get();
             } else {
                 return Project::with(['floors' => function ($q) use($request) {
                     return $q->where('team_id', $request->user()->team_id);

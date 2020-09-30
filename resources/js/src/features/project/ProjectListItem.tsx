@@ -5,6 +5,7 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import { Project } from '../../app/api/agent';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface State {
    open: boolean;
@@ -12,7 +13,7 @@ interface State {
    messageClass: string;
 }
 
-interface IProps extends RouteComponentProps {
+interface IProps extends RouteComponentProps, WithTranslation {
     project?: IProject;
     afterDeleteProject: (project: IProject) => void;
 }
@@ -20,7 +21,7 @@ interface IProps extends RouteComponentProps {
 class ProjectListItem extends Component<IProps, State> {
     constructor(props: IProps) {
         super(props);
-        
+
         this.state = {
             open: false,
             message: '',
@@ -29,20 +30,20 @@ class ProjectListItem extends Component<IProps, State> {
     }
 
     deleteProject = () => {
-       const conf = confirm("Möchten Sie dieses Projekt wirklich löschen?"); 
+       const conf = confirm(this.props.t("Are you sure you want to delete this project?"));
        if (conf) {
         Project
         .deleteProject(this.props.project as IProject)
         .then((res) => {
              this.setState({
-                 message: "Project Deleted Successfully.",
+                 message: "Project Deleted Successfully",
                  messageClass: "danger"
              });
-             this.props.afterDeleteProject(this.props.project as IProject);            
+             this.props.afterDeleteProject(this.props.project as IProject);
         })
         .catch((err) => {
              this.setState({
-                 message: "Something Went Wrong. Try Again Later.",
+                 message: "swr",
                  messageClass: "danger"
              })
         })
@@ -54,21 +55,21 @@ class ProjectListItem extends Component<IProps, State> {
             this.props.history.push(`/project/${this.props.project?.id}`)
         }
     }
-    
+
     render() {
-        const { project } = this.props;
+        const { project, t } = this.props;
         return (
             <div onClick={(e) => this.openProjectFloors(e.target)} style={{cursor: 'pointer'}}>
                 <div className={`card-header collapsed mb-2 border border-${this.state.messageClass ? this.state.messageClass : 'default'}`}>
-                    <a 
-                       className="card-title collapsed" 
+                    <a
+                       className="card-title collapsed"
                        href={void(0)}
                        onClick={()=>this.setState({open: !this.state.open})}
                        aria-controls={`collapse${project?.id}`}
                        aria-expanded={this.state.open}
                     >
                        {project?.project_name}
-                </a>    
+                </a>
                     {
                         userObject.role == UserRoles.ADMIN ?
                         <Fragment>
@@ -76,15 +77,15 @@ class ProjectListItem extends Component<IProps, State> {
                                 <span >
                                     <i className="fa fa-gear"></i>
                                 </span>
-                            </Link> 
+                            </Link>
                                 <span className='mr-3' onClick={this.deleteProject}>
                                     <i className="fa fa-trash"></i>
                                 </span>
-                           
+
                         </Fragment>
-                        : ""                                            
+                        : ""
                     }
-                     
+
                 </div>
                 <Collapse in={this.state.open}>
                     <div className="card-body collapse" id={`collapse${project?.id}`}>
@@ -92,11 +93,11 @@ class ProjectListItem extends Component<IProps, State> {
                             {project?.description}
                         </p>
                     </div>
-                </Collapse>     
-                { this.state.message ? <span className={`project-list-item-message text-${this.state.messageClass}`}>{this.state.message}</span> : ""}
+                </Collapse>
+                { this.state.message ? <span className={`project-list-item-message text-${this.state.messageClass}`}>{t(this.state.message)}</span> : ""}
             </div>
         );
     }
 }
 
-export default withRouter(ProjectListItem);
+export default withTranslation()(withRouter(ProjectListItem));

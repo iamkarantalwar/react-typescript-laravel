@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { TitleContext } from '../../context/TitleContext';
 import { connect } from 'react-redux';
 import { RootState,changeTitle } from '../../redux';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 const mapStateToProps = (state: RootState) => ({
     title: state.title,
@@ -12,7 +13,7 @@ const mapDispatchToProps = { changeTitle };
 
 type ReduxProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-interface IProps extends RouteComponentProps,ReduxProps {}
+interface IProps extends RouteComponentProps,ReduxProps, WithTranslation {}
 
 
 export class BottomHeader extends Component<IProps> {
@@ -20,15 +21,16 @@ export class BottomHeader extends Component<IProps> {
         super(props);
     }
 
+    capitalizeFirstLetter(string: string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     render() {
-        console.log('path');
+        const t = this.props.t;
         const path = this.props.location.pathname.split("/")[1];
         let context:{title: string} = this.context;
-        let title_ = path.length === 0 ? "Dashboard" : path.charAt(0).toUpperCase() + path.slice(1);
+        let title_ = path.length === 0 ? t("Dashboard") : t(this.capitalizeFirstLetter(path));
         title_ = this.props.title.title ? this.props.title.title : title_;
-        if(title_ == "Projects") {
-            title_  = "Projekte";
-        }
         return (
             <div>
                 <section className="test-project mt-4">
@@ -51,4 +53,4 @@ export class BottomHeader extends Component<IProps> {
 }
 BottomHeader.contextType = TitleContext;
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BottomHeader));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(withRouter(BottomHeader)));

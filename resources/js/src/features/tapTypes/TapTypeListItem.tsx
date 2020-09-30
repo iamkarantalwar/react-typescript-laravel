@@ -4,8 +4,9 @@ import { Team, RoomType } from '../../app/api/agent';
 import { AxiosError } from 'axios';
 import LoaderBar from '../../app/common/LoaderBar';
 import { IRoomType } from '../../app/models/room-type.model';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-interface IProps {
+interface IProps extends WithTranslation {
     roomType: IRoomType;
 }
 
@@ -56,16 +57,9 @@ class TapTypeListItem extends Component<IProps, IState> {
                 setTimeout(()=>{ this.setState({updated: false})},2000);
             })
             .catch((res: AxiosError) => {
-                console.log(res.response);
-                console.log(res.request);
-                if (res.response?.status == 422) {
-                    if(res.response.data.errors['team_name'])
-                    {
-                        this.setState({errors: {...this.state.errors, room_type: res.response.data.errors['room_type']}});
-
-                    }
-                    this.setState({showLoader: false});
-                }
+                this.setState({showLoader: false});
+                this.setState({errors: {...this.state.errors, room_type: "swr"}});
+                setTimeout(()=>{ this.setState({errors: {...this.state.errors, room_type: ""}}) },2000);
             });
         } else {
             this.setState({
@@ -76,7 +70,7 @@ class TapTypeListItem extends Component<IProps, IState> {
 
 
     render() {
-
+        const t = this.props.t;
         return (
             <Fragment>
                 {this.state.showLoader ? <LoaderBar/> : ""}
@@ -87,8 +81,8 @@ class TapTypeListItem extends Component<IProps, IState> {
                             className={` ${this.state.updateState ?  'form-control' : 'team-input' }`}
                             onChange={this.teamNameChangeHandler.bind(this)}
                         /><br/>
-                        {this.state.errors.room_type ? <span className="text-danger">{this.state.errors.room_type}</span> : ""}
-                        {this.state.updated ? <span className="text-success">Teamname erfolgreich aktualisiert.</span> : ""}
+                        {this.state.errors.room_type ? <span className="text-danger">{t(this.state.errors.room_type)}</span> : ""}
+                        {this.state.updated ? <span className="text-success">{t('Tap type updated successfully')}</span> : ""}
                     </th>
                     <td>
                         <i className={`fa-btn fa ${this.state.updateState ? `fa-check` : `fa-pencil`}`}
@@ -102,4 +96,4 @@ class TapTypeListItem extends Component<IProps, IState> {
     }
 }
 
-export default TapTypeListItem;
+export default withTranslation()(TapTypeListItem);

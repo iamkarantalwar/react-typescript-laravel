@@ -8,6 +8,7 @@ import { RootState, editProjectForm, changeTitle } from '../../redux';
 import { connect } from 'react-redux';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 const mapStateToProps = (state: RootState) => ({
     projectForm: state.project,
@@ -23,7 +24,7 @@ const mapDispatchToProps: IMapDispatchToProps = { editProjectForm, changeTitle }
 
 type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
 
-interface IProps extends ReduxProps, RouteComponentProps {
+interface IProps extends ReduxProps, RouteComponentProps, WithTranslation {
     project?: IProject;
     project_name?: string;
     toggleFloorForm?: () => void;
@@ -48,7 +49,7 @@ export class ProjectForm extends Component<IProps, IState> {
     }
 
     defaultState = {
-        btnText: "Projekt hinzufügen",
+        btnText: "Add project",
         errors: {
             project_name: "",
             description: "",
@@ -60,7 +61,7 @@ export class ProjectForm extends Component<IProps, IState> {
     componentDidMount() {
         let path = this.props.location.pathname.split('/');
         if(path[path.length-1] == "create") {
-            this.setState({btnText: "Projekt erstellen", showDescription: true});
+            this.setState({btnText: this.props.t('Create project'), showDescription: true});
             const title = this.props.projectForm.project.project_name ? this.props.projectForm.project.project_name: this.props.title;
             this.props.changeTitle(title);
         }
@@ -101,13 +102,13 @@ export class ProjectForm extends Component<IProps, IState> {
             .then((res) => {
                 // this.props.afterAddNewProject(res);
                 this.setState({
-                    project_saved_message: "Projekt erfolgreich erstellt.",
+                    project_saved_message: "Project created successfully",
                     errors:{
                         ...this.state.errors,
                         project_name: "",
                         description: "",
                     },
-                    btnText: "Projekt hinzufügen"
+                    btnText: "Add project"
                 });
 
                 this.props.editProjectForm({project_name: "", description: ""}, false);
@@ -161,6 +162,7 @@ export class ProjectForm extends Component<IProps, IState> {
     }
 
     render() {
+        const t = this.props.t;
         return(
         <div className="start-form container">
             <form onSubmit={this.onSubmitHandler.bind(this)}>
@@ -168,13 +170,13 @@ export class ProjectForm extends Component<IProps, IState> {
                     <div className="row align-items-center">
                         <div className="col-md-9 col-lg-9 col-xl-10">
                             <div className="form-group">
-                                <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>Projektname</label>
+                                <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>{t('Project name')}</label>
                                 {
                                     this.isFloorWindow() ? <> <br/> {this.props.projectForm.project.project_name} </>
                                     :
                                     <input type="name"
                                         className={`form-control ${this.state.errors.project_name ? 'is-invalid' : ''} ${this.state.project_saved_message ? 'is-valid' : ''}` }
-                                        placeholder="Projektname"
+                                        placeholder={t('Project name')}
                                         id="first-name"
                                         name="project_name"
                                         value={this.props.projectForm.project.project_name}
@@ -182,7 +184,7 @@ export class ProjectForm extends Component<IProps, IState> {
                                     />
                                 }
                                 { this.state.errors.project_name ? <span className="text-danger">{this.state.errors.project_name}</span> : "" }
-                                { this.state.project_saved_message ? <span className="text-success">{this.state.project_saved_message}</span> : "" }
+                                { this.state.project_saved_message ? <span className="text-success">{t(this.state.project_saved_message)}</span> : "" }
                             </div>
                         </div>
                         <div className="col-md-3 col-lg-3 col-xl-2">
@@ -198,9 +200,9 @@ export class ProjectForm extends Component<IProps, IState> {
                                                                 style={{width: '156px'}}
                                                                 onClick={(e) =>
                                                                 {
-                                                                    this.state.btnText != "Projekt erstellen" ? this.props.history.push('/project/create'): this.onSubmitHandler(e);
+                                                                    this.state.btnText != 'Create project' ? this.props.history.push('/project/create'): this.onSubmitHandler(e);
                                                                 }}>
-                                                            {this.state.btnText}
+                                                            {t(this.state.btnText)}
                                                         </button>
                                                 </div>
                                             </Fragment>
@@ -212,12 +214,12 @@ export class ProjectForm extends Component<IProps, IState> {
                     <div className="row">
                     <div className="col-md-9 col-lg-9 col-xl-10">
                         <div className={`form-group ${this.state.showDescription ? 'd-block' : 'd-none'}`}>
-                            <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>Projektbeschreibung</label>
+                            <label className={`${this.isFloorWindow() ? 'font-weight-bold' : ''}`}>{t('Project description')}</label>
                             {
                                  this.isFloorWindow() ? <> <br/> {this.props.projectForm.project.description} </>
                                  :
                                 <textarea className={`form-control ${this.state.errors.description ? 'is-invalid' : ''}`}
-                                    placeholder="Hire sollte ein Text zur.."
+                                    placeholder={t('Enter project description here')}
                                     id="exampleFormControlTextarea1"
                                     rows={3}
                                     name="description"
@@ -239,7 +241,7 @@ export class ProjectForm extends Component<IProps, IState> {
                             this.isSettingsWindow() ?
                             <div className="col-md-2 col-lg-2 col-xl-2">
                                 <div className="form-btn text-right">
-                                    <Link to={`/project/${this.props.project?.id}`} className="main-btn" style={{width: '145px'}}>Einstellung Etagen</Link>
+                                    <Link to={`/project/${this.props.project?.id}`} className="main-btn" style={{width: '145px'}}>{t('Floor settings')}</Link>
                                 </div>
                             </div> : ""
                         }
@@ -247,19 +249,19 @@ export class ProjectForm extends Component<IProps, IState> {
                         {
                             userObject.role == UserRoles.ADMIN && this.props.project && !this.isSettingsWindow() ?
                                 <div className="form-btn text-right">
-                                    <Link to={`/project/${this.props.project?.id}/settings`} className="main-btn">Einstellung</Link>
+                                    <Link to={`/project/${this.props.project?.id}/settings`} className="main-btn">{t('Settings')}</Link>
                                 </div>
                             : ""
                         }
                         </div>
                         <div className="col-md-2 col-lg-2 col-xl-2">
-                            {
+                            {/* {
                                 this.isFloorWindow()
                                     ?
                                 <div className="form-btn text-right">
-                                    <a href={void(0)} onClick={this.addFloor} className="main-btn" style={{width: '137px'}}>Böden hinzufügen</a>
+                                    <a href={void(0)} onClick={this.addFloor} className="main-btn" style={{width: '137px'}}>{t('Add floors')}</a>
                                 </div> : ""
-                            }
+                            } */}
 
                         </div>
                     </div>
@@ -271,4 +273,4 @@ export class ProjectForm extends Component<IProps, IState> {
     }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectForm));
+export default withTranslation()(withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectForm)));

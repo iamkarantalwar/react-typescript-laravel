@@ -17,6 +17,9 @@ import { ITapTimer } from '../models/tap-timer.model';
 import { SettingsField } from '../enums/settings-field.enum';
 import { Observable } from 'rxjs';
 import { lazy } from 'react';
+import { ISection } from '../models/section.model';
+import { env } from 'process';
+import { ISectionForm } from '../form/section.form';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -53,6 +56,7 @@ export const endPoints = {
     floorRooms: 'floor-rooms',
     tapStatics: 'tap-statics',
     tapRounds: 'tap-rounds',
+    sections: 'sections',
 }
 
 export const Project = {
@@ -129,4 +133,9 @@ export const TapTimerObservable = {
 
 export const TapStaticObservable = {
     getTapTimers: (tap: ITap) => lazyLoadRequest.get(`${enviorment.baseUrl}/${endPoints.tapRounds}?tap_id=${tap.id}`),
+}
+
+
+export const Section = {
+    addSection : (section: ISectionForm) : Promise<ISection> => axios.post(`${enviorment.baseUrl}/${endPoints.sections}`, section),
 }

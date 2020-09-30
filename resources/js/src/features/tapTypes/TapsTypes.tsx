@@ -4,6 +4,7 @@ import LoaderBar from '../../app/common/LoaderBar';
 import { IRoomType } from '../../app/models/room-type.model';
 import TapTypeListItem from './TapTypeListItem';
 import AddTapTypeForm from './AddTapTypeForm';
+import { withTranslation, WithTranslation} from 'react-i18next';
 
 interface IState {
     roomsTypesList: IRoomType[];
@@ -12,7 +13,7 @@ interface IState {
     showLoader:boolean;
 }
 
-interface IProps {}
+interface IProps extends WithTranslation {}
 
 class TapTypes extends Component<IProps, IState> {
 
@@ -68,6 +69,7 @@ class TapTypes extends Component<IProps, IState> {
     }
 
     render() {
+        const t = this.props.t;
         return (
             <div>
                 <div className="start-form">
@@ -80,14 +82,14 @@ class TapTypes extends Component<IProps, IState> {
                             <div className="team-search mt-5 px-4 ml-3">
                                 <div className="row align-items-center justify-content-between ">
                                     <div className="add-new-team">
-                                        <h5 className="font-weight-bold">Tap Types</h5>
+                                        <h5 className="font-weight-bold">{t('Tap')} {t('Types')}</h5>
                                     </div>
 
                                     <div className="team-form-btn">
                                         <form className="form-inline my-2 my-lg-0">
                                             <input className="form-control"
                                                    type="search"
-                                                   placeholder="Suche..."
+                                                   placeholder={t('Search')}
                                                    aria-label="Search"
                                                    onChange={(e) => this.setState({searchInput: e.target.value})}/>
                                             <button
@@ -105,7 +107,7 @@ class TapTypes extends Component<IProps, IState> {
                             {
                                 this.state.showLoader ? <LoaderBar/> :
                                 <div className="team-name-box">
-                                    <h5 className="ml-4">Tap Type</h5>
+
                                     <div className="main-table table-responsive">
                                         <table className="table">
 
@@ -129,4 +131,4 @@ class TapTypes extends Component<IProps, IState> {
     }
 }
 
-export default TapTypes;
+export default withTranslation()(TapTypes);
