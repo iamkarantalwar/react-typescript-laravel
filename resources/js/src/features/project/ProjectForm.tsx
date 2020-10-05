@@ -255,13 +255,13 @@ export class ProjectForm extends Component<IProps, IState> {
                         }
                         </div>
                         <div className="col-md-2 col-lg-2 col-xl-2">
-                            {/* {
+                            {
                                 this.isFloorWindow()
                                     ?
                                 <div className="form-btn text-right">
                                     <a href={void(0)} onClick={this.addFloor} className="main-btn" style={{width: '137px'}}>{t('Add floors')}</a>
                                 </div> : ""
-                            } */}
+                            }
 
                         </div>
                     </div>

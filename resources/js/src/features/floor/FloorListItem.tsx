@@ -1,20 +1,18 @@
 import React, { Component, Fragment } from 'react';
 import { IProjectFloor, ProjectFloorStatus, ProjectFloorStatusType } from '../../app/models/project-floor.model';
 import { ITeam } from '../../app/models/team.model';
-import { ProjectFloors } from '../../app/api/agent';
+import { ProjectFloors, Section } from '../../app/api/agent';
 import { Collapse } from 'react-bootstrap';
-import RoomListItem from '../room/RoomListItem';
-import { IFloorRoom } from '../../app/models/floor-room.model';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import { AxiosError } from 'axios';
 import { RootState, fetchRooms } from '../../redux';
 import { connect } from 'react-redux';
-import RoomForm from '../room/RoomForm';
 import LoaderBar from '../../app/common/LoaderBar';
 import { ISection } from '../../app/models/section.model';
 import SectionForm from '../sections/SectionForm';
-
+import { withTranslation, WithTranslation } from 'react-i18next';
+import SectionListItem from '../sections/SectionListItem';
 
 const mapStateToProps = (state: RootState) => ({
   rooms: state.rooms,
@@ -26,7 +24,7 @@ interface IMapDispatchToProps {
 
 const mapDispatchToProps: IMapDispatchToProps = { fetchRooms };
 
-type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
+type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps & WithTranslation;
 
 interface IProps extends ReduxProps {
     floor: IProjectFloor;
@@ -47,6 +45,7 @@ interface IState {
     showLoader: boolean;
     showSectionForm: boolean;
     toggleSections: Array<{id: number, open:boolean}>;
+    loader: boolean;
 }
 
 class FloorListItem extends Component<IProps, IState> {
@@ -64,6 +63,7 @@ class FloorListItem extends Component<IProps, IState> {
         showLoader: false,
         showSectionForm: false,
         toggleSections: [],
+        loader: false
       }
     }
 
@@ -157,6 +157,10 @@ class FloorListItem extends Component<IProps, IState> {
         this.setState({sections: sections});
     }
 
+    afterAddOfSections(sections: ISection[]) {
+
+    }
+
     deleteFloor = (floor: IProjectFloor) => {
       let confirm_: any = confirm("Möchten Sie diese Etage wirklich löschen?");
       if(confirm_) {
@@ -179,9 +183,15 @@ class FloorListItem extends Component<IProps, IState> {
     toggleCollapse = (target: any) => {
       if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editFloor))
       {
-        !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
-        this.setState({showSectionForm:false, showSections: true});
-        this.props.selectFloor(this.props.floor);
+            this.setState({loader: true});
+
+            Section.sections(this.props.floor.id.toString())
+            .then((res) => {
+                this.setState({sections: res})
+            });
+
+            this.setState({showSectionForm:false, showSections: true, loader:false });
+            this.props.selectFloor(this.props.floor);
       }
     }
 
@@ -193,7 +203,7 @@ class FloorListItem extends Component<IProps, IState> {
       }
     }
 
-    toggleRoomsList = (open?: boolean) => {
+    toggleSectionsList = (open?: boolean) => {
       !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
       this.setState({showSectionForm:false, showSections: open == undefined ? true : open});
       this.props.selectFloor(this.props.floor);
@@ -209,16 +219,18 @@ class FloorListItem extends Component<IProps, IState> {
     }
 
     render() {
-    //   let roomsList = this.props.rooms.rooms.length>0 ? this.props.rooms.rooms.map((room, index) => {
-    //     return(
-    //       <RoomListItem
-    //         room={room as IFloorRoom}
-    //         key={index}
-    //         toggleRoom={this.state.toggleRooms[index]}
-    //         afterUpdateRoom={this.afterUpdateRoom}
-    //       />
-    //     )
-    //   }) : <h4 className="ml-5 mb-2">Keine Zimmer verfügbar.</h4>;
+      const t = this.props.t;
+      let sectionsList = this.state.sections.length > 0 ? this.state.sections.map((section, index) => {
+        return(
+          <SectionListItem
+            section={section as ISection}
+            key={index}
+            // toggleRoom={this.state.toggleRooms[index]}
+            // afterUpdateRoom={this.afterUpdateRoom}
+          />
+        )
+        }) : <h4 className="ml-5 mb-2">{t('No sections available')}</h4>;
+
       return (
         <Fragment>
           {
@@ -250,9 +262,9 @@ class FloorListItem extends Component<IProps, IState> {
                                className={`status-select border border-${this.getStatusCssClass()}`}
                                onChange={this.statusChangeHandler}
                              >
-                               <option value={undefined}>Status auswählen</option>
+                               <option value={undefined}>{t('Select status')}</option>
                                {
-                                 Object.entries(ProjectFloorStatus).map(([key, value]) => <option key={key} value={value}> {value} </option>)
+                                 Object.entries(ProjectFloorStatus).map(([key, value]) => <option key={key} value={value}> {t(value)} </option>)
                                }
                              </select>
                          </div>
@@ -266,7 +278,7 @@ class FloorListItem extends Component<IProps, IState> {
                                className="team-select"
                                onChange={this.teamChangeHandler}
                              >
-                              <option value=''>Team auswählen</option>
+                              <option value=''>{t('Select team')}</option>
                                {
                                  this.props.teams.map((team) => <option key={team.id} value={team.id}> {team.team_name} </option>)
                                }
@@ -284,7 +296,7 @@ class FloorListItem extends Component<IProps, IState> {
                                 this.props.selectFloor(this.props.floor, false);
                             }}
                            >
-                             <span><i className={`fa ${this.state.showSectionForm ? 'fa-minus' : 'fa-plus'} room-form-icon`} aria-hidden="true"></i></span>Sections
+                             <span><i className={`fa ${this.state.showSectionForm ? 'fa-minus' : 'fa-plus'} room-form-icon mr-2`} aria-hidden="true"></i></span>{t('Sections')}
                            </a>
                          </div>
                          <div className="room-btn">
@@ -302,7 +314,7 @@ class FloorListItem extends Component<IProps, IState> {
                          <div
                           className="room-btn"
                           onClick={(e) => {
-                           this.toggleRoomsList(true)
+                           this.toggleSectionsList(true)
                           }}
                           aria-controls={`collapse${this.props.floor.id}`}
                           aria-expanded={this.state.showSections}
@@ -318,15 +330,15 @@ class FloorListItem extends Component<IProps, IState> {
                 <Collapse in={this.props.toggleFloor?.open && this.state.showSections}>
                   <div className=" collapse" id={`collapse${this.props.floor.id}`}>
                   {
-                    this.props.rooms.loader ? <LoaderBar/> : null
+                    this.state.loader ? <LoaderBar/> : sectionsList
                   }
                   </div>
                 </Collapse>
             </div>
           }
            { this.state.showSectionForm == true ? <SectionForm
-                                                        // hideRoomForm={this.hideRoomForm}
-                                                        // afterRoomsAdded={this.toggleRoomsList}
+                                                        afterAddOfSections={this.afterAddOfSections}
+                                                        toggleSectionsList={this.toggleSectionsList}
                                                         floor={this.state.floor}
                                                     /> : "" }
           </Fragment>
@@ -334,4 +346,4 @@ class FloorListItem extends Component<IProps, IState> {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FloorListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(FloorListItem));

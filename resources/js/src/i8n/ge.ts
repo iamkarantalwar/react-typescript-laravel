@@ -8,6 +8,7 @@ export const ge = {
     "Teams": "Teams",
     "Taps": "Wasserhähne",
     "Tap": "Zapfhahn",
+    "Floors": "Böden",
     "Logout": "Ausloggen",
     "Project name": "Projektname",
     "Project description": "Projektbeschreibung",
@@ -45,8 +46,22 @@ export const ge = {
     "Password": "Passwort",
     "Select role": "Rolle auswählen",
     "Select team": "Wählen Sie tem",
+    "Select status": "Status auswählen",
     "User updated successfully": "Benutzer erfolgreich aktualisiert",
     "Team name updated successfully": "Teamname erfolgreich aktualisiert",
     "Are you sure you want to delete this project?": "Möchten Sie dieses Projekt wirklich löschen?",
-    "Project Deleted Successfully": "Projekt erfolgreich gelöscht"
+    "Project Deleted Successfully": "Projekt erfolgreich gelöscht",
+    "Quantity": "Menge",
+    "From": "Von",
+    "To": "Zu",
+    "Reset": "Zurücksetzen",
+    "From the specified amount quantity should be": "Ab der angegebenen Menge sollte die Menge sein {{quantity}}",
+    "Floors created successfully": "Fußböden erfolgreich erstellt",
+    "Sections created successfully": "Abschnitte erfolgreich erstellt",
+    "Sections": "Abschnitte",
+    "Ausstehend": "Ausstehend",
+    "In Arbeit": "In Arbeit",
+    "Fertig": "Fertig",
+    "No sections available": "Keine Abschnitte verfügbar"
+
 }

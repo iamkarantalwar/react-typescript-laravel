@@ -137,5 +137,7 @@ export const TapStaticObservable = {
 
 
 export const Section = {
-    addSection : (section: ISectionForm) : Promise<ISection> => axios.post(`${enviorment.baseUrl}/${endPoints.sections}`, section),
+    sections: (floor_id: string): Promise<ISection[]> => requests.get(`${enviorment.baseUrl}/${endPoints.sections}?floor_id=${floor_id}`),
+    addSection : (section: ISectionForm) : Promise<ISection[]> => requests.post(`${enviorment.baseUrl}/${endPoints.sections}`, section),
+    updateSection: (section: ISection): Promise<ISection> => requests.put(`${enviorment.baseUrl}/${endPoints.sections}/${section.id}`, section),
 }

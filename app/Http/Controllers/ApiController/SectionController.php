@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiController;
 
+use App\Http\Requests\Api\SectionRequest;
 use App\Models\Section;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,10 @@ class SectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        
+        $sections = Section::where('project_floor_id', $request->post('floor_id'))->get();
+        return response()->json($sections, 200);
     }
 
     /**
@@ -33,9 +35,26 @@ class SectionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SectionRequest $request)
     {
-        
+        try {
+            //code...
+            $sections = [];
+
+            for($i=$request->post('from'); $i<=$request->post('to'); $i++)
+            {
+                $section = Section::create([
+                    'project_floor_id' => $request->post('floor_id'),
+                    'section_name' => $request->post('section_name').($i),
+                ]);
+
+                array_push($sections, $section);
+            }
+            return response()->json($sections, 200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
     }
 
     /**
@@ -69,7 +88,17 @@ class SectionController extends Controller
      */
     public function update(Request $request, Section $section)
     {
-        //
+        $update = $section->update([
+            'section_name' => $request->section_name
+        ]);
+
+        if($update) {
+            return response()->json($section, 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong.'
+            ], 400);
+        }
     }
 
     /**

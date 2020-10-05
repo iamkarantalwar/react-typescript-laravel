@@ -8,6 +8,7 @@ export const en = {
     "Teams": "Teams",
     "Taps": "Taps",
     "Tap": "Tap",
+    "Floors": "Floors",
     "Logout": "Logout",
     "Project name": "Project name",
     "Project description": "Project description",
@@ -45,8 +46,22 @@ export const en = {
     "Password": "Password",
     "Select role": "Select role",
     "Select team": "Select team",
+    "Select status": "Select status",
     "User updated successfully": "User updated successfully",
     "Team name updated successfully": "Team name updated successfully",
     "Are you sure you want to delete this project?": "Are you sure you want to delete this project?",
-    "Project Deleted Successfully": "Project Deleted Successfully"
+    "Project Deleted Successfully": "Project Deleted Successfully",
+    "Quantity": "Quantity",
+    "From": "From",
+    "To": "To",
+    "Reset": "Reset",
+    "From the specified amount quantity should be": "From the specified amount quantity should be {{quantity}}",
+    "Floors created successfully": "Floors created successfully",
+    "Sections created successfully": "Sections created successfully",
+    "Sections": "Sections",
+    "Ausstehend": "Pending",
+    "In Arbeit": "In Progress",
+    "Fertig": "Finished",
+    "No sections available": "No sections available"
+
 }

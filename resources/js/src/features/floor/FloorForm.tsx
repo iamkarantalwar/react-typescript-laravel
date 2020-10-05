@@ -5,7 +5,7 @@ import { ProjectFloors } from '../../app/api/agent';
 import { AxiosError } from 'axios';
 import { IProject } from '../../app/models/project.model';
 import { IProjectFloor } from '../../app/models/project-floor.model';
-
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface IState {
 	projectFloorForm: IProjectFloorForm;
@@ -20,7 +20,7 @@ interface IState {
 	messageClass: string,
 }
 
-interface IProps {
+interface IProps extends WithTranslation {
 	project: IProject
 	afterAddOfFloors: (floors :IProjectFloor[]) => void;
 	toggleForm: () => void;
@@ -51,20 +51,20 @@ class FloorForm extends Component<IProps, IState> {
 		message: "",
 		messageClass: "",
 	 }
-	
+
 	onSubmitHandler = (event: any) => {
 		event.preventDefault();
 		this.setState({
 			errors: this.defaultState.errors
 		})
-		if(this.state.projectFloorForm.to != null && 
-		   this.state.projectFloorForm.from != null && 
+		if(this.state.projectFloorForm.to != null &&
+		   this.state.projectFloorForm.from != null &&
 		   (this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1 != this.state.projectFloorForm.quantity)
 		{
-			
+
 			this.setState({
 				errors: {...this.defaultState.errors,
-						quantity: `Von der angegebenen Menge sollte die erwartete Menge ${(this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1}`,
+						quantity: this.props.t('From the specified amount quantity should be', { "quantity" : ((this.state.projectFloorForm.to-this.state.projectFloorForm.from)+1) }),
 				}
 			})
 			return;
@@ -73,7 +73,7 @@ class FloorForm extends Component<IProps, IState> {
 		this.setState({
 			showLoader: true,
 		});
-	
+
 		ProjectFloors
 		.saveProjectFloor(this.state.projectFloorForm)
 		.then((res) => {
@@ -83,10 +83,10 @@ class FloorForm extends Component<IProps, IState> {
 				},
 				showLoader: false,
 				errors: this.defaultState.errors,
-				message: "Fußböden erfolgreich erstellt.",
+				message: "Floors created successfully",
 				messageClass: "text-success",
 			});
-			
+
 			this.props.afterAddOfFloors(res);
 			setTimeout(()=>{ this.setState({message: "", messageClass:""}); this.props.toggleForm(); }, 2000);
 		})
@@ -101,16 +101,16 @@ class FloorForm extends Component<IProps, IState> {
                                 to: error_array?.to != undefined ? error_array?.to[0] : "",
                             }
                     });
-                  
+
             } else {
 				this.setState({
-					message: "Etwas ist schief gelaufen. Versuchen Sie es später noch einmal",
+					message: "swr",
 					messageClass: "text-danger",
 					errors: this.defaultState.errors,
 				});
 			}
 
-			this.setState({showLoader: false});			
+			this.setState({showLoader: false});
 		});
 	}
 
@@ -119,58 +119,59 @@ class FloorForm extends Component<IProps, IState> {
 			this.setState({projectFloorForm:{...this.state.projectFloorForm, project_id: this.props.project.id}})
 		}
 	}
-	
+
     render() {
+        const t = this.props.t;
         return (
         <div className="add-floor-tabs">
 			{
 				this.state.showLoader ? <LoaderBar/> :
 
 				<form className="add-floor" onSubmit={this.onSubmitHandler}>
-					<h4 className="font-weight-normal">Etage hinzufügen</h4>
+					<h4 className="font-weight-normal">{t('Add')} {t('Floors')}</h4>
 					<hr/>
 					<div className="form-group">
 						<label>Name</label>
-						<input 
-							type="name" 
+						<input
+							type="name"
 							className={`form-control ${this.state.errors.name ? 'is-invalid': ''} ${this.state.messageClass == 'text-success' ? 'is-valid' : ''}`}
 							placeholder="Name"
 							value={this.state.projectFloorForm.name}
 							onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, name: e.target.value}})}
 						/>
-						{ this.state.errors.name ? <span className="text-danger">{this.state.errors.name}</span> : "" }
-						{ this.state.message ? <span className={this.state.messageClass}>{this.state.message}</span> : "" }
+						{ this.state.errors.name ? <span className="text-danger">{t(this.state.errors.name)}</span> : "" }
+						{ this.state.message ? <span className={this.state.messageClass}>{t(this.state.message)}</span> : "" }
 					</div>
 				<div className="add-floor-main d-flex align-items-center">
 					<div className="add-floor-number">
 						<div className="form-group">
-							<label>Menge</label>
-							<input 
-								type="number" 
-								className={`form-control ${this.state.errors.quantity ? 'is-invalid': ''}`} 
-								placeholder="Menge"
+                            <label>{t('Quantity')}</label>
+							<input
+								type="number"
+								className={`form-control ${this.state.errors.quantity ? 'is-invalid': ''}`}
+								placeholder={t('Quantity')}
 								value={this.state.projectFloorForm.quantity == null ? '' : this.state.projectFloorForm.quantity}
 								onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, quantity: parseInt(e.target.value)}})}
 							/>
 							<span className="text-danger">{this.state.errors.quantity}</span>
 						</div>
 						<div className="form-group">
-							<label>Von</label>
-							<input 
-								type="number" 
-								className={`form-control ${this.state.errors.from ? 'is-invalid': ''}`} 
-								placeholder="Von"
+                            <label>{t('From')}</label>
+							<input
+								type="number"
+								className={`form-control ${this.state.errors.from ? 'is-invalid': ''}`}
+								placeholder={t('From')}
 								value={this.state.projectFloorForm.from == null ? '' : this.state.projectFloorForm.from}
 								onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, from: parseInt(e.target.value)}})}
 							/>
 							{ this.state.errors.from ? <span className="text-danger">{this.state.errors.from}</span> : "" }
 						</div>
 						<div className="form-group">
-							<label>Zu</label>
-							<input 
-								type="number" 
-								className={`form-control ${this.state.errors.to ? 'is-invalid': ''}`} 
-								placeholder="Zu"
+                            <label>{t('To')}</label>
+							<input
+								type="number"
+								className={`form-control ${this.state.errors.to ? 'is-invalid': ''}`}
+								placeholder={t('To')}
 								value={this.state.projectFloorForm.to == null ? '' : this.state.projectFloorForm.to}
 								onChange={(e) => this.setState({projectFloorForm:{...this.state.projectFloorForm, to: parseInt(e.target.value)}})}
 							/>
@@ -179,10 +180,10 @@ class FloorForm extends Component<IProps, IState> {
 					</div>
 					<div className="add-floor-btns">
 						<div className="add-floor-create-btn">
-							<button type="submit" className="main-btn mr-1">Erstellen</button>
+                            <button type="submit" className="main-btn mr-1">{t('Save')}</button>
 						</div>
 						<div className="add-floor-cancel">
-							<button type="reset" className="main-btn cancel" onClick={(e) => this.props.toggleForm()}>Stornieren</button>
+                            <button type="reset" className="main-btn cancel" onClick={(e) => this.props.toggleForm()}>{t('Reset')}</button>
 						</div>
 					</div>
 				</div>
@@ -193,4 +194,4 @@ class FloorForm extends Component<IProps, IState> {
     }
 }
 
-export default FloorForm;
+export default withTranslation()(FloorForm);
