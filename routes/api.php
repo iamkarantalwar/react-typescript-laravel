@@ -59,6 +59,7 @@ Route::namespace('ApiController')->group(function(){
 
     Route::resource('sections', 'SectionController');
 
+    Route::resource('pumpstart-of-products', 'PumpstartOfProductController');
 });
 
 

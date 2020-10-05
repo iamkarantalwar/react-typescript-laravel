@@ -20,6 +20,7 @@ import { lazy } from 'react';
 import { ISection } from '../models/section.model';
 import { env } from 'process';
 import { ISectionForm } from '../form/section.form';
+import { IPumpstartOfProduct } from '../models/pumpstart-of-product.model';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -57,7 +58,8 @@ export const endPoints = {
     tapStatics: 'tap-statics',
     tapRounds: 'tap-rounds',
     sections: 'sections',
-    taps: 'taps'
+    taps: 'taps',
+    pumpstart: 'pumpstart-of-products'
 }
 
 export const Project = {
@@ -144,4 +146,10 @@ export const Section = {
 export const Tap = {
     updateTap : (tap: ITap) : Promise<ITap> => requests.put(`${enviorment.baseUrl}/${endPoints.taps}/${tap.id}`, tap),
     deleteTap: (tap: ITap) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.taps}/${tap.id}`),
+}
+
+export const PumpStart = {
+    getProjectPumpStart : (project_id: string) : Promise<IPumpstartOfProduct[]> => requests.get(`${enviorment.baseUrl}/${endPoints.pumpstart}?project_id=${project_id}`),
+    createProjectPumpStart: (pumpstart: IPumpstartOfProduct) : Promise<IPumpstartOfProduct>  => requests.post(`${enviorment.baseUrl}/${endPoints.pumpstart}`, pumpstart),
+    updatePumpStart: (pumpstart: IPumpstartOfProduct) : Promise<IPumpstartOfProduct> => requests.put(`${enviorment.baseUrl}/${endPoints.pumpstart}/${pumpstart.id}`, pumpstart)
 }

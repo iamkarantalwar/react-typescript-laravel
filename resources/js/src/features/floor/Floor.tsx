@@ -14,6 +14,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import ProjectForm from '../project/ProjectForm';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
+import Pumpstart from '../pumpstart/Pumpstart';
 
 interface MatchParams {
     id: string;
@@ -30,6 +31,7 @@ interface IMapDispatchToProps {
 
 const mapStateToProps = (state: RootState) => ({
     title: state.title,
+    projectSettings: state.projectSettings,
 });
 
 const mapDispatchToProps: IMapDispatchToProps = { changeTitle, fetchProjectSettings, fetchUsers };
@@ -193,6 +195,7 @@ class Floor extends Component<IProps, IState> {
                         </Fragment>
                         : ""
                     }
+                     { this.props.projectSettings.loader == false ? <Pumpstart projectSettings={this.props.projectSettings.projectSettings}/> : null }
                      {/* <img src={require('../../../../images/coming-soon.jpg')} width={'100%'}/> */}
                     {
                         this.state.loader ?
