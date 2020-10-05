@@ -193,12 +193,12 @@ class Floor extends Component<IProps, IState> {
                         </Fragment>
                         : ""
                     }
-                     <img src={require('../../../../images/coming-soon.jpg')} width={'100%'}/>
-                    {/* {
+                     {/* <img src={require('../../../../images/coming-soon.jpg')} width={'100%'}/> */}
+                    {
                         this.state.loader ?
                         <LoaderBar/> :
                         this.state.floors.length == 0 ? <h3 className="ml-md-5">Kein Boden verfügbar.</h3> : floorListItems
-                    } */}
+                    }
 
                 </Fragment>
             </div>

@@ -57,6 +57,7 @@ export const endPoints = {
     tapStatics: 'tap-statics',
     tapRounds: 'tap-rounds',
     sections: 'sections',
+    taps: 'taps'
 }
 
 export const Project = {
@@ -138,4 +139,9 @@ export const TapStaticObservable = {
 
 export const Section = {
     addSection : (section: ISectionForm) : Promise<ISection> => axios.post(`${enviorment.baseUrl}/${endPoints.sections}`, section),
+}
+
+export const Tap = {
+    updateTap : (tap: ITap) : Promise<ITap> => requests.put(`${enviorment.baseUrl}/${endPoints.taps}/${tap.id}`, tap),
+    deleteTap: (tap: ITap) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.taps}/${tap.id}`),
 }

@@ -46,6 +46,8 @@ Route::namespace('ApiController')->group(function(){
 
     Route::get('userroles', 'UserController@getUserRoles');
 
+    Route::resource('taps', 'TapsController');
+
     Route::resource('tap-statics', 'TapStaticController');
 
     Route::group(['prefix' => 'tap-rounds'], function () {

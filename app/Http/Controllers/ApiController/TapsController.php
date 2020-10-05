@@ -68,9 +68,18 @@ class TapsController extends Controller
      * @param  \App\Taps  $taps
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tap $taps)
+    public function update(Request $request, Tap $tap)
     {
-        //
+        $update = $tap->update([
+            'name' => $request->post('name')
+        ]);
+        if($update){
+            return response()->json($tap, 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later.'
+            ], 400);
+        }
     }
 
     /**
@@ -79,8 +88,17 @@ class TapsController extends Controller
      * @param  \App\Taps  $taps
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tap $taps)
+    public function destroy(Tap $tap)
     {
-        //
+        $delete = $tap->delete();
+        if($delete) {
+            return response()->json([
+                'message' => 'Tap deleted successfully.'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later.'
+            ], 400);
+        }
     }
 }
