@@ -96,13 +96,13 @@ class Header extends Component<IProps, IState> {
                                 <li className="nav-item active">
                                     <a className="nav-link mr-4" href="/logout">{t('Logout')}<span className="sr-only">(current)</span></a>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <select onChange={(e) => i18n.changeLanguage(e.target.value)} className="nav-link mr-4 lang-selector">
                                         <option value={'en'}>English</option>
                                         <option value={'ge'}>Germany</option>
                                     </select>
 
-                                </li>
+                                </li> */}
                             </ul>
                             <form className="form-inline my-2 my-lg-0" action="/projects" onSubmit={this.searchProject}>
                                 <input className="form-control mr-sm-2" onChange={(e) => this.setState({search: e.target.value})} type="search" name="search" placeholder={t('Search')} aria-label="Search"/>
