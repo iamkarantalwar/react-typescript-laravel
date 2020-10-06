@@ -48,5 +48,7 @@ export const en = {
     "User updated successfully": "User updated successfully",
     "Team name updated successfully": "Team name updated successfully",
     "Are you sure you want to delete this project?": "Are you sure you want to delete this project?",
-    "Project Deleted Successfully": "Project Deleted Successfully"
+    "Project Deleted Successfully": "Project Deleted Successfully",
+    "Are you sure you want to delete this tap type?": "Are you sure you want to delete this tap type?",
+    "Tap type deleted successfully": "Tap type deleted successfully"
 }

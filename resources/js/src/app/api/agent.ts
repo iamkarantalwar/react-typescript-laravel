@@ -107,6 +107,7 @@ export const RoomType = {
     getRoomTypes: () : Promise<IRoomType[]> => requests.get(`${enviorment.baseUrl}/${endPoints.roomTypes}`),
     saveRoomType: (roomType: IRoomType) : Promise<IRoomType> => requests.post(`${enviorment.baseUrl}/${endPoints.roomTypes}`, roomType),
     updateRoomType: (roomType: IRoomType) : Promise<IRoomType> => requests.put(`${enviorment.baseUrl}/${endPoints.roomTypes}/${roomType.id}`, roomType),
+    deleteRoomType: (roomType: IRoomType) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.roomTypes}/${roomType.id}`)
 }
 
 export const FloorRooms = {
@@ -151,5 +152,6 @@ export const Tap = {
 export const PumpStart = {
     getProjectPumpStart : (project_id: string) : Promise<IPumpstartOfProduct[]> => requests.get(`${enviorment.baseUrl}/${endPoints.pumpstart}?project_id=${project_id}`),
     createProjectPumpStart: (pumpstart: IPumpstartOfProduct) : Promise<IPumpstartOfProduct>  => requests.post(`${enviorment.baseUrl}/${endPoints.pumpstart}`, pumpstart),
-    updatePumpStart: (pumpstart: IPumpstartOfProduct) : Promise<IPumpstartOfProduct> => requests.put(`${enviorment.baseUrl}/${endPoints.pumpstart}/${pumpstart.id}`, pumpstart)
+    updatePumpStart: (pumpstart: IPumpstartOfProduct) : Promise<IPumpstartOfProduct> => requests.put(`${enviorment.baseUrl}/${endPoints.pumpstart}/${pumpstart.id}`, pumpstart),
+    deletePumpStart: (pumpstart: IPumpstartOfProduct) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.pumpstart}/${pumpstart.id}`),
 }

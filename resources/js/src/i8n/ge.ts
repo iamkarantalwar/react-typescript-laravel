@@ -48,5 +48,7 @@ export const ge = {
     "User updated successfully": "Benutzer erfolgreich aktualisiert",
     "Team name updated successfully": "Teamname erfolgreich aktualisiert",
     "Are you sure you want to delete this project?": "Möchten Sie dieses Projekt wirklich löschen?",
-    "Project Deleted Successfully": "Projekt erfolgreich gelöscht"
+    "Project Deleted Successfully": "Projekt erfolgreich gelöscht",
+    "Are you sure you want to delete this tap type?": "Möchten Sie diesen Tap-Typ wirklich löschen?",
+    "Tap type deleted successfully": "Tippen Sie auf Typ erfolgreich gelöscht"
 }
