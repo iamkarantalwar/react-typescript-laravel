@@ -62,6 +62,7 @@ export const ge = {
     "Ausstehend": "Ausstehend",
     "In Arbeit": "In Arbeit",
     "Fertig": "Fertig",
-    "No sections available": "Keine Abschnitte verfügbar"
-
+    "No sections available": "Keine Abschnitte verfügbar",
+    "Are you sure you want to delete this tap type?": "Möchten Sie diesen Tap-Typ wirklich löschen?",
+    "Tap type deleted successfully": "Tippen Sie auf Typ erfolgreich gelöscht"
 }

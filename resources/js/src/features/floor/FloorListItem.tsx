@@ -1,18 +1,19 @@
 import React, { Component, Fragment } from 'react';
 import { IProjectFloor, ProjectFloorStatus, ProjectFloorStatusType } from '../../app/models/project-floor.model';
 import { ITeam } from '../../app/models/team.model';
-import { ProjectFloors, Section } from '../../app/api/agent';
-import { Collapse } from 'react-bootstrap';
+import { ProjectFloors, FloorRooms } from '../../app/api/agent';
+import { Accordion, Button, Collapse } from 'react-bootstrap';
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import RoomListItem from '../room/RoomListItem';
+import { IFloorRoom } from '../../app/models/floor-room.model';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import { AxiosError } from 'axios';
 import { RootState, fetchRooms } from '../../redux';
 import { connect } from 'react-redux';
 import LoaderBar from '../../app/common/LoaderBar';
-import { ISection } from '../../app/models/section.model';
-import SectionForm from '../sections/SectionForm';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import SectionListItem from '../sections/SectionListItem';
+import RoomForm from '../room/RoomForm';
 
 const mapStateToProps = (state: RootState) => ({
   rooms: state.rooms,
@@ -40,12 +41,11 @@ interface IState {
     message: string;
     messageClass: string;
     editFloor:boolean;
-    showSections: boolean;
-    sections: ISection[];
+    showRooms: boolean;
+    rooms: IFloorRoom[];
     showLoader: boolean;
-    showSectionForm: boolean;
-    toggleSections: Array<{id: number, open:boolean}>;
-    loader: boolean;
+    showRoomForm: boolean;
+    toggleRooms: Array<{id: number, open:boolean}>;
 }
 
 class FloorListItem extends Component<IProps, IState> {
@@ -58,12 +58,11 @@ class FloorListItem extends Component<IProps, IState> {
         message: "",
         messageClass: "",
         editFloor: false,
-        showSections: false,
-        sections: [],
+        showRooms: false,
+        rooms: [],
         showLoader: false,
-        showSectionForm: false,
-        toggleSections: [],
-        loader: false
+        showRoomForm: false,
+        toggleRooms: [],
       }
     }
 
@@ -142,19 +141,19 @@ class FloorListItem extends Component<IProps, IState> {
       });
     }
 
-    afterUpdateSection = (section: ISection) => {
-        let old_sections = this.state.sections as ISection[];
-        let sections = old_sections.map((item) => {
-            if(section.id == item.id)
+    afterUpdateRoom = (room: IFloorRoom) => {
+        let old_rooms = this.state.rooms as IFloorRoom[];
+        let rooms = old_rooms.map((item) => {
+            if(room.id == item.id)
             {
-              return section;
+              return room;
             }
             else {
               return item;
             }
         });
 
-        this.setState({sections: sections});
+        this.setState({rooms: rooms});
     }
 
     afterAddOfSections(sections: ISection[]) {
@@ -177,35 +176,29 @@ class FloorListItem extends Component<IProps, IState> {
     }
 
     hideRoomForm = () => {
-      this.setState({showSectionForm: false});
+      this.setState({showRoomForm: false});
     }
 
     toggleCollapse = (target: any) => {
       if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editFloor))
       {
-            this.setState({loader: true});
-
-            Section.sections(this.props.floor.id.toString())
-            .then((res) => {
-                this.setState({sections: res})
-            });
-
-            this.setState({showSectionForm:false, showSections: true, loader:false });
-            this.props.selectFloor(this.props.floor);
+        !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
+        this.setState({showRoomForm:false, showRooms: true});
+        this.props.selectFloor(this.props.floor);
       }
     }
 
     componentDidUpdate(prevState: any) {
       if(prevState.rooms.loader == true && this.props.rooms.loader == false)
       {
-        const toggleSections = this.props.rooms.rooms.map((room) => {return {id: parseInt(room.id), open:false} });
-        this.setState({toggleSections: toggleSections})
+        const toggleRooms = this.props.rooms.rooms.map((room) => {return {id: parseInt(room.id), open:false} });
+        this.setState({toggleRooms: toggleRooms})
       }
     }
 
     toggleSectionsList = (open?: boolean) => {
       !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
-      this.setState({showSectionForm:false, showSections: open == undefined ? true : open});
+      this.setState({showRoomForm:false, showRooms: open == undefined ? true : open});
       this.props.selectFloor(this.props.floor);
     }
 
@@ -219,18 +212,16 @@ class FloorListItem extends Component<IProps, IState> {
     }
 
     render() {
-      const t = this.props.t;
-      let sectionsList = this.state.sections.length > 0 ? this.state.sections.map((section, index) => {
+      let roomsList = this.props.rooms.rooms.length>0 ? this.props.rooms.rooms.map((room, index) => {
         return(
-          <SectionListItem
-            section={section as ISection}
+          <RoomListItem
+            room={room as IFloorRoom}
             key={index}
-            // toggleRoom={this.state.toggleRooms[index]}
-            // afterUpdateRoom={this.afterUpdateRoom}
+            toggleRoom={this.state.toggleRooms[index]}
+            afterUpdateRoom={this.afterUpdateRoom}
           />
         )
-        }) : <h4 className="ml-5 mb-2">{t('No sections available')}</h4>;
-
+      }) : <h4 className="ml-5 mb-2">Keine Zimmer verfügbar.</h4>;
       return (
         <Fragment>
           {
@@ -290,13 +281,13 @@ class FloorListItem extends Component<IProps, IState> {
                              className="overview-flor-btn bg-transparent"
                              onClick={(e) => {
                                 this.setState({
-                                  showSectionForm: !this.state.showSectionForm,
-                                  showSections: false
+                                  showRoomForm: !this.state.showRoomForm,
+                                  showRooms: false
                                 });
                                 this.props.selectFloor(this.props.floor, false);
                             }}
                            >
-                             <span><i className={`fa ${this.state.showSectionForm ? 'fa-minus' : 'fa-plus'} room-form-icon mr-2`} aria-hidden="true"></i></span>{t('Sections')}
+                             <span><i className={`fa ${this.state.showRoomForm ? 'fa-minus' : 'fa-plus'} room-form-icon`} aria-hidden="true"></i></span>Räume
                            </a>
                          </div>
                          <div className="room-btn">
@@ -317,7 +308,7 @@ class FloorListItem extends Component<IProps, IState> {
                            this.toggleSectionsList(true)
                           }}
                           aria-controls={`collapse${this.props.floor.id}`}
-                          aria-expanded={this.state.showSections}
+                          aria-expanded={this.state.showRooms}
                         >
                           <i style={{cursor:'pointer'}} className={`fa ${this.props.toggleFloor?.open ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>
                          </div>
@@ -327,20 +318,16 @@ class FloorListItem extends Component<IProps, IState> {
                {
                  this.state.message ? <span className={this.state.messageClass}>{this.state.message}</span> : ""
                }
-                <Collapse in={this.props.toggleFloor?.open && this.state.showSections}>
+                <Collapse in={this.props.toggleFloor?.open && this.state.showRooms}>
                   <div className=" collapse" id={`collapse${this.props.floor.id}`}>
                   {
-                    this.state.loader ? <LoaderBar/> : sectionsList
+                    this.props.rooms.loader ? <LoaderBar/> : roomsList
                   }
                   </div>
                 </Collapse>
             </div>
           }
-           { this.state.showSectionForm == true ? <SectionForm
-                                                        afterAddOfSections={this.afterAddOfSections}
-                                                        toggleSectionsList={this.toggleSectionsList}
-                                                        floor={this.state.floor}
-                                                    /> : "" }
+           { this.state.showRoomForm == true ? <RoomForm hideRoomForm={this.hideRoomForm} afterRoomsAdded={this.toggleRoomsList} floor={this.state.floor}/> : "" }
           </Fragment>
         );
     }

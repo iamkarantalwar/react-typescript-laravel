@@ -62,6 +62,7 @@ export const en = {
     "Ausstehend": "Pending",
     "In Arbeit": "In Progress",
     "Fertig": "Finished",
-    "No sections available": "No sections available"
-
+    "No sections available": "No sections available",
+    "Are you sure you want to delete this tap type?": "Are you sure you want to delete this tap type?",
+    "Tap type deleted successfully": "Tap type deleted successfully"
 }

@@ -5,9 +5,11 @@ import { AxiosError } from 'axios';
 import LoaderBar from '../../app/common/LoaderBar';
 import { IRoomType } from '../../app/models/room-type.model';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { ITap } from '../../app/models/tap.model';
 
 interface IProps extends WithTranslation {
     roomType: IRoomType;
+    deleteTapType: (tapType: IRoomType) => void,
 }
 
 interface IState {
@@ -69,6 +71,7 @@ class TapTypeListItem extends Component<IProps, IState> {
     }
 
 
+
     render() {
         const t = this.props.t;
         return (
@@ -80,6 +83,7 @@ class TapTypeListItem extends Component<IProps, IState> {
                             value={this.state.roomType.room_type}
                             className={` ${this.state.updateState ?  'form-control' : 'team-input' }`}
                             onChange={this.teamNameChangeHandler.bind(this)}
+                            onBlur={(e) => this.setState({ updateState: false })}
                         /><br/>
                         {this.state.errors.room_type ? <span className="text-danger">{t(this.state.errors.room_type)}</span> : ""}
                         {this.state.updated ? <span className="text-success">{t('Tap type updated successfully')}</span> : ""}
@@ -88,6 +92,14 @@ class TapTypeListItem extends Component<IProps, IState> {
                         <i className={`fa-btn fa ${this.state.updateState ? `fa-check` : `fa-pencil`}`}
                             aria-hidden="true"
                             onClick={this.updateTapType.bind(this)}></i>
+                        <i className={`fa-btn fa fa-trash ml-1`}
+                            aria-hidden="true"
+                            onClick={(e) => {
+                                const c = confirm(t('Are you sure you want to delete this tap type?'));
+                                if (c) {
+                                    this.props.deleteTapType(this.state.roomType)
+                                }
+                            }}></i>
                     </td>
                  </tr>
 

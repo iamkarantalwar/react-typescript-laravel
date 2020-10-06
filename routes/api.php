@@ -46,6 +46,8 @@ Route::namespace('ApiController')->group(function(){
 
     Route::get('userroles', 'UserController@getUserRoles');
 
+    Route::resource('taps', 'TapsController');
+
     Route::resource('tap-statics', 'TapStaticController');
 
     Route::group(['prefix' => 'tap-rounds'], function () {
@@ -57,6 +59,7 @@ Route::namespace('ApiController')->group(function(){
 
     Route::resource('sections', 'SectionController');
 
+    Route::resource('pumpstart-of-products', 'PumpstartOfProductController');
 });
 
 

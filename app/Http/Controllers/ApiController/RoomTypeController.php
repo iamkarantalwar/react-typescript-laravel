@@ -96,6 +96,15 @@ class RoomTypeController extends Controller
      */
     public function destroy(RoomType $roomType)
     {
-        //
+        $delete = $roomType->delete();
+        if($delete) {
+            return response()->json([
+                'message' => 'Room type deleted successfully.'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later.'
+            ], 401);
+        }
     }
 }

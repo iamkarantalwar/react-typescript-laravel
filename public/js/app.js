@@ -57858,6 +57858,33 @@ function resolvePathname(to, from) {
 
 /***/ }),
 
+/***/ "./node_modules/rxjs/_esm5/ajax/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/rxjs/_esm5/ajax/index.js ***!
+  \***********************************************/
+/*! exports provided: ajax, AjaxResponse, AjaxError, AjaxTimeoutError */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_observable_dom_ajax__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../internal/observable/dom/ajax */ "./node_modules/rxjs/_esm5/internal/observable/dom/ajax.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ajax", function() { return _internal_observable_dom_ajax__WEBPACK_IMPORTED_MODULE_0__["ajax"]; });
+
+/* harmony import */ var _internal_observable_dom_AjaxObservable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../internal/observable/dom/AjaxObservable */ "./node_modules/rxjs/_esm5/internal/observable/dom/AjaxObservable.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "AjaxResponse", function() { return _internal_observable_dom_AjaxObservable__WEBPACK_IMPORTED_MODULE_1__["AjaxResponse"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "AjaxError", function() { return _internal_observable_dom_AjaxObservable__WEBPACK_IMPORTED_MODULE_1__["AjaxError"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "AjaxTimeoutError", function() { return _internal_observable_dom_AjaxObservable__WEBPACK_IMPORTED_MODULE_1__["AjaxTimeoutError"]; });
+
+/** PURE_IMPORTS_START  PURE_IMPORTS_END */
+
+
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/rxjs/_esm5/index.js":
 /*!******************************************!*\
   !*** ./node_modules/rxjs/_esm5/index.js ***!
@@ -60015,6 +60042,428 @@ function defer(observableFactory) {
     });
 }
 //# sourceMappingURL=defer.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/_esm5/internal/observable/dom/AjaxObservable.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/observable/dom/AjaxObservable.js ***!
+  \***************************************************************************/
+/*! exports provided: ajaxGet, ajaxPost, ajaxDelete, ajaxPut, ajaxPatch, ajaxGetJSON, AjaxObservable, AjaxSubscriber, AjaxResponse, AjaxError, AjaxTimeoutError */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ajaxGet", function() { return ajaxGet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ajaxPost", function() { return ajaxPost; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ajaxDelete", function() { return ajaxDelete; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ajaxPut", function() { return ajaxPut; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ajaxPatch", function() { return ajaxPatch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ajaxGetJSON", function() { return ajaxGetJSON; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AjaxObservable", function() { return AjaxObservable; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AjaxSubscriber", function() { return AjaxSubscriber; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AjaxResponse", function() { return AjaxResponse; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AjaxError", function() { return AjaxError; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AjaxTimeoutError", function() { return AjaxTimeoutError; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _util_root__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/root */ "./node_modules/rxjs/_esm5/internal/util/root.js");
+/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Observable */ "./node_modules/rxjs/_esm5/internal/Observable.js");
+/* harmony import */ var _Subscriber__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Subscriber */ "./node_modules/rxjs/_esm5/internal/Subscriber.js");
+/* harmony import */ var _operators_map__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../operators/map */ "./node_modules/rxjs/_esm5/internal/operators/map.js");
+/** PURE_IMPORTS_START tslib,_.._util_root,_.._Observable,_.._Subscriber,_.._operators_map PURE_IMPORTS_END */
+
+
+
+
+
+function getCORSRequest() {
+    if (_util_root__WEBPACK_IMPORTED_MODULE_1__["root"].XMLHttpRequest) {
+        return new _util_root__WEBPACK_IMPORTED_MODULE_1__["root"].XMLHttpRequest();
+    }
+    else if (!!_util_root__WEBPACK_IMPORTED_MODULE_1__["root"].XDomainRequest) {
+        return new _util_root__WEBPACK_IMPORTED_MODULE_1__["root"].XDomainRequest();
+    }
+    else {
+        throw new Error('CORS is not supported by your browser');
+    }
+}
+function getXMLHttpRequest() {
+    if (_util_root__WEBPACK_IMPORTED_MODULE_1__["root"].XMLHttpRequest) {
+        return new _util_root__WEBPACK_IMPORTED_MODULE_1__["root"].XMLHttpRequest();
+    }
+    else {
+        var progId = void 0;
+        try {
+            var progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'];
+            for (var i = 0; i < 3; i++) {
+                try {
+                    progId = progIds[i];
+                    if (new _util_root__WEBPACK_IMPORTED_MODULE_1__["root"].ActiveXObject(progId)) {
+                        break;
+                    }
+                }
+                catch (e) {
+                }
+            }
+            return new _util_root__WEBPACK_IMPORTED_MODULE_1__["root"].ActiveXObject(progId);
+        }
+        catch (e) {
+            throw new Error('XMLHttpRequest is not supported by your browser');
+        }
+    }
+}
+function ajaxGet(url, headers) {
+    if (headers === void 0) {
+        headers = null;
+    }
+    return new AjaxObservable({ method: 'GET', url: url, headers: headers });
+}
+function ajaxPost(url, body, headers) {
+    return new AjaxObservable({ method: 'POST', url: url, body: body, headers: headers });
+}
+function ajaxDelete(url, headers) {
+    return new AjaxObservable({ method: 'DELETE', url: url, headers: headers });
+}
+function ajaxPut(url, body, headers) {
+    return new AjaxObservable({ method: 'PUT', url: url, body: body, headers: headers });
+}
+function ajaxPatch(url, body, headers) {
+    return new AjaxObservable({ method: 'PATCH', url: url, body: body, headers: headers });
+}
+var mapResponse = /*@__PURE__*/ Object(_operators_map__WEBPACK_IMPORTED_MODULE_4__["map"])(function (x, index) { return x.response; });
+function ajaxGetJSON(url, headers) {
+    return mapResponse(new AjaxObservable({
+        method: 'GET',
+        url: url,
+        responseType: 'json',
+        headers: headers
+    }));
+}
+var AjaxObservable = /*@__PURE__*/ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](AjaxObservable, _super);
+    function AjaxObservable(urlOrRequest) {
+        var _this = _super.call(this) || this;
+        var request = {
+            async: true,
+            createXHR: function () {
+                return this.crossDomain ? getCORSRequest() : getXMLHttpRequest();
+            },
+            crossDomain: true,
+            withCredentials: false,
+            headers: {},
+            method: 'GET',
+            responseType: 'json',
+            timeout: 0
+        };
+        if (typeof urlOrRequest === 'string') {
+            request.url = urlOrRequest;
+        }
+        else {
+            for (var prop in urlOrRequest) {
+                if (urlOrRequest.hasOwnProperty(prop)) {
+                    request[prop] = urlOrRequest[prop];
+                }
+            }
+        }
+        _this.request = request;
+        return _this;
+    }
+    AjaxObservable.prototype._subscribe = function (subscriber) {
+        return new AjaxSubscriber(subscriber, this.request);
+    };
+    AjaxObservable.create = (function () {
+        var create = function (urlOrRequest) {
+            return new AjaxObservable(urlOrRequest);
+        };
+        create.get = ajaxGet;
+        create.post = ajaxPost;
+        create.delete = ajaxDelete;
+        create.put = ajaxPut;
+        create.patch = ajaxPatch;
+        create.getJSON = ajaxGetJSON;
+        return create;
+    })();
+    return AjaxObservable;
+}(_Observable__WEBPACK_IMPORTED_MODULE_2__["Observable"]));
+
+var AjaxSubscriber = /*@__PURE__*/ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](AjaxSubscriber, _super);
+    function AjaxSubscriber(destination, request) {
+        var _this = _super.call(this, destination) || this;
+        _this.request = request;
+        _this.done = false;
+        var headers = request.headers = request.headers || {};
+        if (!request.crossDomain && !_this.getHeader(headers, 'X-Requested-With')) {
+            headers['X-Requested-With'] = 'XMLHttpRequest';
+        }
+        var contentTypeHeader = _this.getHeader(headers, 'Content-Type');
+        if (!contentTypeHeader && !(_util_root__WEBPACK_IMPORTED_MODULE_1__["root"].FormData && request.body instanceof _util_root__WEBPACK_IMPORTED_MODULE_1__["root"].FormData) && typeof request.body !== 'undefined') {
+            headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+        }
+        request.body = _this.serializeBody(request.body, _this.getHeader(request.headers, 'Content-Type'));
+        _this.send();
+        return _this;
+    }
+    AjaxSubscriber.prototype.next = function (e) {
+        this.done = true;
+        var _a = this, xhr = _a.xhr, request = _a.request, destination = _a.destination;
+        var result;
+        try {
+            result = new AjaxResponse(e, xhr, request);
+        }
+        catch (err) {
+            return destination.error(err);
+        }
+        destination.next(result);
+    };
+    AjaxSubscriber.prototype.send = function () {
+        var _a = this, request = _a.request, _b = _a.request, user = _b.user, method = _b.method, url = _b.url, async = _b.async, password = _b.password, headers = _b.headers, body = _b.body;
+        try {
+            var xhr = this.xhr = request.createXHR();
+            this.setupEvents(xhr, request);
+            if (user) {
+                xhr.open(method, url, async, user, password);
+            }
+            else {
+                xhr.open(method, url, async);
+            }
+            if (async) {
+                xhr.timeout = request.timeout;
+                xhr.responseType = request.responseType;
+            }
+            if ('withCredentials' in xhr) {
+                xhr.withCredentials = !!request.withCredentials;
+            }
+            this.setHeaders(xhr, headers);
+            if (body) {
+                xhr.send(body);
+            }
+            else {
+                xhr.send();
+            }
+        }
+        catch (err) {
+            this.error(err);
+        }
+    };
+    AjaxSubscriber.prototype.serializeBody = function (body, contentType) {
+        if (!body || typeof body === 'string') {
+            return body;
+        }
+        else if (_util_root__WEBPACK_IMPORTED_MODULE_1__["root"].FormData && body instanceof _util_root__WEBPACK_IMPORTED_MODULE_1__["root"].FormData) {
+            return body;
+        }
+        if (contentType) {
+            var splitIndex = contentType.indexOf(';');
+            if (splitIndex !== -1) {
+                contentType = contentType.substring(0, splitIndex);
+            }
+        }
+        switch (contentType) {
+            case 'application/x-www-form-urlencoded':
+                return Object.keys(body).map(function (key) { return encodeURIComponent(key) + "=" + encodeURIComponent(body[key]); }).join('&');
+            case 'application/json':
+                return JSON.stringify(body);
+            default:
+                return body;
+        }
+    };
+    AjaxSubscriber.prototype.setHeaders = function (xhr, headers) {
+        for (var key in headers) {
+            if (headers.hasOwnProperty(key)) {
+                xhr.setRequestHeader(key, headers[key]);
+            }
+        }
+    };
+    AjaxSubscriber.prototype.getHeader = function (headers, headerName) {
+        for (var key in headers) {
+            if (key.toLowerCase() === headerName.toLowerCase()) {
+                return headers[key];
+            }
+        }
+        return undefined;
+    };
+    AjaxSubscriber.prototype.setupEvents = function (xhr, request) {
+        var progressSubscriber = request.progressSubscriber;
+        function xhrTimeout(e) {
+            var _a = xhrTimeout, subscriber = _a.subscriber, progressSubscriber = _a.progressSubscriber, request = _a.request;
+            if (progressSubscriber) {
+                progressSubscriber.error(e);
+            }
+            var error;
+            try {
+                error = new AjaxTimeoutError(this, request);
+            }
+            catch (err) {
+                error = err;
+            }
+            subscriber.error(error);
+        }
+        xhr.ontimeout = xhrTimeout;
+        xhrTimeout.request = request;
+        xhrTimeout.subscriber = this;
+        xhrTimeout.progressSubscriber = progressSubscriber;
+        if (xhr.upload && 'withCredentials' in xhr) {
+            if (progressSubscriber) {
+                var xhrProgress_1;
+                xhrProgress_1 = function (e) {
+                    var progressSubscriber = xhrProgress_1.progressSubscriber;
+                    progressSubscriber.next(e);
+                };
+                if (_util_root__WEBPACK_IMPORTED_MODULE_1__["root"].XDomainRequest) {
+                    xhr.onprogress = xhrProgress_1;
+                }
+                else {
+                    xhr.upload.onprogress = xhrProgress_1;
+                }
+                xhrProgress_1.progressSubscriber = progressSubscriber;
+            }
+            var xhrError_1;
+            xhrError_1 = function (e) {
+                var _a = xhrError_1, progressSubscriber = _a.progressSubscriber, subscriber = _a.subscriber, request = _a.request;
+                if (progressSubscriber) {
+                    progressSubscriber.error(e);
+                }
+                var error;
+                try {
+                    error = new AjaxError('ajax error', this, request);
+                }
+                catch (err) {
+                    error = err;
+                }
+                subscriber.error(error);
+            };
+            xhr.onerror = xhrError_1;
+            xhrError_1.request = request;
+            xhrError_1.subscriber = this;
+            xhrError_1.progressSubscriber = progressSubscriber;
+        }
+        function xhrReadyStateChange(e) {
+            return;
+        }
+        xhr.onreadystatechange = xhrReadyStateChange;
+        xhrReadyStateChange.subscriber = this;
+        xhrReadyStateChange.progressSubscriber = progressSubscriber;
+        xhrReadyStateChange.request = request;
+        function xhrLoad(e) {
+            var _a = xhrLoad, subscriber = _a.subscriber, progressSubscriber = _a.progressSubscriber, request = _a.request;
+            if (this.readyState === 4) {
+                var status_1 = this.status === 1223 ? 204 : this.status;
+                var response = (this.responseType === 'text' ? (this.response || this.responseText) : this.response);
+                if (status_1 === 0) {
+                    status_1 = response ? 200 : 0;
+                }
+                if (status_1 < 400) {
+                    if (progressSubscriber) {
+                        progressSubscriber.complete();
+                    }
+                    subscriber.next(e);
+                    subscriber.complete();
+                }
+                else {
+                    if (progressSubscriber) {
+                        progressSubscriber.error(e);
+                    }
+                    var error = void 0;
+                    try {
+                        error = new AjaxError('ajax error ' + status_1, this, request);
+                    }
+                    catch (err) {
+                        error = err;
+                    }
+                    subscriber.error(error);
+                }
+            }
+        }
+        xhr.onload = xhrLoad;
+        xhrLoad.subscriber = this;
+        xhrLoad.progressSubscriber = progressSubscriber;
+        xhrLoad.request = request;
+    };
+    AjaxSubscriber.prototype.unsubscribe = function () {
+        var _a = this, done = _a.done, xhr = _a.xhr;
+        if (!done && xhr && xhr.readyState !== 4 && typeof xhr.abort === 'function') {
+            xhr.abort();
+        }
+        _super.prototype.unsubscribe.call(this);
+    };
+    return AjaxSubscriber;
+}(_Subscriber__WEBPACK_IMPORTED_MODULE_3__["Subscriber"]));
+
+var AjaxResponse = /*@__PURE__*/ (function () {
+    function AjaxResponse(originalEvent, xhr, request) {
+        this.originalEvent = originalEvent;
+        this.xhr = xhr;
+        this.request = request;
+        this.status = xhr.status;
+        this.responseType = xhr.responseType || request.responseType;
+        this.response = parseXhrResponse(this.responseType, xhr);
+    }
+    return AjaxResponse;
+}());
+
+var AjaxErrorImpl = /*@__PURE__*/ (function () {
+    function AjaxErrorImpl(message, xhr, request) {
+        Error.call(this);
+        this.message = message;
+        this.name = 'AjaxError';
+        this.xhr = xhr;
+        this.request = request;
+        this.status = xhr.status;
+        this.responseType = xhr.responseType || request.responseType;
+        this.response = parseXhrResponse(this.responseType, xhr);
+        return this;
+    }
+    AjaxErrorImpl.prototype = /*@__PURE__*/ Object.create(Error.prototype);
+    return AjaxErrorImpl;
+})();
+var AjaxError = AjaxErrorImpl;
+function parseJson(xhr) {
+    if ('response' in xhr) {
+        return xhr.responseType ? xhr.response : JSON.parse(xhr.response || xhr.responseText || 'null');
+    }
+    else {
+        return JSON.parse(xhr.responseText || 'null');
+    }
+}
+function parseXhrResponse(responseType, xhr) {
+    switch (responseType) {
+        case 'json':
+            return parseJson(xhr);
+        case 'xml':
+            return xhr.responseXML;
+        case 'text':
+        default:
+            return ('response' in xhr) ? xhr.response : xhr.responseText;
+    }
+}
+function AjaxTimeoutErrorImpl(xhr, request) {
+    AjaxError.call(this, 'ajax timeout', xhr, request);
+    this.name = 'AjaxTimeoutError';
+    return this;
+}
+var AjaxTimeoutError = AjaxTimeoutErrorImpl;
+//# sourceMappingURL=AjaxObservable.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/rxjs/_esm5/internal/observable/dom/ajax.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/observable/dom/ajax.js ***!
+  \*****************************************************************/
+/*! exports provided: ajax */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ajax", function() { return ajax; });
+/* harmony import */ var _AjaxObservable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AjaxObservable */ "./node_modules/rxjs/_esm5/internal/observable/dom/AjaxObservable.js");
+/** PURE_IMPORTS_START _AjaxObservable PURE_IMPORTS_END */
+
+var ajax = /*@__PURE__*/ (function () { return _AjaxObservable__WEBPACK_IMPORTED_MODULE_0__["AjaxObservable"].create; })();
+//# sourceMappingURL=ajax.js.map
 
 
 /***/ }),
@@ -63526,6 +63975,34 @@ function pipeFromArray(fns) {
 
 /***/ }),
 
+/***/ "./node_modules/rxjs/_esm5/internal/util/root.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/rxjs/_esm5/internal/util/root.js ***!
+  \*******************************************************/
+/*! exports provided: root */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "root", function() { return _root; });
+/** PURE_IMPORTS_START  PURE_IMPORTS_END */
+var __window = typeof window !== 'undefined' && window;
+var __self = typeof self !== 'undefined' && typeof WorkerGlobalScope !== 'undefined' &&
+    self instanceof WorkerGlobalScope && self;
+var __global = typeof global !== 'undefined' && global;
+var _root = __window || __global || __self;
+/*@__PURE__*/ (function () {
+    if (!_root) {
+        throw /*@__PURE__*/ new Error('RxJS could not find any global context (window, self, global)');
+    }
+})();
+
+//# sourceMappingURL=root.js.map
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
 /***/ "./node_modules/rxjs/_esm5/internal/util/subscribeTo.js":
 /*!**************************************************************!*\
   !*** ./node_modules/rxjs/_esm5/internal/util/subscribeTo.js ***!
@@ -66689,7 +67166,7 @@ var enviorment = {
 /*!*******************************************!*\
   !*** ./resources/js/src/app/api/agent.ts ***!
   \*******************************************/
-/*! exports provided: endPoints, Project, Team, User, Role, ProjectSetting, ProjectFloors, RoomType, FloorRooms, TapStatic, TapTimer, TapTimerObservable, TapStaticObservable, Section */
+/*! exports provided: endPoints, Project, Team, User, Role, ProjectSetting, ProjectFloors, RoomType, FloorRooms, TapStatic, TapTimer, TapTimerObservable, TapStaticObservable, Section, Tap, PumpStart */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -66708,6 +67185,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TapTimerObservable", function() { return TapTimerObservable; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TapStaticObservable", function() { return TapStaticObservable; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Section", function() { return Section; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tap", function() { return Tap; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PumpStart", function() { return PumpStart; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var axios_observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios-observable */ "./node_modules/axios-observable/dist/index.js");
@@ -66748,6 +67227,8 @@ var endPoints = {
     tapStatics: 'tap-statics',
     tapRounds: 'tap-rounds',
     sections: 'sections',
+    taps: 'taps',
+    pumpstart: 'pumpstart-of-products'
 };
 var Project = {
     getProject: function (projectId) { return requests.get(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.project + "?project_id=" + projectId); },
@@ -66788,6 +67269,7 @@ var RoomType = {
     getRoomTypes: function () { return requests.get(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.roomTypes); },
     saveRoomType: function (roomType) { return requests.post(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.roomTypes, roomType); },
     updateRoomType: function (roomType) { return requests.put(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.roomTypes + "/" + roomType.id, roomType); },
+    deleteRoomType: function (roomType) { return requests.del(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.roomTypes + "/" + roomType.id); }
 };
 var FloorRooms = {
     getAllRooms: function () { return requests.get(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.floorRooms); },
@@ -66817,6 +67299,16 @@ var Section = {
     sections: function (floor_id) { return requests.get(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.sections + "?floor_id=" + floor_id); },
     addSection: function (section) { return requests.post(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.sections, section); },
     updateSection: function (section) { return requests.put(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.sections + "/" + section.id, section); },
+};
+var Tap = {
+    updateTap: function (tap) { return requests.put(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.taps + "/" + tap.id, tap); },
+    deleteTap: function (tap) { return requests.del(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.taps + "/" + tap.id); },
+};
+var PumpStart = {
+    getProjectPumpStart: function (project_id) { return requests.get(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.pumpstart + "?project_id=" + project_id); },
+    createProjectPumpStart: function (pumpstart) { return requests.post(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.pumpstart, pumpstart); },
+    updatePumpStart: function (pumpstart) { return requests.put(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.pumpstart + "/" + pumpstart.id, pumpstart); },
+    deletePumpStart: function (pumpstart) { return requests.del(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + endPoints.pumpstart + "/" + pumpstart.id); },
 };
 
 
@@ -66888,6 +67380,25 @@ var LoaderBar = /** @class */ (function (_super) {
     return LoaderBar;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
 /* harmony default export */ __webpack_exports__["default"] = (LoaderBar);
+
+
+/***/ }),
+
+/***/ "./resources/js/src/app/enums/settings-field.enum.ts":
+/*!***********************************************************!*\
+  !*** ./resources/js/src/app/enums/settings-field.enum.ts ***!
+  \***********************************************************/
+/*! exports provided: SettingsField */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingsField", function() { return SettingsField; });
+var SettingsField;
+(function (SettingsField) {
+    SettingsField[SettingsField["wirkzeit"] = 0] = "wirkzeit";
+    SettingsField[SettingsField["spulzeit"] = 1] = "spulzeit";
+})(SettingsField || (SettingsField = {}));
 
 
 /***/ }),
@@ -67758,6 +68269,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _project_ProjectForm__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../project/ProjectForm */ "./resources/js/src/features/project/ProjectForm.tsx");
 /* harmony import */ var _context_UserContext__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../context/UserContext */ "./resources/js/src/context/UserContext.tsx");
 /* harmony import */ var _app_models_role_model__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../app/models/role.model */ "./resources/js/src/app/models/role.model.ts");
+/* harmony import */ var _pumpstart_Pumpstart__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../pumpstart/Pumpstart */ "./resources/js/src/features/pumpstart/Pumpstart.tsx");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -67783,8 +68295,10 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
+
 var mapStateToProps = function (state) { return ({
     title: state.title,
+    projectSettings: state.projectSettings,
 }); };
 var mapDispatchToProps = { changeTitle: _redux__WEBPACK_IMPORTED_MODULE_7__["changeTitle"], fetchProjectSettings: _redux__WEBPACK_IMPORTED_MODULE_7__["fetchProjectSettings"], fetchUsers: _redux__WEBPACK_IMPORTED_MODULE_7__["fetchUsers"] };
 var Floor = /** @class */ (function (_super) {
@@ -67895,6 +68409,7 @@ var Floor = /** @class */ (function (_super) {
                         this.state.showFloorForm ?
                             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FloorForm__WEBPACK_IMPORTED_MODULE_1__["default"], { toggleForm: this.toggleForm, project: this.state.project, afterAddOfFloors: this.afterAddOfFloors }) : "")
                     : "",
+                this.props.projectSettings.loader == false ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_pumpstart_Pumpstart__WEBPACK_IMPORTED_MODULE_12__["default"], { projectSettings: this.props.projectSettings.projectSettings }) : null,
                 this.state.loader ?
                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_4__["default"], null) :
                     this.state.floors.length == 0 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", { className: "ml-md-5" }, "Kein Boden verf\u00FCgbar.") : floorListItems)));
@@ -68082,14 +68597,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _app_models_project_floor_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../app/models/project-floor.model */ "./resources/js/src/app/models/project-floor.model.ts");
 /* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
-/* harmony import */ var _context_UserContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../context/UserContext */ "./resources/js/src/context/UserContext.tsx");
-/* harmony import */ var _app_models_role_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../app/models/role.model */ "./resources/js/src/app/models/role.model.ts");
-/* harmony import */ var _redux__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../redux */ "./resources/js/src/redux/index.ts");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../app/common/LoaderBar */ "./resources/js/src/app/common/LoaderBar.tsx");
-/* harmony import */ var _sections_SectionForm__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../sections/SectionForm */ "./resources/js/src/features/sections/SectionForm.tsx");
+/* harmony import */ var _room_RoomListItem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../room/RoomListItem */ "./resources/js/src/features/room/RoomListItem.tsx");
+/* harmony import */ var _context_UserContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../context/UserContext */ "./resources/js/src/context/UserContext.tsx");
+/* harmony import */ var _app_models_role_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../app/models/role.model */ "./resources/js/src/app/models/role.model.ts");
+/* harmony import */ var _redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../redux */ "./resources/js/src/redux/index.ts");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../app/common/LoaderBar */ "./resources/js/src/app/common/LoaderBar.tsx");
 /* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/index.js");
-/* harmony import */ var _sections_SectionListItem__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../sections/SectionListItem */ "./resources/js/src/features/sections/SectionListItem.tsx");
+/* harmony import */ var _room_RoomForm__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../room/RoomForm */ "./resources/js/src/features/room/RoomForm.tsx");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -68129,7 +68644,7 @@ var __assign = (undefined && undefined.__assign) || function () {
 var mapStateToProps = function (state) { return ({
     rooms: state.rooms,
 }); };
-var mapDispatchToProps = { fetchRooms: _redux__WEBPACK_IMPORTED_MODULE_6__["fetchRooms"] };
+var mapDispatchToProps = { fetchRooms: _redux__WEBPACK_IMPORTED_MODULE_7__["fetchRooms"] };
 var FloorListItem = /** @class */ (function (_super) {
     __extends(FloorListItem, _super);
     function FloorListItem(props) {
@@ -68203,17 +68718,17 @@ var FloorListItem = /** @class */ (function (_super) {
                 editFloor: true
             });
         };
-        _this.afterUpdateSection = function (section) {
-            var old_sections = _this.state.sections;
-            var sections = old_sections.map(function (item) {
-                if (section.id == item.id) {
-                    return section;
+        _this.afterUpdateRoom = function (room) {
+            var old_rooms = _this.state.rooms;
+            var rooms = old_rooms.map(function (item) {
+                if (room.id == item.id) {
+                    return room;
                 }
                 else {
                     return item;
                 }
             });
-            _this.setState({ sections: sections });
+            _this.setState({ rooms: rooms });
         };
         _this.deleteFloor = function (floor) {
             var confirm_ = confirm("Möchten Sie diese Etage wirklich löschen?");
@@ -68230,23 +68745,20 @@ var FloorListItem = /** @class */ (function (_super) {
             }
         };
         _this.hideRoomForm = function () {
-            _this.setState({ showSectionForm: false });
+            _this.setState({ showRoomForm: false });
         };
         _this.toggleCollapse = function (target) {
+            var _a;
             if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !_this.state.editFloor)) {
-                _this.setState({ loader: true });
-                _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["Section"].sections(_this.props.floor.id.toString())
-                    .then(function (res) {
-                    _this.setState({ sections: res });
-                });
-                _this.setState({ showSectionForm: false, showSections: true, loader: false });
+                !((_a = _this.props.toggleFloor) === null || _a === void 0 ? void 0 : _a.open) ? _this.props.fetchRooms(_this.props.floor) : "";
+                _this.setState({ showRoomForm: false, showRooms: true });
                 _this.props.selectFloor(_this.props.floor);
             }
         };
         _this.toggleSectionsList = function (open) {
             var _a;
             !((_a = _this.props.toggleFloor) === null || _a === void 0 ? void 0 : _a.open) ? _this.props.fetchRooms(_this.props.floor) : "";
-            _this.setState({ showSectionForm: false, showSections: open == undefined ? true : open });
+            _this.setState({ showRoomForm: false, showRooms: open == undefined ? true : open });
             _this.props.selectFloor(_this.props.floor);
         };
         _this.state = {
@@ -68254,12 +68766,11 @@ var FloorListItem = /** @class */ (function (_super) {
             message: "",
             messageClass: "",
             editFloor: false,
-            showSections: false,
-            sections: [],
+            showRooms: false,
+            rooms: [],
             showLoader: false,
-            showSectionForm: false,
-            toggleSections: [],
-            loader: false
+            showRoomForm: false,
+            toggleRooms: [],
         };
         return _this;
     }
@@ -68267,8 +68778,8 @@ var FloorListItem = /** @class */ (function (_super) {
     };
     FloorListItem.prototype.componentDidUpdate = function (prevState) {
         if (prevState.rooms.loader == true && this.props.rooms.loader == false) {
-            var toggleSections = this.props.rooms.rooms.map(function (room) { return { id: parseInt(room.id), open: false }; });
-            this.setState({ toggleSections: toggleSections });
+            var toggleRooms = this.props.rooms.rooms.map(function (room) { return { id: parseInt(room.id), open: false }; });
+            this.setState({ toggleRooms: toggleRooms });
         }
     };
     FloorListItem.prototype.componentDidMount = function () {
@@ -68280,17 +68791,16 @@ var FloorListItem = /** @class */ (function (_super) {
     FloorListItem.prototype.render = function () {
         var _this = this;
         var _a, _b;
-        var t = this.props.t;
-        var sectionsList = this.state.sections.length > 0 ? this.state.sections.map(function (section, index) {
-            return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_sections_SectionListItem__WEBPACK_IMPORTED_MODULE_11__["default"], { section: section, key: index }));
-        }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", { className: "ml-5 mb-2" }, t('No sections available'));
+        var roomsList = this.props.rooms.rooms.length > 0 ? this.props.rooms.rooms.map(function (room, index) {
+            return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_room_RoomListItem__WEBPACK_IMPORTED_MODULE_4__["default"], { room: room, key: index, toggleRoom: _this.state.toggleRooms[index], afterUpdateRoom: _this.afterUpdateRoom }));
+        }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", { className: "ml-5 mb-2" }, "Keine Zimmer verf\u00FCgbar.");
         return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
-            this.state.showLoader ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_8__["default"], null) :
+            this.state.showLoader ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_9__["default"], null) :
                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'mb-2' },
                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "floor-one-box card-header d-flex align-items-center justify-content-between cursor-pointer\n                            " + (this.state.messageClass == 'text-danger' ? 'border border-danger' : '') + "\n                            " + (this.state.messageClass == 'text-success' ? 'border border-success' : ''), onClick: function (e) { return _this.toggleCollapse(e.target); } },
                         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "floors-tittle" },
                             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h6", { className: "mb-0" },
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: 'text', value: this.state.floor.floor_name, readOnly: !this.state.editFloor, className: "form-control " + (!this.state.editFloor ? 'team-input cursor-pointer' : ''), onChange: function (e) { return _context_UserContext__WEBPACK_IMPORTED_MODULE_4__["userObject"].role == _app_models_role_model__WEBPACK_IMPORTED_MODULE_5__["UserRoles"].ADMIN ? _this.setState({ floor: __assign(__assign({}, _this.state.floor), { floor_name: e.target.value }) }) : ""; } }))),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: 'text', value: this.state.floor.floor_name, readOnly: !this.state.editFloor, className: "form-control " + (!this.state.editFloor ? 'team-input cursor-pointer' : ''), onChange: function (e) { return _context_UserContext__WEBPACK_IMPORTED_MODULE_5__["userObject"].role == _app_models_role_model__WEBPACK_IMPORTED_MODULE_6__["UserRoles"].ADMIN ? _this.setState({ floor: __assign(__assign({}, _this.state.floor), { floor_name: e.target.value }) }) : ""; } }))),
                         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "floor-overviwe-btn d-flex align-items-center" },
                             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "team-btn mr-1" },
                                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", { name: "team", defaultValue: this.props.floor.status, className: "status-select border border-" + this.getStatusCssClass(), onChange: this.statusChangeHandler },
@@ -68302,7 +68812,7 @@ var FloorListItem = /** @class */ (function (_super) {
                                             t(value),
                                             " ");
                                     }))),
-                            _context_UserContext__WEBPACK_IMPORTED_MODULE_4__["userObject"].role == _app_models_role_model__WEBPACK_IMPORTED_MODULE_5__["UserRoles"].ADMIN ?
+                            _context_UserContext__WEBPACK_IMPORTED_MODULE_5__["userObject"].role == _app_models_role_model__WEBPACK_IMPORTED_MODULE_6__["UserRoles"].ADMIN ?
                                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
                                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "team-btn mr-1" },
                                         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", { name: "team", value: this.state.floor.team_id || '', className: "team-select", onChange: this.teamChangeHandler },
@@ -68314,14 +68824,14 @@ var FloorListItem = /** @class */ (function (_super) {
                                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "room-btn" },
                                         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", { href: void (0), className: "overview-flor-btn bg-transparent", onClick: function (e) {
                                                 _this.setState({
-                                                    showSectionForm: !_this.state.showSectionForm,
-                                                    showSections: false
+                                                    showRoomForm: !_this.state.showRoomForm,
+                                                    showRooms: false
                                                 });
                                                 _this.props.selectFloor(_this.props.floor, false);
                                             } },
                                             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null,
-                                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa " + (this.state.showSectionForm ? 'fa-minus' : 'fa-plus') + " room-form-icon mr-2", "aria-hidden": "true" })),
-                                            t('Sections'))),
+                                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa " + (this.state.showRoomForm ? 'fa-minus' : 'fa-plus') + " room-form-icon", "aria-hidden": "true" })),
+                                            "R\u00E4ume")),
                                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "room-btn" },
                                         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { style: { cursor: 'pointer' }, onClick: function (e) { _this.deleteFloor(_this.props.floor); _this.props.selectFloor(_this.props.floor); }, className: "fa fa-trash ml-2", "aria-hidden": "true" })))
                                 : "",
@@ -68329,16 +68839,16 @@ var FloorListItem = /** @class */ (function (_super) {
                                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { style: { cursor: 'pointer' }, onClick: this.state.editFloor ? this.onSubmitHandler : this.enableEditFloor, className: "fa " + (this.state.editFloor ? 'fa-check' : 'fa-pencil') + " ml-2" })),
                             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "room-btn", onClick: function (e) {
                                     _this.toggleSectionsList(true);
-                                }, "aria-controls": "collapse" + this.props.floor.id, "aria-expanded": this.state.showSections },
+                                }, "aria-controls": "collapse" + this.props.floor.id, "aria-expanded": this.state.showRooms },
                                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { style: { cursor: 'pointer' }, className: "fa " + (((_a = this.props.toggleFloor) === null || _a === void 0 ? void 0 : _a.open) ? 'fa-angle-down' : 'fa-angle-up') + " font-weight-bold ml-2" })))),
                     this.state.message ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: this.state.messageClass }, this.state.message) : "",
-                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Collapse"], { in: ((_b = this.props.toggleFloor) === null || _b === void 0 ? void 0 : _b.open) && this.state.showSections },
-                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: " collapse", id: "collapse" + this.props.floor.id }, this.state.loader ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_8__["default"], null) : sectionsList))),
-            this.state.showSectionForm == true ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_sections_SectionForm__WEBPACK_IMPORTED_MODULE_9__["default"], { afterAddOfSections: this.afterAddOfSections, toggleSectionsList: this.toggleSectionsList, floor: this.state.floor }) : ""));
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Collapse"], { in: ((_b = this.props.toggleFloor) === null || _b === void 0 ? void 0 : _b.open) && this.state.showRooms },
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: " collapse", id: "collapse" + this.props.floor.id }, this.props.rooms.loader ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_9__["default"], null) : roomsList))),
+            this.state.showRoomForm == true ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_room_RoomForm__WEBPACK_IMPORTED_MODULE_11__["default"], { hideRoomForm: this.hideRoomForm, afterRoomsAdded: this.toggleRoomsList, floor: this.state.floor }) : ""));
     };
     return FloorListItem;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_7__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_i18next__WEBPACK_IMPORTED_MODULE_10__["withTranslation"])()(FloorListItem)));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_8__["connect"])(mapStateToProps, mapDispatchToProps)(Object(react_i18next__WEBPACK_IMPORTED_MODULE_10__["withTranslation"])()(FloorListItem)));
 
 
 /***/ }),
@@ -69237,10 +69747,165 @@ var Projects = /** @class */ (function (_super) {
 
 /***/ }),
 
-/***/ "./resources/js/src/features/sections/SectionForm.tsx":
-/*!************************************************************!*\
-  !*** ./resources/js/src/features/sections/SectionForm.tsx ***!
-  \************************************************************/
+/***/ "./resources/js/src/features/pumpstart/Pumpstart.tsx":
+/*!***********************************************************!*\
+  !*** ./resources/js/src/features/pumpstart/Pumpstart.tsx ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _PumpstartListItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PumpstartListItem */ "./resources/js/src/features/pumpstart/PumpstartListItem.tsx");
+/* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __spreadArrays = (undefined && undefined.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+
+
+
+var Pumpstart = /** @class */ (function (_super) {
+    __extends(Pumpstart, _super);
+    function Pumpstart(props) {
+        var _this = _super.call(this, props) || this;
+        _this.startPumpStart = function (setting) {
+            var _a;
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["PumpStart"].createProjectPumpStart({
+                project_id: setting.project_id.toString(),
+                project_setting_id: (_a = setting.id) === null || _a === void 0 ? void 0 : _a.toString(),
+            }).then(function (pumpstart) { return _this.setState({ pumpStarts: __spreadArrays(_this.state.pumpStarts, [
+                    pumpstart,
+                ]), pendingSettings: _this.state.pendingSettings.filter(function (setting_) { return setting_.id != setting.id; }) }); })
+                .catch(function (err) { return alert('Something went wrong. Try again later.'); });
+        };
+        _this.state = {
+            pumpStarts: [],
+            pendingSettings: [],
+            loader: false,
+        };
+        return _this;
+    }
+    Pumpstart.prototype.componentDidMount = function () {
+        var _this = this;
+        _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["PumpStart"].getProjectPumpStart(this.props.projectSettings[0].project_id.toString())
+            .then(function (pumpstarts) {
+            var pendingSettings = _this.props.projectSettings.filter(function (setting) { return pumpstarts.some(function (pumpstart) { var _a; return pumpstart.project_setting_id == ((_a = setting.id) === null || _a === void 0 ? void 0 : _a.toString()); }) ? false : true; });
+            _this.setState({ pumpStarts: pumpstarts, pendingSettings: pendingSettings });
+        })
+            .catch(function (err) { return alert('Something went wrong. Try again later. '); });
+    };
+    Pumpstart.prototype.render = function () {
+        var _this = this;
+        return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "mb-4" },
+            this.state.pendingSettings.length > 0 ?
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", { className: "main-btn", style: { width: 'auto' }, onClick: function (e) { return _this.startPumpStart(_this.state.pendingSettings[0]); } },
+                    "Pump Start (",
+                    this.state.pendingSettings[0].field_name,
+                    ")") : null,
+            this.props.projectSettings.length > 0 && this.state.pumpStarts.length > 0 ? this.state.pumpStarts.map(function (pumpstart) { return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PumpstartListItem__WEBPACK_IMPORTED_MODULE_1__["default"], { projectSetting: _this.props.projectSettings.find(function (setting) { return setting.id.toString() == pumpstart.project_setting_id; }), pumpstart: pumpstart }); }) : null,
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null)));
+    };
+    return Pumpstart;
+}(react__WEBPACK_IMPORTED_MODULE_0__["PureComponent"]));
+/* harmony default export */ __webpack_exports__["default"] = (Pumpstart);
+
+
+/***/ }),
+
+/***/ "./resources/js/src/features/pumpstart/PumpstartListItem.tsx":
+/*!*******************************************************************!*\
+  !*** ./resources/js/src/features/pumpstart/PumpstartListItem.tsx ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+
+var PumpstartListItem = /** @class */ (function (_super) {
+    __extends(PumpstartListItem, _super);
+    function PumpstartListItem(props) {
+        var _this = _super.call(this, props) || this;
+        _this.updatePumpstart = function () {
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_1__["PumpStart"].updatePumpStart(_this.state.pumpstart)
+                .then(function (res) { return alert('Pumpstart Updated Succesffuly. '); })
+                .catch(function (err) { return alert('Something went wrong. Try agaian later.'); });
+        };
+        _this.state = {
+            pumpstart: __assign({}, _this.props.pumpstart)
+        };
+        return _this;
+    }
+    PumpstartListItem.prototype.render = function () {
+        var _this = this;
+        var _a;
+        return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "floor-one-box card-header\r\n                           d-flex align-items-center\r\n                           justify-content-between\r\n                           cursor-pointer mb-4 row\r\n                           mx-0 my-1" },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-3" }, (_a = this.props.projectSetting) === null || _a === void 0 ? void 0 : _a.field_name),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-3" },
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "date", className: "form-control", value: this.state.pumpstart.pumpstart_date, onChange: function (e) { return _this.setState({ pumpstart: __assign(__assign({}, _this.state.pumpstart), { pumpstart_date: e.target.value }) }); } })),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-3" },
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "time", className: "form-control", value: this.state.pumpstart.pumpstart_time, onChange: function (e) { return _this.setState({ pumpstart: __assign(__assign({}, _this.state.pumpstart), { pumpstart_time: e.target.value }) }); } })),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-3" },
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { onClick: function (e) { return _this.updatePumpstart(); }, className: "fa fa-check" }))));
+    };
+    return PumpstartListItem;
+}(react__WEBPACK_IMPORTED_MODULE_0__["PureComponent"]));
+/* harmony default export */ __webpack_exports__["default"] = (PumpstartListItem);
+
+
+/***/ }),
+
+/***/ "./resources/js/src/features/room/RoomForm.tsx":
+/*!*****************************************************!*\
+  !*** ./resources/js/src/features/room/RoomForm.tsx ***!
+  \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -69250,7 +69915,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
 /* harmony import */ var _app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../app/common/LoaderBar */ "./resources/js/src/app/common/LoaderBar.tsx");
-/* harmony import */ var react_i18next__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-i18next */ "./node_modules/react-i18next/dist/es/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -69279,126 +69944,173 @@ var __assign = (undefined && undefined.__assign) || function () {
 
 
 
-var SectionForm = /** @class */ (function (_super) {
-    __extends(SectionForm, _super);
-    function SectionForm(props) {
+var RoomForm = /** @class */ (function (_super) {
+    __extends(RoomForm, _super);
+    function RoomForm(props) {
         var _this = _super.call(this, props) || this;
-        _this.errors = {
-            floor_id: "",
-            from: "",
-            quantity: "",
-            section_name: "",
-            to: "",
+        _this.defaultState = {
+            roomTypes: [],
+            roomForm: {
+                floor_id: '',
+                from: '',
+                to: '',
+                name: '',
+                quantity: '',
+                room_details: [],
+            },
+            errors: {
+                from: '',
+                to: '',
+                name: '',
+                quantity: '',
+            },
+            showLoader: false,
+            message: '',
+            messageClass: '',
         };
-        _this.sectionForm = {
-            floor_id: _this.props.floor.id.toString(),
-            from: "",
-            quantity: "",
-            section_name: "",
-            to: ""
+        _this.roomTypeChangeHandler = function (event, room) {
+            var room_details = _this.state.roomForm.room_details.map(function (type) {
+                if (type.room_type == room) {
+                    type.quantity = event.target.value;
+                }
+                return type;
+            });
+            _this.setState({
+                roomForm: __assign(__assign({}, _this.state.roomForm), { room_details: room_details })
+            });
         };
-        _this.formSubmitHandler = function (e) {
-            e.preventDefault();
+        _this.submitHandler = function (event) {
+            event.preventDefault();
             _this.setState({
-                errors: _this.errors
+                errors: _this.defaultState.errors,
+                showLoader: true,
             });
-            if (_this.state.sectionForm.to != null &&
-                _this.state.sectionForm.from != null &&
-                (parseInt(_this.state.sectionForm.to) - parseInt(_this.state.sectionForm.from)) + 1 != parseInt(_this.state.sectionForm.quantity)) {
-                _this.setState({
-                    errors: __assign(__assign({}, _this.errors), { quantity: _this.props.t('From the specified amount quantity should be', { "quantity": ((parseInt(_this.state.sectionForm.to) - parseInt(_this.state.sectionForm.from)) + 1) }) })
-                });
-                return;
-            }
-            _this.setState({
-                loader: true,
-            });
-            _app_api_agent__WEBPACK_IMPORTED_MODULE_1__["Section"]
-                .addSection(_this.state.sectionForm)
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_1__["FloorRooms"]
+                .saveFloorRooms(_this.state.roomForm)
                 .then(function (res) {
+                var room_details = _this.state.roomForm.room_details;
                 _this.setState({
-                    sectionForm: __assign({}, _this.sectionForm),
-                    loader: false,
-                    errors: _this.errors,
-                    message: "Sections created successfully",
-                    messageClass: "text-success",
+                    message: "Room Created Successfully",
+                    messageClass: 'text-success',
+                    roomForm: _this.defaultState.roomForm,
                 });
-                _this.props.afterAddOfSections(res);
-                //setTimeout(()=>{ this.setState({message: "", messageClass:""}); this.props.toggleForm(); }, 2000);
+                setTimeout(function () {
+                    _this.setState({ message: '', messageClass: '' });
+                    _this.props.hideRoomForm();
+                    _this.props.afterRoomsAdded(true);
+                }, 2000);
             })
                 .catch(function (error) {
-                var _a, _b;
-                if (((_a = error.response) === null || _a === void 0 ? void 0 : _a.status) == 422) {
-                    var error_array = (_b = error.response) === null || _b === void 0 ? void 0 : _b.data.errors;
-                    _this.setState({
-                        errors: __assign(__assign({}, _this.state.errors), { section_name: (error_array === null || error_array === void 0 ? void 0 : error_array.name) != undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.section_name[0] : "", quantity: (error_array === null || error_array === void 0 ? void 0 : error_array.quantity) != undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.quantity[0] : "", from: (error_array === null || error_array === void 0 ? void 0 : error_array.from) != undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.from[0] : "", to: (error_array === null || error_array === void 0 ? void 0 : error_array.to) != undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.to[0] : "" })
-                    });
-                }
-                else {
-                    _this.setState({
-                        message: "swr",
-                        messageClass: "text-danger",
-                        errors: _this.errors,
-                    });
-                }
-                _this.setState({ loader: false });
+                var _a;
+                var error_array = (_a = error.response) === null || _a === void 0 ? void 0 : _a.data.errors;
+                _this.setState({
+                    errors: __assign(__assign({}, _this.state.errors), { name: (error_array === null || error_array === void 0 ? void 0 : error_array.name) != undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.name[0] : "", quantity: (error_array === null || error_array === void 0 ? void 0 : error_array.quantity) != undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.quantity[0] : "", from: (error_array === null || error_array === void 0 ? void 0 : error_array.from) != undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.from[0] : "", to: (error_array === null || error_array === void 0 ? void 0 : error_array.to) != undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.to[0] : "" }),
+                    message: (error_array === null || error_array === void 0 ? void 0 : error_array.room_details) != undefined && (error_array === null || error_array === void 0 ? void 0 : error_array.quantity) == undefined ? error_array === null || error_array === void 0 ? void 0 : error_array.room_details[0] : "Check the fields.",
+                    messageClass: 'text-danger'
+                });
+            })
+                .finally(function () {
+                _this.setState({
+                    showLoader: false
+                });
             });
         };
-        _this.state = {
-            sectionForm: _this.sectionForm,
-            errors: _this.errors,
-            loader: false,
-            message: "",
-            messageClass: ""
-        };
+        _this.state = _this.defaultState;
         return _this;
     }
-    SectionForm.prototype.render = function () {
+    RoomForm.prototype.componentDidMount = function () {
         var _this = this;
-        var t = this.props.t;
-        return (this.state.loader ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_2__["default"], null) :
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-tabs" },
-                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", { className: "add-floor", onSubmit: this.formSubmitHandler },
-                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", { className: "font-weight-normal" },
-                        t('Add'),
-                        " ",
-                        t('Sections')),
+        this.setState({
+            showLoader: true,
+        });
+        _app_api_agent__WEBPACK_IMPORTED_MODULE_1__["RoomType"]
+            .getRoomTypes()
+            .then(function (res) {
+            var roomDetails = res.map(function (room) {
+                return { room_type: room, quantity: "" };
+            });
+            _this.setState({
+                roomTypes: res,
+                roomForm: __assign(__assign({}, _this.state.roomForm), { room_details: roomDetails, floor_id: _this.props.floor.id.toString() }),
+            });
+            _this.defaultState.roomForm.room_details = roomDetails;
+        })
+            .catch(function (error) {
+        })
+            .finally(function () {
+            _this.setState({
+                showLoader: false,
+            });
+        });
+    };
+    RoomForm.prototype.render = function () {
+        var _this = this;
+        console.log(this.state.roomTypes);
+        var column = [];
+        var row = [];
+        var i = 0;
+        this.state.roomTypes.forEach(function (type, index) {
+            if (column != null && column != undefined) {
+                column.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { key: i, className: "form-group" },
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", { htmlFor: "exampleInputEmail1" }, type.room_type),
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "number", className: "form-control", placeholder: "Menge", value: _this.state.roomForm.room_details[i].quantity, onChange: function (e) { return _this.roomTypeChangeHandler(e, type); } })));
+                if ((index + 1) % 4 == 0) {
+                    row.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { key: i, className: "room-quantity d-flex justify-content-between" }, column));
+                    column = [];
+                }
+                i = i + 1;
+            }
+        });
+        if (column.length > 0) {
+            row.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { key: i, className: "room-quantity d-flex justify-content-between" }, column));
+            column = [];
+        }
+        return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "rooms-form-area my-5", id: "room-form" },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", { className: "add-rooms-form", onSubmit: this.submitHandler },
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", { className: "font-weight-bold" },
+                    "Zimmer zu ",
+                    this.props.floor.floor_name,
+                    " hinzuf\u00FCgen."),
+                this.state.message ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: this.state.messageClass },
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, this.state.message)) : "",
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null),
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-room-details d-flex" },
                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "form-group" },
                         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", { htmlFor: "exampleInputEmail1" }, "Name"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "name", className: "form-control", placeholder: "Name", onChange: function (e) { return _this.setState({ sectionForm: __assign(__assign({}, _this.state.sectionForm), { section_name: e.target.value }) }); } }),
-                        this.state.errors.section_name ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "text-danger" }, t(this.state.errors.section_name)) : "",
-                        this.state.message ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: this.state.messageClass }, t(this.state.message)) : ""),
-                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-main d-flex align-items-center" },
-                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-number" },
-                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "form-group" },
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", { htmlFor: "exampleInputEmail1" }, t('Quantity')),
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "number", className: "form-control", placeholder: t('Quantity'), onChange: function (e) { return _this.setState({ sectionForm: __assign(__assign({}, _this.state.sectionForm), { quantity: e.target.value }) }); } }),
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "text-danger" }, this.state.errors.quantity)),
-                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "form-group" },
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", { htmlFor: "exampleInputEmail1" }, t('From')),
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "number", className: "form-control", placeholder: t('From'), onChange: function (e) { return _this.setState({ sectionForm: __assign(__assign({}, _this.state.sectionForm), { from: e.target.value }) }); } }),
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "text-danger" }, this.state.errors.from)),
-                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "form-group" },
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", { htmlFor: "exampleInputEmail1" }, t('To')),
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "number", className: "form-control", placeholder: t('To'), onChange: function (e) { return _this.setState({ sectionForm: __assign(__assign({}, _this.state.sectionForm), { to: e.target.value }) }); } }),
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "text-danger" }, this.state.errors.to))),
-                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-btns" },
-                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-create-btn" },
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", { href: void (0), onClick: this.formSubmitHandler, className: "main-btn mr-1" }, t('Create').toString())),
-                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-cancel" },
-                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", { href: "#", className: "main-btn cancel" }, t('Reset'))))))));
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "name", className: "form-control " + (this.state.errors.name ? 'is-invalid' : ''), value: this.state.roomForm.name, onChange: function (e) { return _this.setState({ roomForm: __assign(__assign({}, _this.state.roomForm), { name: e.target.value }) }); } }),
+                        this.state.errors.name ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: 'text-danger' }, this.state.errors.name) : ""),
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-number d-flex" },
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "form-group" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", { htmlFor: "exampleInputEmail1" }, "Menge"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "number", className: "form-control " + (this.state.errors.quantity ? 'is-invalid' : ''), placeholder: "Menge", value: this.state.roomForm.quantity, onChange: function (e) { return _this.setState({ roomForm: __assign(__assign({}, _this.state.roomForm), { quantity: e.target.value }) }); } }),
+                            this.state.errors.quantity ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: 'text-danger' }, this.state.errors.quantity) : ""),
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "form-group" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", { htmlFor: "exampleInputEmail1" }, "Von"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "number", className: "form-control " + (this.state.errors.from ? 'is-invalid' : ''), placeholder: "Von", value: this.state.roomForm.from, onChange: function (e) { return _this.setState({ roomForm: __assign(__assign({}, _this.state.roomForm), { from: e.target.value }) }); } }),
+                            this.state.errors.from ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: 'text-danger' }, this.state.errors.from) : ""),
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "form-group" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", { htmlFor: "exampleInputEmail1" }, "Zu"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "number", className: "form-control " + (this.state.errors.to ? 'is-invalid' : ''), placeholder: "Zu", value: this.state.roomForm.to, onChange: function (e) { return _this.setState({ roomForm: __assign(__assign({}, _this.state.roomForm), { to: e.target.value }) }); } }),
+                            this.state.errors.to ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: 'text-danger' }, this.state.errors.to) : ""))),
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "room-quantity-area my-4" },
+                    this.state.showLoader ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_2__["default"], null) : row,
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-rooms-btns mt-3" },
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-create-btn" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", { type: "submit", className: "main-btn mr-1" }, "Hinzuf\u00FCgen")),
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "add-floor-cancel" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", { type: "reset", className: "main-btn cancel", onClick: function (e) { return _this.props.hideRoomForm(); } }, "Stornieren")))))));
     };
-    return SectionForm;
-}(react__WEBPACK_IMPORTED_MODULE_0__["PureComponent"]));
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_i18next__WEBPACK_IMPORTED_MODULE_3__["withTranslation"])()(SectionForm));
+    return RoomForm;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_router_dom__WEBPACK_IMPORTED_MODULE_3__["withRouter"])(RoomForm));
 
 
 /***/ }),
 
-/***/ "./resources/js/src/features/sections/SectionListItem.tsx":
-/*!****************************************************************!*\
-  !*** ./resources/js/src/features/sections/SectionListItem.tsx ***!
-  \****************************************************************/
+/***/ "./resources/js/src/features/room/RoomListItem.tsx":
+/*!*********************************************************!*\
+  !*** ./resources/js/src/features/room/RoomListItem.tsx ***!
+  \*********************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -69406,10 +70118,11 @@ var SectionForm = /** @class */ (function (_super) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
-/* harmony import */ var _app_models_role_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../app/models/role.model */ "./resources/js/src/app/models/role.model.ts");
+/* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
 /* harmony import */ var _context_UserContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../context/UserContext */ "./resources/js/src/context/UserContext.tsx");
-/* harmony import */ var _floor_Floor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../floor/Floor */ "./resources/js/src/features/floor/Floor.tsx");
+/* harmony import */ var _app_models_role_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../app/models/role.model */ "./resources/js/src/app/models/role.model.ts");
+/* harmony import */ var _tap_Taps__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../tap/Taps */ "./resources/js/src/features/tap/Taps.tsx");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -69439,47 +70152,766 @@ var __assign = (undefined && undefined.__assign) || function () {
 
 
 
-var SectionListItem = /** @class */ (function (_super) {
-    __extends(SectionListItem, _super);
-    function SectionListItem(props) {
+
+var RoomListItem = /** @class */ (function (_super) {
+    __extends(RoomListItem, _super);
+    function RoomListItem(props) {
         var _this = _super.call(this, props) || this;
+        _this.toggleTapDetecting = function () {
+            _this.setState({ tapDetecting: !_this.state.tapDetecting });
+        };
+        _this.updateRoomHandler = function (event) {
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_1__["FloorRooms"].updateFloorRoom(_this.state.room)
+                .then(function (res) {
+                _this.props.afterUpdateRoom(res);
+            })
+                .catch(function (error) { return console.log(error); });
+            _this.setState({
+                editRoom: false,
+            });
+        };
+        _this.showTaps = function (target) {
+            if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !_this.state.editRoom)) {
+                _this.setState({ showTaps: _this.state.showTaps === true ? false : true });
+            }
+        };
         _this.state = {
-            section: __assign({}, _this.props.section),
-            editSection: false,
-            showFloors: false,
+            room: _this.props.room,
+            editRoom: false,
+            showTaps: false,
+            tapDetecting: false,
         };
         return _this;
     }
-    SectionListItem.prototype.updateSection = function () {
-    };
-    SectionListItem.prototype.render = function () {
+    RoomListItem.prototype.render = function () {
         var _this = this;
+        var _a;
         return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { id: "", className: "floor-card", style: { padding: '0 2rem !important', cursor: 'pointer' } },
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { id: "", className: "floor-card", style: { padding: '0 2rem !important', cursor: 'pointer' }, onClick: function (e) { return _this.showTaps(e.target); } },
                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { id: "accordion-inner-rooms", className: "accordion-inner-rooms" },
                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "card mb-0 border-0" },
                         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "card-header  mb-1", "data-toggle": "collapse" },
                             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "main-room-overview d-flex justify-content-between" },
                                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "overview-floor-list" },
                                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", { className: "card-title" },
-                                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: 'text', className: "form-control " + (!this.state.editSection ? 'team-input cursor-pointer' : ''), value: this.state.section.section_name, readOnly: !this.state.editSection, onChange: function (e) { return _this.setState({ section: __assign(__assign({}, _this.state.section), { section_name: e.target.value }) }); } }))),
+                                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: 'text', className: "form-control " + (!this.state.editRoom ? 'team-input cursor-pointer' : ''), value: this.state.room.room_name, readOnly: !this.state.editRoom, onChange: function (e) { return _this.setState({ room: __assign(__assign({}, _this.state.room), { room_name: e.target.value }) }); } }))),
                                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "room-edit-btn " },
-                                    //  userObject.role == UserRoles.ADMIN ?
-                                    //  <a href={void(0)} className="text-dark" onClick={(e) => !this.state.editSection ? this.setState({editSection: true}) : this.updateRoomHandler(e) }>
-                                    //      <i className={`fa ${!this.state.editSection ? 'fa-pencil' : 'fa-check' }`} aria-hidden="true"></i>
-                                    //  </a> : ""
-                                    _context_UserContext__WEBPACK_IMPORTED_MODULE_3__["userObject"].role == _app_models_role_model__WEBPACK_IMPORTED_MODULE_2__["UserRoles"].ADMIN ?
-                                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", { href: void (0), className: "text-dark", onClick: function (e) { return !_this.state.editSection ? _this.setState({ editSection: true }) : _this.updateSection(); } },
-                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa " + (!this.state.editSection ? 'fa-pencil' : 'fa-check'), "aria-hidden": "true" })) : "",
-                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa " + (this.state.showFloors ? 'fa-angle-down' : 'fa-angle-up') + "\n                                                     font-weight-bold ml-2" }))))))),
-            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Collapse"], { in: this.state.showFloors },
-                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: " collapse", id: "collapse" + this.props.section.project_floor_id },
-                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, this.state.showFloors ?
-                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_floor_Floor__WEBPACK_IMPORTED_MODULE_4__["default"], null) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null))))));
+                                    _context_UserContext__WEBPACK_IMPORTED_MODULE_3__["userObject"].role == _app_models_role_model__WEBPACK_IMPORTED_MODULE_4__["UserRoles"].ADMIN ?
+                                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", { href: void (0), className: "text-dark", onClick: function (e) { return !_this.state.editRoom ? _this.setState({ editRoom: true }) : _this.updateRoomHandler(e); } },
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa " + (!this.state.editRoom ? 'fa-pencil' : 'fa-check'), "aria-hidden": "true" })) : "",
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa " + (this.state.showTaps ? 'fa-angle-down' : 'fa-angle-up') + " font-weight-bold ml-2", "aria-controls": "collapse" + this.props.room.id, "aria-expanded": this.state.showTaps, onClick: function (e) { return _this.setState({ showTaps: !_this.state.showTaps }); } }))))))),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["Collapse"], { in: this.state.showTaps },
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: " collapse", id: "collapse" + this.props.room.id },
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, this.state.showTaps ?
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_tap_Taps__WEBPACK_IMPORTED_MODULE_5__["default"], { taps: (_a = this.props.room) === null || _a === void 0 ? void 0 : _a.taps }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null))))));
     };
-    return SectionListItem;
-}(react__WEBPACK_IMPORTED_MODULE_0__["PureComponent"]));
-/* harmony default export */ __webpack_exports__["default"] = (SectionListItem);
+    return RoomListItem;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
+/* harmony default export */ __webpack_exports__["default"] = (RoomListItem);
+
+
+/***/ }),
+
+/***/ "./resources/js/src/features/tap/TapListItem.tsx":
+/*!*******************************************************!*\
+  !*** ./resources/js/src/features/tap/TapListItem.tsx ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _app_models_project_setting_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../app/models/project-setting.model */ "./resources/js/src/app/models/project-setting.model.ts");
+/* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
+/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/esm/react-router.js");
+/* harmony import */ var _TapStaticStateEnum__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./TapStaticStateEnum */ "./resources/js/src/features/tap/TapStaticStateEnum.ts");
+/* harmony import */ var _redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../redux */ "./resources/js/src/redux/index.ts");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js");
+/* harmony import */ var _TapStaticListItem__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./TapStaticListItem */ "./resources/js/src/features/tap/TapStaticListItem.tsx");
+/* harmony import */ var _app_enums_settings_field_enum__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../app/enums/settings-field.enum */ "./resources/js/src/app/enums/settings-field.enum.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __spreadArrays = (undefined && undefined.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+
+
+
+
+
+
+
+
+
+
+var mapStateToProps = function (state) { return ({
+    projectSettings: state.projectSettings,
+    rooms: state.rooms
+}); };
+var mapDispatchToProps = { editRoomTap: _redux__WEBPACK_IMPORTED_MODULE_5__["editRoomTap"], deleteRoomTap: _redux__WEBPACK_IMPORTED_MODULE_5__["deleteRoomTap"] };
+var TapListItem = /** @class */ (function (_super) {
+    __extends(TapListItem, _super);
+    function TapListItem(props) {
+        var _this = _super.call(this, props) || this;
+        _this.checkTapStaticState = function (settings, pendingStatics) {
+            var _a, _b, _c, _d;
+            if (settings === void 0) { settings = _this.state.settings; }
+            if (pendingStatics === void 0) { pendingStatics = _this.state.pendingStatics; }
+            var tapStaticState;
+            if (pendingStatics.length == settings.length) {
+                tapStaticState = _TapStaticStateEnum__WEBPACK_IMPORTED_MODULE_4__["TapStaticStateEnum"].PENDING;
+                _this.setState({ selectedPendingTapId: (_a = pendingStatics[0]) === null || _a === void 0 ? void 0 : _a.id });
+                _this.showPendingTap((_b = pendingStatics[0]) === null || _b === void 0 ? void 0 : _b.id);
+            }
+            else if (pendingStatics.length > 0) {
+                !_this.state.selectedPendingTapId ? _this.setState({ selectedPendingTapId: (_c = pendingStatics[0]) === null || _c === void 0 ? void 0 : _c.id }) : "";
+                _this.showPendingTap((_d = pendingStatics[0]) === null || _d === void 0 ? void 0 : _d.id);
+                tapStaticState = _TapStaticStateEnum__WEBPACK_IMPORTED_MODULE_4__["TapStaticStateEnum"].IPROGRESS;
+            }
+            else if (pendingStatics.length === 0) {
+                _this.showCompletedTap();
+                tapStaticState = _TapStaticStateEnum__WEBPACK_IMPORTED_MODULE_4__["TapStaticStateEnum"].COMPLETED;
+            }
+            _this.setState({ tapStaticState: tapStaticState });
+        };
+        _this.showCompletedTap = function () {
+            _this.setState({ tapStatus: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null) });
+        };
+        _this.showInProgressTap = function (timer, field, tapTimer, detectingBeforeClosing) {
+            if (detectingBeforeClosing === void 0) { detectingBeforeClosing = false; }
+            var time = "";
+            //Extract the numeric value from the Timer
+            for (var _i = 0, _a = timer.toString(); _i < _a.length; _i++) {
+                var i = _a[_i];
+                if (!isNaN(Number(i))) {
+                    time += i;
+                }
+            }
+            //Check If Other Tap Is detecting
+            if (false) {}
+            else {
+                //Check if the Field Wirzekut have valid Value
+                if (timer == "") {
+                    alert('Ask Admin to set timer.');
+                }
+                else {
+                    //Tell The Agent To Store It In The Back-end
+                    if (!detectingBeforeClosing) {
+                        _this.timerStartAgent(field, tapTimer);
+                    }
+                    //Change the Prop to detecting
+                    //this.props.toggleTapDetecting();
+                    //Change The State of the tap to tell which setting is detecting
+                    _this.setState({ detectingField: field });
+                    var now = new Date();
+                    var current_date_1 = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear();
+                    var increment_1 = -1;
+                    if (!_this.interval) {
+                        _this.interval = setInterval(function () {
+                            increment_1 = increment_1 + 1;
+                            var remaining_seconds = Number(timer) - increment_1;
+                            var hrs = Math.floor(remaining_seconds / 3600);
+                            remaining_seconds -= hrs * 3600;
+                            var hours = hrs.toString().length == 1 ? "0" + hrs : hrs;
+                            var mnts = Math.floor(remaining_seconds / 60);
+                            remaining_seconds -= mnts * 60;
+                            var minutes = mnts.toString().length == 1 ? "0" + mnts : mnts;
+                            var progressTap = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "row" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-4" }, current_date_1),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-4" },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null,
+                                        field == _app_enums_settings_field_enum__WEBPACK_IMPORTED_MODULE_9__["SettingsField"].wirkzeit ? 'Wirkzeit' : 'Spulzeit',
+                                        " ")),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-4" },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa fa-clock-o mr-1" }),
+                                    hours + ' : ' + minutes + ' : ' + remaining_seconds));
+                            if (Number(timer) - increment_1 != 0) {
+                                _this.setState({ tapStatus: progressTap, tapStaticState: _TapStaticStateEnum__WEBPACK_IMPORTED_MODULE_4__["TapStaticStateEnum"].DETECTING });
+                            }
+                            else if (Number(timer) - increment_1 == 0) {
+                                clearInterval(_this.interval);
+                                //let tap timer
+                                var tapTimer_1 = Object.assign({}, _this.state.tapTimers.find((function (timer) { return timer.id == tapTimer.id; })));
+                                // Check the field and update the status
+                                if (field == _app_enums_settings_field_enum__WEBPACK_IMPORTED_MODULE_9__["SettingsField"].wirkzeit) {
+                                    //Change the Status Of The Timer
+                                    tapTimer_1.wirkzeit_status = true;
+                                }
+                                else if (field == _app_enums_settings_field_enum__WEBPACK_IMPORTED_MODULE_9__["SettingsField"].spulzeit) {
+                                    //Change the Status Of The Timer
+                                    tapTimer_1.spulzeit_status = true;
+                                }
+                                //Call the Agent To Mark Completed in server
+                                _this.settingTimerCompletedAgent(tapTimer_1);
+                                //Change The State of The Timer
+                                var timers = _this.state.tapTimers.map(function (timer) { return timer.id == tapTimer_1.id ? tapTimer_1 : timer; });
+                                _this.setState({ tapTimers: timers });
+                                //Recheck the status
+                                _this.checkTapStaticState();
+                                // this.props.toggleTapDetecting();
+                                _this.interval = null;
+                            }
+                            else {
+                                console.log('not stopped');
+                            }
+                        }, 1000);
+                    }
+                }
+            }
+        };
+        _this.timerStartAgent = function (field, tapTimer) {
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["TapTimer"].startTapTimer(field, tapTimer)
+                .then(function (res) {
+                var timerIndex = _this.state.tapTimers.findIndex(function (timer) { return timer.id == tapTimer.id; });
+                var stateTimers = __spreadArrays(_this.state.tapTimers);
+                stateTimers[timerIndex] = res;
+                _this.setState({ tapTimers: stateTimers });
+            });
+        };
+        _this.notDetected = function (setting) {
+            _this.tapStaticAgent(setting, false);
+        };
+        _this.detected = function (setting) {
+            _this.tapStaticAgent(setting, true);
+        };
+        _this.settingTimerCompletedAgent = function (tapTimer) {
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["TapTimer"].updateTapTimer(tapTimer)
+                .then(function (res) { return console.log(res); });
+        };
+        _this.tapStaticAgent = function (setting, detected) {
+            _this.setState({ tapStatus: undefined });
+            var tapStatic = {
+                detected: detected,
+                project_setting_id: setting === null || setting === void 0 ? void 0 : setting.id,
+                taps_id: _this.props.tap.id,
+            };
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["TapStatic"]
+                .createTapStatic(tapStatic)
+                .then(function (res) {
+                var _a;
+                //Chnage The Pending Static Information
+                var pendingStatics = _this.state.pendingStatics.filter(function (stat) { return stat.id != setting.id; });
+                _this.setState({ pendingStatics: pendingStatics, selectedPendingTapId: (_a = pendingStatics[0]) === null || _a === void 0 ? void 0 : _a.id });
+                _this.checkTapStaticState(_this.state.settings, pendingStatics);
+                //Append Setting Item Into Stat List State
+                var statics = _this.state.tapStatics;
+                statics.push(res);
+                //Set the state
+                _this.setState({ tapStatics: statics });
+            })
+                .catch(function (err) { return console.log(err); });
+        };
+        _this.tapItemBackgroundClass = function () {
+            if (_this.state.tapStaticState == _TapStaticStateEnum__WEBPACK_IMPORTED_MODULE_4__["TapStaticStateEnum"].COMPLETED) {
+                return 'bg-success';
+            }
+            else if (_this.state.tapStaticState == _TapStaticStateEnum__WEBPACK_IMPORTED_MODULE_4__["TapStaticStateEnum"].IPROGRESS) {
+                return 'bg-warning';
+            }
+            else if (_this.state.tapStaticState == _TapStaticStateEnum__WEBPACK_IMPORTED_MODULE_4__["TapStaticStateEnum"].DETECTING) {
+                return 'bg-danger';
+            }
+            else {
+                return 'bg-default';
+            }
+        };
+        _this.err = 0;
+        _this.showPendingTap = function (id) {
+            if (id === void 0) { id = _this.state.selectedPendingTapId; }
+            var setting = _this.props.projectSettings.projectSettings.find(function (stat) { return stat.id == id; });
+            var timer_index = _this.state.tapTimers.findIndex(function (timer_) { return timer_.project_setting_id == setting.id; });
+            var timer = _this.state.tapTimers[timer_index];
+            try {
+                if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
+                    _this.setState({
+                        tapStatus: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "row" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-6" }, setting === null || setting === void 0 ? void 0 : setting.field_name),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-6" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", { className: "tap-btn", onClick: _this.showInProgressTap.bind(_this, setting.field_wirkzeit, _app_enums_settings_field_enum__WEBPACK_IMPORTED_MODULE_9__["SettingsField"].wirkzeit, timer, false) }, "Start Wirkzeit")))
+                    });
+                }
+                else if (timer.wirkzeit_status == false && timer.wirkzeit_pending_timer != null) {
+                    _this.showInProgressTap(timer.wirkzeit_pending_timer, _app_enums_settings_field_enum__WEBPACK_IMPORTED_MODULE_9__["SettingsField"].wirkzeit, timer, true);
+                }
+                else if (timer.spulzeit_status == false && timer.spulzeit_pending_timer == null && timer.wirkzeit_status == true) {
+                    _this.setState({
+                        tapStatus: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "row" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-6" }, setting === null || setting === void 0 ? void 0 : setting.field_name),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-6" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", { className: "tap-btn", onClick: _this.showInProgressTap.bind(_this, setting.field_spulzeit, _app_enums_settings_field_enum__WEBPACK_IMPORTED_MODULE_9__["SettingsField"].spulzeit, timer, false) }, "Start Spulzeit")))
+                    });
+                }
+                else if (timer.spulzeit_status == false && timer.spulzeit_pending_timer != null && timer.wirkzeit_status == true) {
+                    _this.showInProgressTap(timer.spulzeit_pending_timer, _app_enums_settings_field_enum__WEBPACK_IMPORTED_MODULE_9__["SettingsField"].spulzeit, timer, true);
+                }
+                else if (timer.spulzeit_status == true && timer.wirkzeit_status == true) {
+                    _this.setState({ tapStatus: react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "row" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-6" }, setting === null || setting === void 0 ? void 0 :
+                                setting.field_name,
+                                " Detected"),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-6" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "tap-check mr-2", onClick: function (e) { return _this.detected(setting); } },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa fa-check" })),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "tap-times", onClick: function (e) { return _this.notDetected(setting); } },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa fa-times" }))))
+                    });
+                }
+            }
+            catch (error) {
+                console.log('state-tap-timers', '---------', _this.state.tapTimers);
+                console.log('state-tap-settings', '---------', _this.state.settings);
+                console.log(id);
+                console.log('timer', '-------', timer);
+                console.log('settings', '-------', setting);
+                // this.showPendingTap(id);
+            }
+        };
+        _this.toggleTapStatics = function (event) {
+            if (event.target.tagName != 'BUTTON' && event.target.tagName != 'I') {
+                _this.setState({ showTapStatics: !_this.state.showTapStatics });
+            }
+        };
+        _this.state = {
+            pendingStatics: [],
+            settings: [],
+            tapStatics: _this.props.tapStatics,
+            tapStaticState: undefined,
+            selectedPendingTapId: undefined,
+            tapStatus: undefined,
+            showTapStatics: false,
+            tapTimers: _this.props.tapTimers,
+            detectingField: undefined,
+            timer: 0,
+            enableEdit: false,
+            tap: _this.props.tap
+        };
+        return _this;
+    }
+    TapListItem.prototype.componentDidMount = function () {
+        var _this = this;
+        var settings = this.props.projectSettings.projectSettings.filter(function (setting) { return setting.aktiv == _app_models_project_setting_model__WEBPACK_IMPORTED_MODULE_1__["ProjectSettingStatus"].ACTIVE; });
+        this.setState({ settings: settings });
+        var timers = this.state.tapTimers;
+        var tapsStatics = this.state.tapStatics;
+        //Make Two Objects TimersToBeStore and TapTimers
+        var tapTimersToBeStore = [];
+        var tapTimers = [];
+        settings.forEach(function (setting) {
+            var match = timers.find(function (timer_) { return timer_.project_setting_id == setting.id; });
+            if (!match) {
+                var timer_ = {
+                    project_setting_id: setting.id,
+                    spulzeit_status: false,
+                    wirkzeit_status: false,
+                    tap_id: _this.props.tap.id,
+                    spulzeit_pending_timer: null,
+                    wirkzeit_pending_timer: null,
+                    spulzeit_timer_started: null,
+                    wirkzeit_timer_started: null,
+                };
+                tapTimersToBeStore.push(timer_);
+            }
+            else {
+                tapTimers.push(match);
+            }
+        });
+        //Check If To Be Saved Has Any Object If it has then call the API
+        if (tapTimersToBeStore.length > 0) {
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["TapTimer"].saveTapTimers(tapTimersToBeStore)
+                .then(function (timers) {
+                tapTimers.push.apply(tapTimers, tapTimersToBeStore);
+                _this.setState({ tapTimers: tapTimers });
+                //Push the store elements to the existing tap timers
+                var pendingStatics = settings.filter(function (setting) { return !tapsStatics.some(function (tapStatic) { return tapStatic.project_setting_id == setting.id; }); });
+                _this.setState({
+                    tapStatics: tapsStatics,
+                    pendingStatics: pendingStatics,
+                });
+                _this.checkTapStaticState(settings, pendingStatics);
+            }).catch(function () {
+            });
+            //Don't call the api just add the elemenst into tap Timers
+        }
+        else {
+            this.setState({ tapTimers: tapTimers });
+            var pendingStatics = settings.filter(function (setting) { return !tapsStatics.some(function (tapStatic) { return tapStatic.project_setting_id == setting.id; }); });
+            this.setState({
+                tapStatics: tapsStatics,
+                pendingStatics: pendingStatics,
+            });
+            this.checkTapStaticState(settings, pendingStatics);
+        }
+    };
+    TapListItem.prototype.updateTap = function () {
+        var _this = this;
+        _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["Tap"].updateTap(this.state.tap)
+            .then(function (tap) {
+            _this.props.editRoomTap(tap);
+            _this.setState({ enableEdit: false });
+            alert('Tap updated successfully.');
+        }).catch(function (err) { return alert('Something went wrong. Try again later.'); });
+    };
+    TapListItem.prototype.deleteTap = function () {
+        var _this = this;
+        var y = confirm('Are you sure you want to delete this tap?');
+        if (y) {
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["Tap"].deleteTap(this.props.tap)
+                .then(function (res) {
+                _this.props.deleteRoomTap(_this.props.tap);
+                alert('Tap deleted successfully.');
+            }).catch(function (err) { return alert('Something went wrong. Try again later.'); });
+            // this.props.deleteTapListItem();
+        }
+    };
+    TapListItem.prototype.componentWillUnmount = function () {
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
+    };
+    TapListItem.prototype.render = function () {
+        var _this = this;
+        return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { id: "", className: "tap-card card-body pr-0 pt-2 cursor-pointer", "data-parent": "#accordion", style: { padding: '0 2rem !important' }, "aria-controls": "collapse-tap-" + this.props.tap.id, "aria-expanded": this.state.showTapStatics, onClick: function (e) { return _this.toggleTapStatics(e); } },
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { id: "accordion-inner-rooms", className: "accordion-inner-rooms" },
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "card mb-0 border-0" },
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "card-header " + this.tapItemBackgroundClass() + " mb-1", "data-toggle": "collapse" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "main-tap-overview d-flex justify-content-between" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "overview-floor-list w-100" },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "row" },
+                                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-4 pl-4 pt-2" },
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "text", className: "form-control " + (!this.state.enableEdit ? 'team-input cursor-pointer' : ''), value: this.state.tap.name, onChange: function (e) { return _this.setState({ tap: __assign(__assign({}, _this.state.tap), { name: e.target.value }) }); } })),
+                                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-6 pl-4 pt-2" }, this.state.tapStatus ? this.state.tapStatus : 'Loading.....'),
+                                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-2" },
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa " + (this.state.showTapStatics ? 'fa-angle-down' : 'fa-angle-up') + "\n                                              text-dark font-weight-bold ml-2" }),
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa " + (!this.state.enableEdit ? 'fa-pencil' : 'fa-check') + "  text-dark font-weight-bold ml-2", onClick: function (e) { return _this.state.enableEdit ? _this.updateTap() : _this.setState({ enableEdit: true }); } }),
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa fa-trash text-dark font-weight-bold ml-2", onClick: function (e) { return _this.deleteTap(); } }))))))))),
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__["Collapse"], { in: this.state.showTapStatics },
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "collapse", id: "collapse-tap-" + this.props.tap.id }, this.state.showTapStatics ?
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, this.state.tapStatics.map(function (tap, index) {
+                        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_TapStaticListItem__WEBPACK_IMPORTED_MODULE_8__["default"], { key: index, tapStatic: tap });
+                    })) : ''))));
+    };
+    return TapListItem;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_router__WEBPACK_IMPORTED_MODULE_3__["withRouter"])(Object(react_redux__WEBPACK_IMPORTED_MODULE_6__["connect"])(mapStateToProps, mapDispatchToProps)(TapListItem)));
+
+
+/***/ }),
+
+/***/ "./resources/js/src/features/tap/TapStaticListItem.tsx":
+/*!*************************************************************!*\
+  !*** ./resources/js/src/features/tap/TapStaticListItem.tsx ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
+/* harmony import */ var _app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../app/common/LoaderBar */ "./resources/js/src/app/common/LoaderBar.tsx");
+/* harmony import */ var _context_UserContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../context/UserContext */ "./resources/js/src/context/UserContext.tsx");
+/* harmony import */ var _app_models_role_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../app/models/role.model */ "./resources/js/src/app/models/role.model.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
+
+
+
+
+
+var mapStateToProps = function (state) {
+    return {
+        users: state.users
+    };
+};
+var TapStaticListItem = /** @class */ (function (_super) {
+    __extends(TapStaticListItem, _super);
+    function TapStaticListItem(props) {
+        var _this = _super.call(this, props) || this;
+        _this.submitHandler = function () {
+            if (!_this.state.editable) {
+                return;
+            }
+            _this.setState({ loader: true });
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_2__["TapStatic"]
+                .updateTapStatic(_this.state.tapStatic)
+                .then(function (res) {
+                _this.setState({ tapStatic: res, message: "Tap Information updated successfully.", messageClass: 'success', editable: false });
+                setTimeout(function () {
+                    _this.setState({ message: '', messageClass: '' });
+                }, 2000);
+            })
+                .catch(function (err) {
+                _this.setState({ message: "Tap Information Not Updated successfully.", messageClass: 'danger' });
+                setTimeout(function () {
+                    _this.setState({ message: '', messageClass: '' });
+                }, 4000);
+            })
+                .finally(function () {
+                _this.setState({ loader: false });
+            });
+        };
+        _this.changeSubstanceTimers = function (event) {
+            console.log(event);
+            var timer_ = __assign({}, _this.state.tapStatic.timer);
+            _this.setState({ editable: true });
+            if (event.target.name == 'wirkzeit_timer_started_date') {
+                _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { timer: __assign(__assign({}, timer_), { wirkzeit_timer_started_date: event.target.value }) }) });
+            }
+            else if (event.target.name == 'wirkzeit_timer_started_time') {
+                _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { timer: __assign(__assign({}, timer_), { wirkzeit_timer_started_time: event.target.value }) }) });
+            }
+            else if (event.target.name == 'spulzeit_timer_started_date') {
+                _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { timer: __assign(__assign({}, timer_), { spulzeit_timer_started_date: event.target.value }) }) });
+            }
+            else if (event.target.name == 'spulzeit_timer_started_time') {
+                _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { timer: __assign(__assign({}, timer_), { spulzeit_timer_started_time: event.target.value }) }) });
+            }
+            else if (event.target.name == 'wirkzeit_timer_started_user_id') {
+                _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { timer: __assign(__assign({}, timer_), { wirkzeit_timer_started_user_id: event.target.value }) }) });
+            }
+            else if (event.target.name == 'spulzeit_timer_started_user_id') {
+                _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { timer: __assign(__assign({}, timer_), { spulzeit_timer_started_user_id: event.target.value }) }) });
+            }
+        };
+        _this.state = {
+            tapStatic: __assign({}, _this.props.tapStatic),
+            editable: false,
+            loader: false,
+            message: '',
+            messageClass: '',
+        };
+        return _this;
+    }
+    TapStaticListItem.prototype.render = function () {
+        var _this = this;
+        var _a, _b, _c, _d, _e, _f, _g;
+        var users = this.props.users.users;
+        var tapStatic = this.state.tapStatic;
+        return (this.state.loader ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_3__["default"], null) :
+            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { id: "", className: "container tap-static-card card-body pr-0 pt-2", "data-parent": "#accordion", style: { padding: '0 2rem !important' } },
+                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { id: "accordion-inner-rooms", className: "accordion-inner-rooms" },
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "card mb-0 border-0" },
+                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "card-header mb-1 border border-" + (this.state.messageClass ? this.state.messageClass : 'default'), "data-toggle": "collapse" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "row mx-2" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'col-sm-3' },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Wirzekuit:")),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'col-sm-3' },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { className: 'form-control p-1', type: 'date', name: 'wirkzeit_timer_started_date', onChange: this.changeSubstanceTimers, value: (_a = tapStatic.timer) === null || _a === void 0 ? void 0 : _a.wirkzeit_timer_started_date })),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'col-sm-3' },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { className: 'form-control p-1', type: 'time', name: 'wirkzeit_timer_started_time', onChange: this.changeSubstanceTimers, value: (_b = tapStatic.timer) === null || _b === void 0 ? void 0 : _b.wirkzeit_timer_started_time })),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'col-sm-3' },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", { className: 'form-control', value: (_c = tapStatic.timer) === null || _c === void 0 ? void 0 : _c.wirkzeit_timer_started_user_id, name: 'wirkzeit_timer_started_user_id', onChange: this.changeSubstanceTimers }, this.props.users.users.map(function (user, index) { return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", { key: index, value: user.id }, user.name); })))),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", { className: "m-1" }),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "row mx-2" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'col-sm-3' },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Spulziet: ")),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'col-sm-3' },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { className: 'form-control p-1', type: 'date', onChange: this.changeSubstanceTimers, name: 'spulzeit_timer_started_date', value: (_d = tapStatic.timer) === null || _d === void 0 ? void 0 : _d.spulzeit_timer_started_date })),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'col-sm-3' },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { className: 'form-control p-1', type: 'time', onChange: this.changeSubstanceTimers, value: (_e = tapStatic.timer) === null || _e === void 0 ? void 0 : _e.spulzeit_timer_started_time })),
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: 'col-sm-3' },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", { name: 'spulzeit_timer_started_user_id', className: 'form-control', value: (_f = tapStatic.timer) === null || _f === void 0 ? void 0 : _f.spulzeit_timer_started_user_id, onChange: this.changeSubstanceTimers }, this.props.users.users.map(function (user, index) { return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", { key: index, value: user.id }, user.name); })))),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", { className: 'm-1' }),
+                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "main-room-overview d-flex justify-content-between" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", { className: "w-100" },
+                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "overview-floor-list w-100" },
+                                        react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "row container" },
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-2 p-2" }, (_g = tapStatic === null || tapStatic === void 0 ? void 0 : tapStatic.setting) === null || _g === void 0 ? void 0 : _g.field_name),
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-3 px-0" },
+                                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", { defaultValue: tapStatic === null || tapStatic === void 0 ? void 0 : tapStatic.detected.toString(), className: "form-control", onChange: function (e) { return _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { detected: eval(e.target.value) }), editable: true }); } },
+                                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", { value: '1' }, "Detected"),
+                                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", { value: '0' }, "Not Detected"))),
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-2 px-0" },
+                                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: 'date', className: 'form-control', value: tapStatic === null || tapStatic === void 0 ? void 0 : tapStatic.date, onChange: function (e) { return _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { date: e.target.value }), editable: true }); } })),
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-2 px-0" },
+                                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: 'time', className: 'form-control', value: tapStatic === null || tapStatic === void 0 ? void 0 : tapStatic.time, onChange: function (e) { return _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { time: e.target.value }), editable: true }); } })),
+                                            react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-2 px-0" },
+                                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", { className: 'form-control', defaultValue: tapStatic === null || tapStatic === void 0 ? void 0 : tapStatic.user_id, onChange: function (e) { return _this.setState({ tapStatic: __assign(__assign({}, _this.state.tapStatic), { user_id: parseInt(e.target.value) }), editable: true }); } }, this.props.users.users.map(function (user) { return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", { key: user.id, value: user.id }, user.name); }))),
+                                            _context_UserContext__WEBPACK_IMPORTED_MODULE_4__["userObject"].role == _app_models_role_model__WEBPACK_IMPORTED_MODULE_5__["UserRoles"].ADMIN ?
+                                                react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "col-md-1" },
+                                                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { onClick: this.submitHandler, className: "fa " + (!this.state.editable ? 'fa-pencil' : 'fa-check') })) : ''))))),
+                        this.state.message ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "text-" + this.state.messageClass + " project-list-item-message" }, this.state.message) : ""))));
+    };
+    return TapStaticListItem;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps)(TapStaticListItem));
+
+
+/***/ }),
+
+/***/ "./resources/js/src/features/tap/TapStaticStateEnum.ts":
+/*!*************************************************************!*\
+  !*** ./resources/js/src/features/tap/TapStaticStateEnum.ts ***!
+  \*************************************************************/
+/*! exports provided: TapStaticStateEnum */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TapStaticStateEnum", function() { return TapStaticStateEnum; });
+var TapStaticStateEnum;
+(function (TapStaticStateEnum) {
+    TapStaticStateEnum[TapStaticStateEnum["PENDING"] = 0] = "PENDING";
+    TapStaticStateEnum[TapStaticStateEnum["IPROGRESS"] = 1] = "IPROGRESS";
+    TapStaticStateEnum[TapStaticStateEnum["COMPLETED"] = 2] = "COMPLETED";
+    TapStaticStateEnum[TapStaticStateEnum["DETECTING"] = 3] = "DETECTING";
+})(TapStaticStateEnum || (TapStaticStateEnum = {}));
+
+
+/***/ }),
+
+/***/ "./resources/js/src/features/tap/Taps.tsx":
+/*!************************************************!*\
+  !*** ./resources/js/src/features/tap/Taps.tsx ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
+/* harmony import */ var _enviorment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../enviorment */ "./resources/js/enviorment.ts");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_ajax__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/ajax */ "./node_modules/rxjs/_esm5/ajax/index.js");
+/* harmony import */ var _app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../app/common/LoaderBar */ "./resources/js/src/app/common/LoaderBar.tsx");
+/* harmony import */ var _TapListItem__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./TapListItem */ "./resources/js/src/features/tap/TapListItem.tsx");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+
+
+var Taps = /** @class */ (function (_super) {
+    __extends(Taps, _super);
+    function Taps(props) {
+        var _this = _super.call(this, props) || this;
+        _this.getTapDetails = function () {
+            return (Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["forkJoin"])(_this.getTimers(), _this.getTapStatics()));
+        };
+        _this.taps = _this.props.taps;
+        _this.tapListItems = [];
+        _this.state = {
+            subscribed: false,
+        };
+        return _this;
+    }
+    Taps.prototype.afterUpdateTap = function (tap) {
+    };
+    Taps.prototype.getTimers = function () {
+        var taps = this.props.taps;
+        return rxjs_ajax__WEBPACK_IMPORTED_MODULE_4__["ajax"].getJSON(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + _app_api_agent__WEBPACK_IMPORTED_MODULE_1__["endPoints"].tapRounds + "?tap_id=" + taps.map(function (tap) { return tap.id; }).join(','));
+    };
+    Taps.prototype.getTapStatics = function () {
+        var taps = this.props.taps;
+        return rxjs_ajax__WEBPACK_IMPORTED_MODULE_4__["ajax"].getJSON(_enviorment__WEBPACK_IMPORTED_MODULE_2__["enviorment"].baseUrl + "/" + _app_api_agent__WEBPACK_IMPORTED_MODULE_1__["endPoints"].tapStatics + "?tap_id=" + taps.map(function (tap) { return tap.id; }).join(','));
+    };
+    Taps.prototype.componentDidUpdate = function (prevProps) {
+        var _a, _b;
+        if (((_a = prevProps.taps) === null || _a === void 0 ? void 0 : _a.length) != ((_b = this.props.taps) === null || _b === void 0 ? void 0 : _b.length)) {
+            this.taps = this.props.taps;
+            this.setState({ subscribed: false });
+            this.tapListItems = [];
+            this.getTapListItems();
+        }
+    };
+    Taps.prototype.getTapListItems = function () {
+        var _this = this;
+        this.getTapDetails().subscribe(function (res) {
+            var _loop_1 = function (i) {
+                var tap_1 = _this.taps[i];
+                var tapTimers = res[0].filter(function (timer) { return timer.tap_id == tap_1.id; });
+                var tapStatics = res[1].filter(function (stat) { return stat.taps_id == tap_1.id; });
+                _this.tapListItems.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_TapListItem__WEBPACK_IMPORTED_MODULE_6__["default"], { key: i, tapTimers: tapTimers, tapStatics: tapStatics, tap: tap_1 }));
+            };
+            for (var i = 0; i < _this.taps.length; i++) {
+                _loop_1(i);
+            }
+            _this.setState({
+                subscribed: true,
+            });
+        });
+    };
+    Taps.prototype.componentDidMount = function () {
+        // this.getTimers().subscribe((res) => { console.log(res)})
+        this.getTapListItems();
+    };
+    Taps.prototype.render = function () {
+        return (this.state.subscribed ? this.tapListItems : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_5__["default"], null));
+    };
+    return Taps;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
+/* harmony default export */ __webpack_exports__["default"] = (Taps);
 
 
 /***/ }),
@@ -69693,17 +71125,24 @@ var TapTypeListItem = /** @class */ (function (_super) {
         }
     };
     TapTypeListItem.prototype.render = function () {
+        var _this = this;
         var t = this.props.t;
         return (react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null,
             this.state.showLoader ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_app_common_LoaderBar__WEBPACK_IMPORTED_MODULE_2__["default"], null) : "",
             react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null,
                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", { scope: "row", className: "text-left" },
-                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "text", value: this.state.roomType.room_type, className: " " + (this.state.updateState ? 'form-control' : 'team-input'), onChange: this.teamNameChangeHandler.bind(this) }),
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", { type: "text", value: this.state.roomType.room_type, className: " " + (this.state.updateState ? 'form-control' : 'team-input'), onChange: this.teamNameChangeHandler.bind(this), onBlur: function (e) { return _this.setState({ updateState: false }); } }),
                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null),
                     this.state.errors.room_type ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "text-danger" }, t(this.state.errors.room_type)) : "",
                     this.state.updated ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", { className: "text-success" }, t('Tap type updated successfully')) : ""),
                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null,
-                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa-btn fa " + (this.state.updateState ? "fa-check" : "fa-pencil"), "aria-hidden": "true", onClick: this.updateTapType.bind(this) })))));
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa-btn fa " + (this.state.updateState ? "fa-check" : "fa-pencil"), "aria-hidden": "true", onClick: this.updateTapType.bind(this) }),
+                    react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", { className: "fa-btn fa fa-trash ml-1", "aria-hidden": "true", onClick: function (e) {
+                            var c = confirm(t('Are you sure you want to delete this tap type?'));
+                            if (c) {
+                                _this.props.deleteTapType(_this.state.roomType);
+                            }
+                        } })))));
     };
     return TapTypeListItem;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
@@ -69774,6 +71213,18 @@ var TapTypes = /** @class */ (function (_super) {
                 _this.setState({ elements: _this.state.roomsTypesList });
             }
         };
+        _this.deleteTapType = function (tapType) {
+            _app_api_agent__WEBPACK_IMPORTED_MODULE_1__["RoomType"].deleteRoomType(tapType)
+                .then(function (res) {
+                var roomTypesList = __spreadArrays(_this.state.roomsTypesList);
+                roomTypesList = roomTypesList.filter(function (roomType) { return roomType.id != tapType.id; });
+                _this.setState({
+                    roomsTypesList: roomTypesList,
+                    elements: roomTypesList,
+                });
+                alert(_this.props.t('Tap type deleted successfully'));
+            }).catch(function (err) { return alert(_this.props.t('swr')); });
+        };
         _this.state = {
             roomsTypesList: [],
             searchInput: "",
@@ -69831,7 +71282,7 @@ var TapTypes = /** @class */ (function (_super) {
                                 react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", { className: "main-table table-responsive" },
                                     react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", { className: "table" },
                                         react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.state.elements
-                                            .map(function (type) { return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_TapTypeListItem__WEBPACK_IMPORTED_MODULE_3__["default"], { key: type.id, roomType: type }); }))))))))));
+                                            .map(function (type) { return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_TapTypeListItem__WEBPACK_IMPORTED_MODULE_3__["default"], { deleteTapType: _this.deleteTapType, key: type.id, roomType: type }); }))))))))));
     };
     return TapTypes;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]));
@@ -70709,7 +72160,9 @@ var en = {
     "Ausstehend": "Pending",
     "In Arbeit": "In Progress",
     "Fertig": "Finished",
-    "No sections available": "No sections available"
+    "No sections available": "No sections available",
+    "Are you sure you want to delete this tap type?": "Are you sure you want to delete this tap type?",
+    "Tap type deleted successfully": "Tap type deleted successfully"
 };
 
 
@@ -70789,7 +72242,9 @@ var ge = {
     "Ausstehend": "Ausstehend",
     "In Arbeit": "In Arbeit",
     "Fertig": "Fertig",
-    "No sections available": "Keine Abschnitte verfügbar"
+    "No sections available": "Keine Abschnitte verfügbar",
+    "Are you sure you want to delete this tap type?": "Möchten Sie diesen Tap-Typ wirklich löschen?",
+    "Tap type deleted successfully": "Tippen Sie auf Typ erfolgreich gelöscht"
 };
 
 
@@ -70858,7 +72313,7 @@ i18next__WEBPACK_IMPORTED_MODULE_0__["default"]
 /*!*****************************************!*\
   !*** ./resources/js/src/redux/index.ts ***!
   \*****************************************/
-/*! exports provided: fetchUsers, changeTitle, fetchRooms, editProjectForm, fetchProjectSettings */
+/*! exports provided: fetchUsers, changeTitle, fetchRooms, editRoomTap, deleteRoomTap, editProjectForm, fetchProjectSettings */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -70871,6 +72326,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var _rooms_roomsAction__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./rooms/roomsAction */ "./resources/js/src/redux/rooms/roomsAction.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "fetchRooms", function() { return _rooms_roomsAction__WEBPACK_IMPORTED_MODULE_2__["fetchRooms"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "editRoomTap", function() { return _rooms_roomsAction__WEBPACK_IMPORTED_MODULE_2__["editRoomTap"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "deleteRoomTap", function() { return _rooms_roomsAction__WEBPACK_IMPORTED_MODULE_2__["deleteRoomTap"]; });
 
 /* harmony import */ var _project_projectAction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./project/projectAction */ "./resources/js/src/redux/project/projectAction.ts");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "editProjectForm", function() { return _project_projectAction__WEBPACK_IMPORTED_MODULE_3__["editProjectForm"]; });
@@ -71075,7 +72534,7 @@ var EDIT_PROJECT_FORM = "EDIT_PROJOCT_FORM";
 /*!*****************************************************!*\
   !*** ./resources/js/src/redux/rooms/roomsAction.ts ***!
   \*****************************************************/
-/*! exports provided: fetchRooms, addRooms, fetchRoomsRequest, fetchRoomsSuccess, fetchRoomsFail */
+/*! exports provided: fetchRooms, addRooms, fetchRoomsRequest, fetchRoomsSuccess, fetchRoomsFail, editRoomTap, deleteRoomTap */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -71085,6 +72544,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchRoomsRequest", function() { return fetchRoomsRequest; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchRoomsSuccess", function() { return fetchRoomsSuccess; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchRoomsFail", function() { return fetchRoomsFail; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "editRoomTap", function() { return editRoomTap; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteRoomTap", function() { return deleteRoomTap; });
 /* harmony import */ var _roomsType__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./roomsType */ "./resources/js/src/redux/rooms/roomsType.ts");
 /* harmony import */ var _app_api_agent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../app/api/agent */ "./resources/js/src/app/api/agent.ts");
 
@@ -71118,6 +72579,18 @@ var fetchRoomsFail = function (error) {
     return {
         type: _roomsType__WEBPACK_IMPORTED_MODULE_0__["FETCH_ROOMS_FAIL"],
         message: error
+    };
+};
+var editRoomTap = function (tap) {
+    return {
+        type: _roomsType__WEBPACK_IMPORTED_MODULE_0__["EDIT_ROOM_TAP"],
+        payload: tap
+    };
+};
+var deleteRoomTap = function (tap) {
+    return {
+        type: _roomsType__WEBPACK_IMPORTED_MODULE_0__["DELETE_ROOM_TAP"],
+        payload: tap
     };
 };
 
@@ -71165,6 +72638,26 @@ var roomsReducer = function (state, action) {
         case _roomsType__WEBPACK_IMPORTED_MODULE_0__["FETCH_ROOMS_SUCCESS"]: return __assign(__assign({}, state), { loader: false, rooms: action.payload });
         case _roomsType__WEBPACK_IMPORTED_MODULE_0__["FETCH_ROOMS_FAIL"]: return __assign(__assign({}, state), { loader: false, error: action.message });
         case _roomsType__WEBPACK_IMPORTED_MODULE_0__["ADD_ROOMS"]: return __assign(__assign({}, state), { rooms: __spreadArrays(state.rooms, action.payload) });
+        case _roomsType__WEBPACK_IMPORTED_MODULE_0__["EDIT_ROOM_TAP"]: {
+            var roomIndex = state.rooms.findIndex(function (room) { return room.id == action.payload.floor_room_id; });
+            var rooms = __spreadArrays(state.rooms);
+            var room = rooms[roomIndex];
+            if (room === null || room === void 0 ? void 0 : room.taps) {
+                room.taps = room.taps.map(function (tap) { return tap.id == action.payload.id ? action.payload : tap; });
+            }
+            rooms[roomIndex] = room;
+            return __assign(__assign({}, state), { rooms: rooms });
+        }
+        case _roomsType__WEBPACK_IMPORTED_MODULE_0__["DELETE_ROOM_TAP"]: {
+            var roomIndex = state.rooms.findIndex(function (room) { return room.id == action.payload.floor_room_id; });
+            var rooms = __spreadArrays(state.rooms);
+            var room = rooms[roomIndex];
+            if (room === null || room === void 0 ? void 0 : room.taps) {
+                room.taps = room.taps.filter(function (tap) { return tap.id != action.payload.id; });
+            }
+            rooms[roomIndex] = room;
+            return __assign(__assign({}, state), { rooms: rooms });
+        }
         default: return state;
     }
 };
@@ -71177,7 +72670,7 @@ var roomsReducer = function (state, action) {
 /*!***************************************************!*\
   !*** ./resources/js/src/redux/rooms/roomsType.ts ***!
   \***************************************************/
-/*! exports provided: FETCH_ROOMS_REQUEST, FETCH_ROOMS_SUCCESS, FETCH_ROOMS_FAIL, ADD_ROOMS */
+/*! exports provided: FETCH_ROOMS_REQUEST, FETCH_ROOMS_SUCCESS, FETCH_ROOMS_FAIL, ADD_ROOMS, EDIT_ROOM_TAP, DELETE_ROOM_TAP */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -71186,10 +72679,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_ROOMS_SUCCESS", function() { return FETCH_ROOMS_SUCCESS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FETCH_ROOMS_FAIL", function() { return FETCH_ROOMS_FAIL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_ROOMS", function() { return ADD_ROOMS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EDIT_ROOM_TAP", function() { return EDIT_ROOM_TAP; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DELETE_ROOM_TAP", function() { return DELETE_ROOM_TAP; });
 var FETCH_ROOMS_REQUEST = 'FETCH_ROOMS_REQUEST';
 var FETCH_ROOMS_SUCCESS = 'FETCH_ROOMS_SUCCESS';
 var FETCH_ROOMS_FAIL = 'FETCH_ROOMS_FAIL';
 var ADD_ROOMS = 'ADD_ROOMS';
+var EDIT_ROOM_TAP = 'EDIT_ROOM_TAP';
+var DELETE_ROOM_TAP = 'DELETE_ROOM_TAP';
 
 
 /***/ }),
