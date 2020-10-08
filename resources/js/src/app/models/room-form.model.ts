@@ -4,7 +4,7 @@ export type RoomDetails = {room_type: IRoomType, quantity: string}
 
 
 export interface IRoomForm {
-    floor_id: string;
+    section_id: string;
     name: string;
     quantity: string;
     from: string;

@@ -3,12 +3,12 @@ import { IRoomType } from '../../app/models/room-type.model';
 import { RoomType, FloorRooms } from '../../app/api/agent';
 import { AxiosError } from 'axios';
 import { IRoomForm, RoomDetails } from '../../app/models/room-form.model';
-import { IProjectFloor } from '../../app/models/project-floor.model';
 import LoaderBar from '../../app/common/LoaderBar';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { ISection } from '../../app/models/section.model';
 
 interface IProps extends RouteComponentProps {
-    floor: IProjectFloor;
+    section: ISection;
     hideRoomForm: () => void;
     afterRoomsAdded: (status?: boolean) => void;
 }
@@ -31,7 +31,7 @@ class RoomForm extends Component<IProps, IState> {
     defaultState: IState = {
         roomTypes: [],
         roomForm:{
-            floor_id: '',
+            section_id: '',
             from: '',
             to: '',
             name: '',
@@ -71,7 +71,7 @@ class RoomForm extends Component<IProps, IState> {
                 roomForm: {
                             ...this.state.roomForm,
                             room_details: roomDetails,
-                            floor_id: this.props.floor.id.toString()
+                            section_id: (this.props.section.id as number).toString()
                 },
             });
             this.defaultState.roomForm.room_details = roomDetails;
@@ -188,7 +188,7 @@ class RoomForm extends Component<IProps, IState> {
         return (
             <div className="rooms-form-area my-5" id="room-form">
                 <form className="add-rooms-form" onSubmit={this.submitHandler}>
-                    <h5 className="font-weight-bold">Zimmer zu {this.props.floor.floor_name} hinzufügen.</h5>
+                    <h5 className="font-weight-bold">Zimmer zu {this.props.section.section_name} hinzufügen.</h5>
                     {this.state.message ? <span className={this.state.messageClass}><b>{this.state.message}</b></span> : ""}
                     <hr/>
                     <div className="add-room-details d-flex">

@@ -63,19 +63,22 @@ class UserForm extends Component<IProps, IState> {
 
     onSubmitHandler(event: any) {
         event.preventDefault();
+
         this.setState({showLoader: true});
+
         User
         .saveUser(this.state.user)
         .then((res)=>{
             this.setState({
-                errors: {...this.state.errors,
+                errors: {
+                            ...this.state.errors,
                             name: "",
                             email:"",
                             password:"",
                             shortcode:"",
                             team_id: "",
                             role_name:"",
-                        }
+                }
                 });
 
                 this.props.afterAddNewUser(res);

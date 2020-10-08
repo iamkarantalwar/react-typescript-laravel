@@ -89,7 +89,8 @@ class SectionController extends Controller
     public function update(Request $request, Section $section)
     {
         $update = $section->update([
-            'section_name' => $request->section_name
+            'section_name' => $request->section_name,
+            'locked' => $request->locked
         ]);
 
         if($update) {
@@ -109,6 +110,15 @@ class SectionController extends Controller
      */
     public function destroy(Section $section)
     {
-        //
+        $delete = $section->delete();
+        if($delete) {
+            return response()->json([
+                'message' => 'Section deleted successfully.'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later.'
+            ], 400);
+        }
     }
 }

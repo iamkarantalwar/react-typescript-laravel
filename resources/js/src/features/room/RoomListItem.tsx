@@ -11,7 +11,7 @@ import Taps from '../tap/Taps';
 interface IProps {
     room: IFloorRoom;
     afterUpdateRoom: (room :IFloorRoom) => void;
-    toggleRoom: {id: number, open: boolean};
+    // toggleRoom: {id: number, open: boolean};
 }
 
 interface IState {
@@ -58,7 +58,7 @@ class RoomListItem extends Component<IProps,IState> {
     render() {
         return (
                 <Fragment>
-                    <div id=""  className="floor-card" style={{padding: '0 2rem !important', cursor: 'pointer'}} onClick={(e) => this.showTaps(e.target)}>
+                    <div id=""  className="room-card" style={{padding: '0 2.5rem !important', cursor: 'pointer'}} onClick={(e) => this.showTaps(e.target)}>
                         <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                             <div className="card mb-0 border-0">
                                 <div className="card-header  mb-1" data-toggle="collapse" >

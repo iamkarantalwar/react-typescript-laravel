@@ -9,6 +9,7 @@ export const ge = {
     "Taps": "Wasserhähne",
     "Tap": "Zapfhahn",
     "Floors": "Böden",
+    "Rooms": "Räume",
     "Logout": "Ausloggen",
     "Project name": "Projektname",
     "Project description": "Projektbeschreibung",
@@ -63,6 +64,11 @@ export const ge = {
     "In Arbeit": "In Arbeit",
     "Fertig": "Fertig",
     "No sections available": "Keine Abschnitte verfügbar",
+    "Section updated successfully": "Section updated successfully",
+    "Are you sure you want to delete this section?" : "Möchten Sie diesen Abschnitt wirklich löschen?",
+    "This section is locked, click on the lock button to unlock": "Dieser Abschnitt ist gesperrt. Klicken Sie zum Entsperren auf die Schaltfläche Sperren.",
+    "This section is locked, kindly contact admin or leader": "Dieser Abschnitt ist gesperrt. Bitte wenden Sie sich an den Administrator oder Leiter.",
     "Are you sure you want to delete this tap type?": "Möchten Sie diesen Tap-Typ wirklich löschen?",
-    "Tap type deleted successfully": "Tippen Sie auf Typ erfolgreich gelöscht"
+    "Tap type deleted successfully": "Tippen Sie auf Typ erfolgreich gelöscht",
+    "No project assigned to you": "Ihnen ist kein Projekt zugeordnet."
 }

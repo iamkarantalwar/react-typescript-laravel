@@ -103,6 +103,14 @@ select.team-select {
 .floor-card{
     padding: 0 0 0 1.5rem !important;
 }
+
+.room-card:first-child{
+    margin-top: 5px;
+}
+.room-card{
+    padding: 0 0 0 2.5rem !important;
+}
+
 .tap-card{
     padding: 0 0 0 2.7rem !important;
 }

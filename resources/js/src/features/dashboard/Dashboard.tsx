@@ -296,7 +296,7 @@ export class Dashboard extends Component<IProps, IState> {
                                                 this.state.floors.length > 0 ?
                                                     this.state.floors.map((floor) => {
                                                                 return  this.state.filteredRooms.map((room) => {
-                                                                        if(room.floor_id == floor.id.toString())
+                                                                        if(room.section_id == floor.id.toString())
                                                                         {
                                                                             return (<DashboardListItem deleteListItem={this.deleteListItem} updateListItem={this.updateListItem} key={room.id} floor={floor} room={room}/>)
                                                                         }

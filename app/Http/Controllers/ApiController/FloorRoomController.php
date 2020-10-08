@@ -20,7 +20,7 @@ class FloorRoomController extends Controller
     {
         $result = null;
         if($request->floor_id) {
-            $result = FloorRoom::with('taps')->where('floor_id', $request->floor_id)->get();
+            $result = FloorRoom::with('taps')->where('section_id', $request->section_id)->get();
         } else {
             $result = FloorRoom::with('taps')->get();
         }
@@ -56,7 +56,7 @@ class FloorRoomController extends Controller
             for($k=$from; $k<=$to; $k++)
             {
                 $room = FloorRoom::create([
-                    'floor_id' => $request->post('floor_id'),
+                    'section_id' => $request->post('section_id'),
                     'room_name' => $request->name.' '.$k,
                 ]);
 

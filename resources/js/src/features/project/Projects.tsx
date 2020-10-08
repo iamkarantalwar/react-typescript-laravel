@@ -133,13 +133,13 @@ export class Projects extends React.Component<IProps, State> {
                                                             :
                                                             this.state.projects.map((project: IProject) => {
 
-                                                                return project.floors != undefined && project.floors?.length > 0 ?
+                                                                return (project.floors != undefined ? ( project.floors?.length > 0 ?
                                                                     <ProjectListItem
                                                                                 key={project.id}
                                                                                 project={project}
                                                                                 afterDeleteProject={this.afterDeleteProject}
-                                                                    />
-                                                                 : ""
+                                                                    /> : null
+                                                                ) : null)
                                                             })
                                                        }
                                                     </div>

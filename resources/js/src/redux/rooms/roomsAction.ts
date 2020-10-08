@@ -12,13 +12,14 @@ import { FloorRooms } from '../../app/api/agent';
 import { IProjectFloor } from '../../app/models/project-floor.model';
 import { IFloorRoom } from '../../app/models/floor-room.model';
 import { ITap } from '../../app/models/tap.model';
+import { ISection } from '../../app/models/section.model';
 
 
 
-export const fetchRooms = (floor: IProjectFloor) => {
+export const fetchRooms = (section: ISection) => {
     return (dispatch: Dispatch<any>) => {
         dispatch(fetchRoomsRequest());
-        FloorRooms.getFloorRooms(floor)
+        FloorRooms.getSectionRooms(section)
         .then((res) => dispatch(fetchRoomsSuccess(res)))
         .catch((err: AxiosError) => dispatch(fetchRoomsFail(err.message)))
     }

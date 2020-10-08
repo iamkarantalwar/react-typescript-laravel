@@ -54,7 +54,8 @@ class Pumpstart extends PureComponent<IProps, IState> {
                     </a> : null
                 }
                 {
-                    this.props.projectSettings.length > 0 && this.state.pumpStarts.length > 0 ?  this.state.pumpStarts.map((pumpstart) => <PumpstartListItem
+                    this.props.projectSettings.length > 0 && this.state.pumpStarts.length > 0 ?  this.state.pumpStarts.map((pumpstart, index) => <PumpstartListItem
+                                                                key={`pumpstart-${index}`}
                                                                 projectSetting={this.props.projectSettings.find((setting) => (setting.id as number).toString() == pumpstart.project_setting_id) as IProjectSetting}
                                                                 pumpstart={pumpstart}
                                                             />) : null

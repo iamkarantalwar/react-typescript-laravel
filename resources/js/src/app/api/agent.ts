@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import AxiosObservable from 'axios-observable';
 import { IProject } from '../models/project.model';
 import {enviorment} from '../../../enviorment';
@@ -23,6 +23,8 @@ import { ISectionForm } from '../form/section.form';
 import { IPumpstartOfProduct } from '../models/pumpstart-of-product.model';
 
 const responseBody = (response: AxiosResponse) => response.data;
+
+const responseError = (error: AxiosError) => error;
 
 // axios.interceptors.request.use((config) => {
 //     const token = window.localStorage.getItem('token');
@@ -112,7 +114,7 @@ export const RoomType = {
 
 export const FloorRooms = {
     getAllRooms: () : Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}`),
-    getFloorRooms: (projectFloor: IProjectFloor): Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?floor_id=${projectFloor.id}`),
+    getSectionRooms: (section: ISection): Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?section_id=${section.id}`),
     saveFloorRooms : (floorRooms: IRoomForm) => requests.post(`${enviorment.baseUrl}/${endPoints.floorRooms}`, floorRooms),
     updateFloorRoom : (floorRoom: IFloorRoom): Promise<IFloorRoom> => requests.put(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`, floorRoom),
     deleteFloorRoom: (floorRoom: IFloorRoom) => requests.del(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`),
@@ -144,6 +146,7 @@ export const Section = {
     sections: (floor_id: string): Promise<ISection[]> => requests.get(`${enviorment.baseUrl}/${endPoints.sections}?floor_id=${floor_id}`),
     addSection : (section: ISectionForm) : Promise<ISection[]> => requests.post(`${enviorment.baseUrl}/${endPoints.sections}`, section),
     updateSection: (section: ISection): Promise<ISection> => requests.put(`${enviorment.baseUrl}/${endPoints.sections}/${section.id}`, section),
+    deleteSection: (section: ISection) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.sections}/${section.id}`)
 }
 
 export const Tap = {
