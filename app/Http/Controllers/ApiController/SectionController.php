@@ -46,6 +46,7 @@ class SectionController extends Controller
                 $section = Section::create([
                     'project_floor_id' => $request->post('floor_id'),
                     'section_name' => $request->post('section_name').($i),
+                    'locked' => true,
                 ]);
 
                 array_push($sections, $section);
@@ -90,7 +91,7 @@ class SectionController extends Controller
     {
         $update = $section->update([
             'section_name' => $request->section_name,
-            'locked' => $request->locked
+            'locked' => $request->locked ? $request->locked : true
         ]);
 
         if($update) {
