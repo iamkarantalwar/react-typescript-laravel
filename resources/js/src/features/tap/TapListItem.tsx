@@ -253,7 +253,15 @@ class TapListItem extends Component<IProps, IState> {
     }
 
     notDetected = (setting: IProjectSetting) => {
-        this.tapStaticAgent(setting, false);
+        let second = 20;
+        let interval = setInterval(() => {​​​​​​​​
+        this.setState({​​​​​​​​tapStatus:<div> 0 : {​​​​​​​​second}​​​​​​​​</div>}​​​​​​​​);
+        second = second - 1;
+        if(second == 0) {​​​​​​​​
+        clearInterval(interval);
+        this.checkTapStaticState();
+            }​​​​​​​​
+        }​​​​​​​​, 1000);
     }
 
     updateTap() {
