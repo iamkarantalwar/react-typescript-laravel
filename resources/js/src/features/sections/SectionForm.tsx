@@ -99,6 +99,7 @@ class SectionForm extends PureComponent<IProps, IState> {
                     });
 
             } else {
+                console.log(error);
 				this.setState({
 					message: "swr",
 					messageClass: "text-danger",

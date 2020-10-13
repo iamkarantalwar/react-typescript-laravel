@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import AxiosObservable from 'axios-observable';
 import { IProject } from '../models/project.model';
 import {enviorment} from '../../../enviorment';
@@ -20,8 +20,11 @@ import { lazy } from 'react';
 import { ISection } from '../models/section.model';
 import { env } from 'process';
 import { ISectionForm } from '../form/section.form';
+import { IPumpstartOfProduct } from '../models/pumpstart-of-product.model';
 
 const responseBody = (response: AxiosResponse) => response.data;
+
+const responseError = (error: AxiosError) => error;
 
 // axios.interceptors.request.use((config) => {
 //     const token = window.localStorage.getItem('token');
@@ -57,6 +60,8 @@ export const endPoints = {
     tapStatics: 'tap-statics',
     tapRounds: 'tap-rounds',
     sections: 'sections',
+    taps: 'taps',
+    pumpstart: 'pumpstart-of-products'
 }
 
 export const Project = {
@@ -104,11 +109,12 @@ export const RoomType = {
     getRoomTypes: () : Promise<IRoomType[]> => requests.get(`${enviorment.baseUrl}/${endPoints.roomTypes}`),
     saveRoomType: (roomType: IRoomType) : Promise<IRoomType> => requests.post(`${enviorment.baseUrl}/${endPoints.roomTypes}`, roomType),
     updateRoomType: (roomType: IRoomType) : Promise<IRoomType> => requests.put(`${enviorment.baseUrl}/${endPoints.roomTypes}/${roomType.id}`, roomType),
+    deleteRoomType: (roomType: IRoomType) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.roomTypes}/${roomType.id}`)
 }
 
 export const FloorRooms = {
     getAllRooms: () : Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}`),
-    getFloorRooms: (projectFloor: IProjectFloor): Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?floor_id=${projectFloor.id}`),
+    getSectionRooms: (section: ISection): Promise<IFloorRoom[]> => requests.get(`${enviorment.baseUrl}/${endPoints.floorRooms}?section_id=${section.id}`),
     saveFloorRooms : (floorRooms: IRoomForm) => requests.post(`${enviorment.baseUrl}/${endPoints.floorRooms}`, floorRooms),
     updateFloorRoom : (floorRoom: IFloorRoom): Promise<IFloorRoom> => requests.put(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`, floorRoom),
     deleteFloorRoom: (floorRoom: IFloorRoom) => requests.del(`${enviorment.baseUrl}/${endPoints.floorRooms}/${floorRoom.id}`),
@@ -140,4 +146,17 @@ export const Section = {
     sections: (floor_id: string): Promise<ISection[]> => requests.get(`${enviorment.baseUrl}/${endPoints.sections}?floor_id=${floor_id}`),
     addSection : (section: ISectionForm) : Promise<ISection[]> => requests.post(`${enviorment.baseUrl}/${endPoints.sections}`, section),
     updateSection: (section: ISection): Promise<ISection> => requests.put(`${enviorment.baseUrl}/${endPoints.sections}/${section.id}`, section),
+    deleteSection: (section: ISection) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.sections}/${section.id}`)
+}
+
+export const Tap = {
+    updateTap : (tap: ITap) : Promise<ITap> => requests.put(`${enviorment.baseUrl}/${endPoints.taps}/${tap.id}`, tap),
+    deleteTap: (tap: ITap) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.taps}/${tap.id}`),
+}
+
+export const PumpStart = {
+    getProjectPumpStart : (project_id: string) : Promise<IPumpstartOfProduct[]> => requests.get(`${enviorment.baseUrl}/${endPoints.pumpstart}?project_id=${project_id}`),
+    createProjectPumpStart: (pumpstart: IPumpstartOfProduct) : Promise<IPumpstartOfProduct>  => requests.post(`${enviorment.baseUrl}/${endPoints.pumpstart}`, pumpstart),
+    updatePumpStart: (pumpstart: IPumpstartOfProduct) : Promise<IPumpstartOfProduct> => requests.put(`${enviorment.baseUrl}/${endPoints.pumpstart}/${pumpstart.id}`, pumpstart),
+    deletePumpStart: (pumpstart: IPumpstartOfProduct) : Promise<any> => requests.del(`${enviorment.baseUrl}/${endPoints.pumpstart}/${pumpstart.id}`),
 }

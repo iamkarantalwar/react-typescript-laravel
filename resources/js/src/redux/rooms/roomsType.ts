@@ -5,3 +5,7 @@ export const FETCH_ROOMS_SUCCESS = 'FETCH_ROOMS_SUCCESS';
 export const FETCH_ROOMS_FAIL = 'FETCH_ROOMS_FAIL';
 
 export const ADD_ROOMS = 'ADD_ROOMS';
+
+export const EDIT_ROOM_TAP = 'EDIT_ROOM_TAP';
+
+export const DELETE_ROOM_TAP = 'DELETE_ROOM_TAP';

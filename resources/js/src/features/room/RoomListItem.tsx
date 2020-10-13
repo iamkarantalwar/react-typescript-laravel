@@ -6,12 +6,13 @@ import TapListItem from '../tap/TapListItem';
 import { userObject } from '../../context/UserContext';
 import { UserRoles } from '../../app/models/role.model';
 import Taps from '../tap/Taps';
+import LoaderBar from '../../app/common/LoaderBar';
 
 
 interface IProps {
     room: IFloorRoom;
     afterUpdateRoom: (room :IFloorRoom) => void;
-    toggleRoom: {id: number, open: boolean};
+    // toggleRoom: {id: number, open: boolean};
 }
 
 interface IState {
@@ -19,6 +20,7 @@ interface IState {
     editRoom: boolean;
     showTaps: boolean;
     tapDetecting: boolean;
+    loader:boolean;
 }
 
 class RoomListItem extends Component<IProps,IState> {
@@ -29,6 +31,7 @@ class RoomListItem extends Component<IProps,IState> {
             editRoom: false,
             showTaps: false,
             tapDetecting: false,
+            loader: false
         }
     }
 
@@ -37,16 +40,13 @@ class RoomListItem extends Component<IProps,IState> {
     }
 
     updateRoomHandler = (event: any) => {
+        this.setState({loader: true});
         FloorRooms.updateFloorRoom(this.state.room)
         .then((res) => {
             this.props.afterUpdateRoom(res);
         })
-        .catch((error) => console.log(error));
-
-        this.setState({
-            editRoom: false,
-        });
-
+        .catch((error) => console.log(error))
+        .finally(() => this.setState({ loader: false, editRoom: false }));
     }
 
     showTaps = (target: any) => {
@@ -57,8 +57,13 @@ class RoomListItem extends Component<IProps,IState> {
 
     render() {
         return (
-                <Fragment>
-                    <div id=""  className="floor-card" style={{padding: '0 2rem !important', cursor: 'pointer'}} onClick={(e) => this.showTaps(e.target)}>
+            this.state.loader ?  <LoaderBar/> :
+            <Fragment>
+                <div id=""
+                    className="room-card"
+                    style={{padding: '0 2.5rem !important', cursor: 'pointer'}}
+                    onClick={(e) => this.showTaps(e.target)}
+                >
                         <div id="accordion-inner-rooms" className="accordion-inner-rooms">
                             <div className="card mb-0 border-0">
                                 <div className="card-header  mb-1" data-toggle="collapse" >

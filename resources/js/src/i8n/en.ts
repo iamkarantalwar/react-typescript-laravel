@@ -9,6 +9,7 @@ export const en = {
     "Taps": "Taps",
     "Tap": "Tap",
     "Floors": "Floors",
+    "Rooms": "Rooms",
     "Logout": "Logout",
     "Project name": "Project name",
     "Project description": "Project description",
@@ -62,6 +63,12 @@ export const en = {
     "Ausstehend": "Pending",
     "In Arbeit": "In Progress",
     "Fertig": "Finished",
-    "No sections available": "No sections available"
-
+    "No sections available": "No sections available",
+    "Section updated successfully": "Section updated successfully",
+    "Are you sure you want to delete this section?" : "Are you sure you want to delete this section?",
+    "This section is locked, click on the lock button to unlock": "This section is locked. Click on the lock button to unlock",
+    "This section is locked, kindly contact admin or leader": "This section is locked. Kindly contact admin or leader.",
+    "Are you sure you want to delete this tap type?": "Are you sure you want to delete this tap type?",
+    "Tap type deleted successfully": "Tap type deleted successfully",
+    "No project assigned to you": "No project assigned to you."
 }

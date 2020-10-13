@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\ApiCOntroller;
 
 use App\Http\Controllers\Controller;
-use App\Models\Project;
 use App\Models\PumpstartOfProduct;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PumpstartOfProductController extends Controller
@@ -14,9 +14,11 @@ class PumpstartOfProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Project $project)
+    public function index(Request $request)
     {
-
+        $project_id = $request->get('project_id');
+        $pumpstartOfProducts = PumpstartOfProduct::where('project_id', $project_id)->get();
+        return response()->json($pumpstartOfProducts, 200);
     }
 
     /**
@@ -37,7 +39,22 @@ class PumpstartOfProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $now = Carbon::now();
+
+        $pumpstartOfProduct = PumpstartOfProduct::create([
+            'project_id' => $request->post('project_id'),
+            'project_setting_id' => $request->post('project_setting_id'),
+            'pumpstart_date' => $now->format('Y-m-d'),
+            'pumpstart_time' => $now->format('H:i:s'),
+        ]);
+
+        if($pumpstartOfProduct) {
+            return response()->json($pumpstartOfProduct, 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later.',
+            ], 400);
+        }
     }
 
     /**
@@ -71,7 +88,18 @@ class PumpstartOfProductController extends Controller
      */
     public function update(Request $request, PumpstartOfProduct $pumpstartOfProduct)
     {
-        //
+        $update = $pumpstartOfProduct->update([
+            'pumpstart_date' => $request->pumpstart_date,
+            'pumpstart_time' => $request->pumpstart_time,
+        ]);
+
+        if($update) {
+            return response()->json($pumpstartOfProduct, 200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong. Try again later.',
+            ], 400);
+        }
     }
 
     /**

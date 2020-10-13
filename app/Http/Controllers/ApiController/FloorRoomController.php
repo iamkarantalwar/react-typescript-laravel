@@ -19,8 +19,8 @@ class FloorRoomController extends Controller
     public function index(Request $request)
     {
         $result = null;
-        if($request->floor_id) {
-            $result = FloorRoom::with('taps')->where('floor_id', $request->floor_id)->get();
+        if($request->section_id) {
+            $result = FloorRoom::with('taps')->get()->where('section_id', $request->section_id)->values();
         } else {
             $result = FloorRoom::with('taps')->get();
         }
@@ -56,7 +56,7 @@ class FloorRoomController extends Controller
             for($k=$from; $k<=$to; $k++)
             {
                 $room = FloorRoom::create([
-                    'floor_id' => $request->post('floor_id'),
+                    'section_id' => $request->post('section_id'),
                     'room_name' => $request->name.' '.$k,
                 ]);
 
@@ -116,7 +116,8 @@ class FloorRoomController extends Controller
     {
         $update = $floorRoom->update($request->all());
         if($update) {
-            return response()->json($floorRoom);
+            $response = FloorRoom::with('taps')->where('id', $floorRoom->id)->first();
+            return response()->json($response);
         } else {
             throw new Exception("Error Processing Request", 1);
         }

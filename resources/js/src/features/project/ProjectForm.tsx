@@ -248,7 +248,7 @@ export class ProjectForm extends Component<IProps, IState> {
                         <div className="col-md-6 col-lg-6 col-xl-6">
                         {
                             userObject.role == UserRoles.ADMIN && this.props.project && !this.isSettingsWindow() ?
-                                <div className="form-btn text-right">
+                                <div className="form-btn text-right mb-1 mb-md-0">
                                     <Link to={`/project/${this.props.project?.id}/settings`} className="main-btn">{t('Settings')}</Link>
                                 </div>
                             : ""
