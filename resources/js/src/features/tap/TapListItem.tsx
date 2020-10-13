@@ -195,7 +195,7 @@ class TapListItem extends Component<IProps, IState> {
                         var mnts = Math.floor(remaining_seconds / 60);
                         remaining_seconds  -= mnts*60;
                         const minutes = mnts.toString().length == 1 ? `0${mnts}` : mnts;
-                        const progressTap: JSX.Element = <div className="row">
+                        const progressTap: JSX.Element = <div className="row align-items-center">
                                                         <div className="col-md-4">
                                                             {current_date}
                                                         </div>
@@ -333,7 +333,7 @@ class TapListItem extends Component<IProps, IState> {
         try {
             if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
                 this.setState({
-                    tapStatus: <div className="row">
+                    tapStatus: <div className="row align-items-center">
                             <div className="col-md-6">
                                 {setting?.field_name}
                             </div>
@@ -351,7 +351,7 @@ class TapListItem extends Component<IProps, IState> {
             }
             else if (timer.spulzeit_status == false && timer.spulzeit_pending_timer == null && timer.wirkzeit_status  == true) {
                 this.setState({
-                    tapStatus: <div className="row">
+                    tapStatus: <div className="row align-items-center">
                             <div className="col-md-6">
                                 {setting?.field_name}
                             </div>
@@ -369,7 +369,7 @@ class TapListItem extends Component<IProps, IState> {
                 this.showInProgressTap(timer.spulzeit_pending_timer, SettingsField.spulzeit, timer, true);
             }
             else if(timer.spulzeit_status == true && timer.wirkzeit_status == true) {
-                this.setState({tapStatus: <div className="row">
+                this.setState({tapStatus: <div className="row align-items-center">
                                             <div className="col-md-6">
                                                 {setting?.field_name} Detected
                                             </div>
@@ -430,8 +430,8 @@ class TapListItem extends Component<IProps, IState> {
                     <div className={`card-header ${this.tapItemBackgroundClass()} mb-1`} data-toggle="collapse" >
                         <div className="main-tap-overview d-flex justify-content-between">
                             <div className="overview-floor-list w-100">
-                                <div className="row">
-                                    <div className="col-md-4 pl-4 pt-2">
+                                <div className="row align-items-center">
+                                    <div className="col-4 pl-4">
                                         <input
                                             type="text"
                                             className={`form-control ${!this.state.enableEdit ? 'team-input cursor-pointer' : ''}`}
@@ -439,12 +439,12 @@ class TapListItem extends Component<IProps, IState> {
                                             onChange={(e) => this.setState({ tap : {...this.state.tap, name: e.target.value } })}
                                         />
                                     </div>
-                                    <div className="col-md-6 pl-4 pt-2">
+                                    <div className="col-6 pl-4">
                                         {
                                             this.state.tapStatus ? this.state.tapStatus : 'Loading.....'
                                         }
                                     </div>
-                                    <div className="col-md-2">
+                                    <div className="col-2 align-items-center">
                                             <i
                                               className={`fa ${this.state.showTapStatics ? 'fa-angle-down' : 'fa-angle-up' }
                                               text-dark font-weight-bold ml-2`}>

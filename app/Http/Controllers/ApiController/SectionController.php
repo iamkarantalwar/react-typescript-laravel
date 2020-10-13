@@ -91,7 +91,7 @@ class SectionController extends Controller
     {
         $update = $section->update([
             'section_name' => $request->section_name,
-            'locked' => $request->locked ? $request->locked : true
+            'locked' => $request->locked
         ]);
 
         if($update) {

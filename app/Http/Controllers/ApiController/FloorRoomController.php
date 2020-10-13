@@ -19,8 +19,8 @@ class FloorRoomController extends Controller
     public function index(Request $request)
     {
         $result = null;
-        if($request->floor_id) {
-            $result = FloorRoom::with('taps')->where('section_id', $request->section_id)->get();
+        if($request->section_id) {
+            $result = FloorRoom::with('taps')->get()->where('section_id', $request->section_id);
         } else {
             $result = FloorRoom::with('taps')->get();
         }
