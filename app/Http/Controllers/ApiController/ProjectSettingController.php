@@ -121,7 +121,7 @@ class ProjectSettingController extends Controller
         return response()->json($result);
     }
 
-    public function updateProjectSettings(ProjectSettingsRequest $request, Project $projectSetting)
+    public function updateProjectSettings(ProjectSettingsRequest $request, Project $project)
     {
         try {
             //code...
@@ -129,7 +129,7 @@ class ProjectSettingController extends Controller
             {
                 ProjectSetting::where('id', $setting['id'])->update($setting);
             }
-            $result = $projectSetting->settings;
+            $result = $project->settings;
             return response()->json($result);
         } catch (\Throwable $th) {
             throw $th;
