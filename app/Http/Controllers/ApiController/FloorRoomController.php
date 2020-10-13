@@ -116,7 +116,8 @@ class FloorRoomController extends Controller
     {
         $update = $floorRoom->update($request->all());
         if($update) {
-            return response()->json($floorRoom);
+            $response = FloorRoom::with('taps')->where('id', $floorRoom->id)->first();
+            return response()->json($response);
         } else {
             throw new Exception("Error Processing Request", 1);
         }
