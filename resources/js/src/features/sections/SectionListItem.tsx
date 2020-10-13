@@ -158,10 +158,10 @@ class SectionListItem extends PureComponent<IProps, IState> {
         if(this.state.showRoomsList == false) {
             if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editSection))
             {
-                this.setState( {roomLoader: true } );
+                this.setState( {roomLoader: true, showRoomForm:false, showRoomsList: true} );
                 FloorRooms.getSectionRooms(this.props.section)
                 .then((rooms) => {
-                    this.setState({showRoomForm:false, showRoomsList: true, rooms: rooms});
+                    this.setState({rooms: rooms});
                 })
                 .catch((err) => this.setState({
                     message: "swr",

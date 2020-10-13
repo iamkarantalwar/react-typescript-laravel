@@ -104,19 +104,19 @@ select.team-select {
     padding: 0 0 0 1.5rem !important;
 }
 
-.room-card:first-child{
-    margin-top: 5px;
-}
+/* .room-card:first-child{
+     margin-top: 5px;
+} */
 .room-card{
     padding: 0 0 0 2.5rem !important;
 }
 
 .tap-card{
-    padding: 0 0 0 2.7rem !important;
+   padding: 0 0 0 3.6rem !important
 }
 
 .tap-static-card{
-    padding: 0 0 0 3.9rem !important;
+    padding: 0 0 0 4.6rem !important;
 }
 select.status-select {
     padding: 5px 16px;

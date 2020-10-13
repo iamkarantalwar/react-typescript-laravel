@@ -182,15 +182,16 @@ class FloorListItem extends Component<IProps, IState> {
 
       if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editFloor))
       {
-            this.setState({loader: true});
+            this.setState({loader: true, showSections: true, showSectionForm:false});
 
             Section.sections(this.props.floor.id.toString())
             .then((res) => {
                 this.setState({sections: res})
+            }).catch((err: any) => this.setState({message: "swr", messageClass: "text-danger"}))
+            .finally(() => {
+                this.setState({ loader:false });
+                this.props.selectFloor(this.props.floor);
             });
-
-            this.setState({showSectionForm:false, showSections: true, loader:false });
-            this.props.selectFloor(this.props.floor);
       }
     }
 
