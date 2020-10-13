@@ -20,7 +20,7 @@ class FloorRoomController extends Controller
     {
         $result = null;
         if($request->section_id) {
-            $result = FloorRoom::with('taps')->get()->where('section_id', $request->section_id);
+            $result = FloorRoom::with('taps')->get()->where('section_id', $request->section_id)->values();
         } else {
             $result = FloorRoom::with('taps')->get();
         }
