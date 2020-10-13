@@ -17,6 +17,7 @@ class CreateSectionsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('project_floor_id');
             $table->string('section_name');
+            $table->boolean('locked')->default(true);
             $table->timestamps();
         });
     }

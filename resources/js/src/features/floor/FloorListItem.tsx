@@ -14,19 +14,7 @@ import SectionForm from '../sections/SectionForm';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import SectionListItem from '../sections/SectionListItem';
 
-const mapStateToProps = (state: RootState) => ({
-  rooms: state.rooms,
-});
-
-interface IMapDispatchToProps {
-  fetchRooms: (floor: IProjectFloor) => void,
-}
-
-const mapDispatchToProps: IMapDispatchToProps = { fetchRooms };
-
-type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps & WithTranslation;
-
-interface IProps extends ReduxProps {
+interface IProps extends WithTranslation {
     floor: IProjectFloor;
     teams: ITeam[];
     toggleFloor: {id: number, open: boolean};
@@ -157,8 +145,13 @@ class FloorListItem extends Component<IProps, IState> {
         this.setState({sections: sections});
     }
 
-    afterAddOfSections(sections: ISection[]) {
+    afterAddOfSections = (sections: ISection[]) => {
+        var allSections = [
+            ...this.state.sections,
+        ];
 
+        allSections.push(...sections);
+        this.setState({showSectionForm: false, sections: allSections, showSections: true});
     }
 
     deleteFloor = (floor: IProjectFloor) => {
@@ -181,32 +174,43 @@ class FloorListItem extends Component<IProps, IState> {
     }
 
     toggleCollapse = (target: any) => {
+
+      if(this.state.showSections) {
+          this.setState({showSections: false});
+          return
+      }
+
       if (target.tagName == 'DIV' || (target.tagName == 'INPUT' && !this.state.editFloor))
       {
-            this.setState({loader: true});
+            this.setState({loader: true, showSections: true, showSectionForm:false});
 
             Section.sections(this.props.floor.id.toString())
             .then((res) => {
                 this.setState({sections: res})
+            }).catch((err: any) => this.setState({message: "swr", messageClass: "text-danger"}))
+            .finally(() => {
+                this.setState({ loader:false });
+                this.props.selectFloor(this.props.floor);
             });
-
-            this.setState({showSectionForm:false, showSections: true, loader:false });
-            this.props.selectFloor(this.props.floor);
       }
     }
 
     componentDidUpdate(prevState: any) {
-      if(prevState.rooms.loader == true && this.props.rooms.loader == false)
-      {
-        const toggleSections = this.props.rooms.rooms.map((room) => {return {id: parseInt(room.id), open:false} });
-        this.setState({toggleSections: toggleSections})
-      }
+    //   if(prevState.rooms.loader == true && this.props.rooms.loader == false)
+    //   {
+    //     const toggleSections = this.props.rooms.rooms.map((room) => {return {id: parseInt(room.id), open:false} });
+    //     this.setState({toggleSections: toggleSections})
+    //   }
     }
 
     toggleSectionsList = (open?: boolean) => {
-      !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
+    //   !this.props.toggleFloor?.open ? this.props.fetchRooms(this.props.floor) : "";
       this.setState({showSectionForm:false, showSections: open == undefined ? true : open});
       this.props.selectFloor(this.props.floor);
+    }
+
+    deleteSection = (section: ISection) => {
+        this.setState( {sections: this.state.sections.filter((section_) => section.id != section_.id)} );
     }
 
 
@@ -225,8 +229,7 @@ class FloorListItem extends Component<IProps, IState> {
           <SectionListItem
             section={section as ISection}
             key={index}
-            // toggleRoom={this.state.toggleRooms[index]}
-            // afterUpdateRoom={this.afterUpdateRoom}
+            deleteSection={this.deleteSection}
           />
         )
         }) : <h4 className="ml-5 mb-2">{t('No sections available')}</h4>;
@@ -319,7 +322,7 @@ class FloorListItem extends Component<IProps, IState> {
                           aria-controls={`collapse${this.props.floor.id}`}
                           aria-expanded={this.state.showSections}
                         >
-                          <i style={{cursor:'pointer'}} className={`fa ${this.props.toggleFloor?.open ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>
+                          <i style={{cursor:'pointer'}} className={`fa ${this.state.showSections ? 'fa-angle-down' : 'fa-angle-up' } font-weight-bold ml-2`}></i>
                          </div>
                  </div>
 
@@ -327,7 +330,10 @@ class FloorListItem extends Component<IProps, IState> {
                {
                  this.state.message ? <span className={this.state.messageClass}>{this.state.message}</span> : ""
                }
-                <Collapse in={this.props.toggleFloor?.open && this.state.showSections}>
+                <Collapse
+                    // in={this.props.toggleFloor?.open && this.state.showSections}
+                    in={this.state.showSections}
+                >
                   <div className=" collapse" id={`collapse${this.props.floor.id}`}>
                   {
                     this.state.loader ? <LoaderBar/> : sectionsList
@@ -346,4 +352,4 @@ class FloorListItem extends Component<IProps, IState> {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(FloorListItem));
+export default (withTranslation()(FloorListItem));

@@ -1,17 +1,17 @@
 import React, { Component, Fragment } from 'react';
 import { ITap } from '../../app/models/tap.model';
 import { IProjectSetting, ProjectSettingStatus } from '../../app/models/project-setting.model';
-import { TapStatic, TapTimer } from '../../app/api/agent';
+import { Tap, TapStatic, TapTimer } from '../../app/api/agent';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { ITapStatic } from '../../app/models/tap-static.model';
 import { TapStaticStateEnum } from './TapStaticStateEnum';
-import { RootState } from '../../redux';
+import { RootState, editRoomTap, deleteRoomTap } from '../../redux';
 import { connect } from 'react-redux';
 import { Collapse } from 'react-bootstrap';
 import TapStaticListItem from './TapStaticListItem';
 import { ITapTimer } from '../../app/models/tap-timer.model';
 import { SettingsField } from '../../app/enums/settings-field.enum';
-import axios, { AxiosInstance, AxiosPromise } from 'axios';
+import { AxiosPromise } from 'axios';
 
 type PromiseResult<T> = T extends AxiosPromise<infer R>? R: T
 type ArrayPromiseResult<T extends (any | AxiosPromise<any>)[]> = { [P in keyof T]: PromiseResult<T[P]> }
@@ -25,12 +25,19 @@ const mapStateToProps = (state: RootState) => ({
     rooms: state.rooms
 });
 
-type ReduxProps = ReturnType<typeof mapStateToProps>;
+interface IMapDispatchToProps {
+    editRoomTap : (tap: ITap) => void,
+    deleteRoomTap: (tap: ITap) => void
+}
+const mapDispatchToProps: IMapDispatchToProps = { editRoomTap, deleteRoomTap };
+
+type ReduxProps = ReturnType<typeof mapStateToProps> & IMapDispatchToProps;
 
 interface IProps extends ReduxProps,RouteComponentProps<RouteParam> {
     tap: ITap;
     tapTimers: ITapTimer[],
     tapStatics: ITapStatic[],
+    // deleteTapListItem: () => void,
 }
 
 interface IState {
@@ -44,6 +51,8 @@ interface IState {
     tapTimers: ITapTimer[];
     detectingField?: SettingsField;
     timer: number;
+    enableEdit: boolean;
+    tap: ITap;
 }
 
 class TapListItem extends Component<IProps, IState> {
@@ -60,6 +69,8 @@ class TapListItem extends Component<IProps, IState> {
             tapTimers: this.props.tapTimers,
             detectingField: undefined,
             timer:0,
+            enableEdit: false,
+            tap: this.props.tap
         }
     }
 
@@ -184,7 +195,7 @@ class TapListItem extends Component<IProps, IState> {
                         var mnts = Math.floor(remaining_seconds / 60);
                         remaining_seconds  -= mnts*60;
                         const minutes = mnts.toString().length == 1 ? `0${mnts}` : mnts;
-                        const progressTap: JSX.Element = <div className="row">
+                        const progressTap: JSX.Element = <div className="row align-items-center">
                                                         <div className="col-md-4">
                                                             {current_date}
                                                         </div>
@@ -245,6 +256,28 @@ class TapListItem extends Component<IProps, IState> {
         this.tapStaticAgent(setting, false);
     }
 
+    updateTap() {
+        Tap.updateTap(this.state.tap)
+        .then((tap) => {
+            this.props.editRoomTap(tap);
+            this.setState({ enableEdit: false})
+            alert('Tap updated successfully.');
+        }).catch((err) => alert('Something went wrong. Try again later.') );
+    }
+
+    deleteTap() {
+        const y = confirm('Are you sure you want to delete this tap?');
+        if(y) {
+            Tap.deleteTap(this.props.tap)
+            .then((res) => {
+                this.props.deleteRoomTap(this.props.tap);
+                alert('Tap deleted successfully.');
+            }).catch((err) => alert('Something went wrong. Try again later.'))
+
+            // this.props.deleteTapListItem();
+        }
+    }
+
     detected = (setting: IProjectSetting) => {
         this.tapStaticAgent(setting, true);
     }
@@ -300,7 +333,7 @@ class TapListItem extends Component<IProps, IState> {
         try {
             if (timer.wirkzeit_status == false && timer.wirkzeit_timer_started == null) {
                 this.setState({
-                    tapStatus: <div className="row">
+                    tapStatus: <div className="row align-items-center">
                             <div className="col-md-6">
                                 {setting?.field_name}
                             </div>
@@ -318,7 +351,7 @@ class TapListItem extends Component<IProps, IState> {
             }
             else if (timer.spulzeit_status == false && timer.spulzeit_pending_timer == null && timer.wirkzeit_status  == true) {
                 this.setState({
-                    tapStatus: <div className="row">
+                    tapStatus: <div className="row align-items-center">
                             <div className="col-md-6">
                                 {setting?.field_name}
                             </div>
@@ -336,7 +369,7 @@ class TapListItem extends Component<IProps, IState> {
                 this.showInProgressTap(timer.spulzeit_pending_timer, SettingsField.spulzeit, timer, true);
             }
             else if(timer.spulzeit_status == true && timer.wirkzeit_status == true) {
-                this.setState({tapStatus: <div className="row">
+                this.setState({tapStatus: <div className="row align-items-center">
                                             <div className="col-md-6">
                                                 {setting?.field_name} Detected
                                             </div>
@@ -369,7 +402,7 @@ class TapListItem extends Component<IProps, IState> {
     }
 
     toggleTapStatics = (event: any) => {
-        if (event.target.tagName != 'BUTTON') {
+        if (event.target.tagName != 'BUTTON' && event.target.tagName != 'I') {
             this.setState({showTapStatics: !this.state.showTapStatics});
         }
     }
@@ -397,19 +430,34 @@ class TapListItem extends Component<IProps, IState> {
                     <div className={`card-header ${this.tapItemBackgroundClass()} mb-1`} data-toggle="collapse" >
                         <div className="main-tap-overview d-flex justify-content-between">
                             <div className="overview-floor-list w-100">
-                                <div className="row">
-                                    <div className="col-md-4 pl-4 pt-2">
-                                        {this.props.tap.name}
+                                <div className="row align-items-center">
+                                    <div className="col-4 pl-4">
+                                        <input
+                                            type="text"
+                                            className={`form-control ${!this.state.enableEdit ? 'team-input cursor-pointer' : ''}`}
+                                            value={this.state.tap.name}
+                                            onChange={(e) => this.setState({ tap : {...this.state.tap, name: e.target.value } })}
+                                        />
                                     </div>
-                                    <div className="col-md-6 pl-4 pt-2">
+                                    <div className="col-6 pl-4">
                                         {
                                             this.state.tapStatus ? this.state.tapStatus : 'Loading.....'
                                         }
                                     </div>
-                                    <div className="col-md-2">
+                                    <div className="col-2 align-items-center">
                                             <i
                                               className={`fa ${this.state.showTapStatics ? 'fa-angle-down' : 'fa-angle-up' }
                                               text-dark font-weight-bold ml-2`}>
+                                            </i>
+                                            <i
+                                              className={`fa ${!this.state.enableEdit ? 'fa-pencil' : 'fa-check'}  text-dark font-weight-bold ml-2`}
+                                              onClick={(e) => this.state.enableEdit ? this.updateTap() : this.setState({ enableEdit: true })}
+                                            >
+                                            </i>
+                                            <i
+                                              className={`fa fa-trash text-dark font-weight-bold ml-2`}
+                                              onClick={(e) => this.deleteTap()}
+                                            >
                                             </i>
                                     </div>
                                 </div>
@@ -438,4 +486,4 @@ class TapListItem extends Component<IProps, IState> {
     }
 }
 
-export default withRouter(connect(mapStateToProps)(TapListItem));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TapListItem));

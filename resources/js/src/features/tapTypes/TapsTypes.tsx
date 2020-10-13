@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { RoomType } from '../../app/api/agent';
+import { RoomType, Tap } from '../../app/api/agent';
 import LoaderBar from '../../app/common/LoaderBar';
 import { IRoomType } from '../../app/models/room-type.model';
 import TapTypeListItem from './TapTypeListItem';
 import AddTapTypeForm from './AddTapTypeForm';
 import { withTranslation, WithTranslation} from 'react-i18next';
+import { ITap } from '../../app/models/tap.model';
 
 interface IState {
     roomsTypesList: IRoomType[];
@@ -68,6 +69,25 @@ class TapTypes extends Component<IProps, IState> {
         }
     }
 
+    deleteTapType = (tapType: IRoomType) => {
+        RoomType.deleteRoomType(tapType)
+        .then((res) => {
+            var roomTypesList = [
+                ...this.state.roomsTypesList
+            ];
+
+            roomTypesList = roomTypesList.filter((roomType) => roomType.id != tapType.id );
+            this.setState({
+                roomsTypesList: roomTypesList,
+                elements: roomTypesList,
+            });
+
+            alert(this.props.t('Tap type deleted successfully'));
+
+        }).catch((err) => alert(this.props.t('swr')) );
+    }
+
+
     render() {
         const t = this.props.t;
         return (
@@ -115,6 +135,7 @@ class TapTypes extends Component<IProps, IState> {
                                                 {
                                                 this.state.elements
                                                 .map((type) => <TapTypeListItem
+                                                deleteTapType={this.deleteTapType}
                                                 key={type.id}
                                                 roomType={type}
                                                 />)}
