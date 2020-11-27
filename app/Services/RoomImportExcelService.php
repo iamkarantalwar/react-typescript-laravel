@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Enums\ProjectSettingField;
 use App\Models\FloorRoom;
 use App\Models\Project;
 use App\Models\ProjectFloor;
@@ -56,6 +57,17 @@ class RoomImportExcelService implements ToModel
                 $this->project = $this->projectRepository->create([
                     'project_name' => $row[0],
                 ]);
+
+                $fields = ProjectSettingField::FIELDS;
+                foreach ($fields as $key => $value) {
+                    $this->project->settings()->create([
+                        'project_id' => $this->project->id,
+                        'field_name' => $key,
+                        'field_wirkzeit' => '',
+                        'field_spulzeit' => '',
+                        'aktiv' => 'ACTIVE'
+                    ]);
+                }
             }
         } else if($this->iteartion == 1) {
             // Find Section
