@@ -125,11 +125,20 @@ class RoomImportExcelService implements ToModel
                     // Find the number of rooms
                     $sheetIndex = $this->rooms[$j]['index'];
                     if($row[$sheetIndex] != "") {
-                         // Create the room
-                        $room = $this->floorRoom->create([
+                        // Check if room exist
+                        $room = $this->floorRoom->where([
                             'section_id' => $section->id,
                             'room_name' => $roomNumber
-                        ]);
+                        ])->first();
+
+                        if($room == null) {
+                            // Create the room
+                            $room = $this->floorRoom->create([
+                                'section_id' => $section->id,
+                                'room_name' => $roomNumber
+                            ]);
+                        }
+
                         for($k=0; $k<$row[$sheetIndex]; $k++) {
 
                             $this->tapRepository->create([
