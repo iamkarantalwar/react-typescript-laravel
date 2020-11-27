@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\ApiCOntroller;
+namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use App\Models\PumpstartOfProduct;
