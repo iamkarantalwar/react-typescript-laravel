@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use App\Services\ExcelImportService;
+use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -23,6 +24,18 @@ class ExcelController extends Controller
 
     public function postImport(Request $request)
     {
-        return Excel::import($this->excelImportService, $request->file('file'));
+        try
+        {
+            Excel::import($this->excelImportService, $request->file('file'));
+            return response()->json([
+                'message' => 'Excel Upload successfully.',
+                'route' => route('home'),
+            ], 400);
+        } catch(Exception $e) {
+            return response()->json([
+                'message' => 'Something went wrong',
+                'exception' => $e->getMessage()
+            ], 400);
+        }
     }
 }
