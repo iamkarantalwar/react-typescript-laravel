@@ -78,6 +78,9 @@ class Header extends Component<IProps, IState> {
                                                     <li className="nav-item">
                                                         <Link className="nav-link mr-4" to="/taps">{t('Taps')}</Link>
                                                     </li>
+                                                    <li className="nav-item">
+                                                        <Link className="nav-link mr-4" to="/upload">{t('upload excel')}</Link>
+                                                    </li>
                                                 </Fragment>
                                             )
                                         } else {

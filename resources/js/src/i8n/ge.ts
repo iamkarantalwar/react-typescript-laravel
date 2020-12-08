@@ -70,5 +70,9 @@ export const ge = {
     "This section is locked, kindly contact admin or leader": "Dieser Abschnitt ist gesperrt. Bitte wenden Sie sich an den Administrator oder Leiter.",
     "Are you sure you want to delete this tap type?": "Möchten Sie diesen Tap-Typ wirklich löschen?",
     "Tap type deleted successfully": "Tippen Sie auf Typ erfolgreich gelöscht",
-    "No project assigned to you": "Ihnen ist kein Projekt zugeordnet."
+    "No project assigned to you": "Ihnen ist kein Projekt zugeordnet.",
+    "upload excel": "Excel Hochladen",
+    "Upload excel": "Excel Hochladen",
+    "Excel upload successfully": "Excel-Upload erfolgreich",
+    "Excel upload failed": "Excel-Upload fehlgeschlagen"
 }

@@ -70,5 +70,9 @@ export const en = {
     "This section is locked, kindly contact admin or leader": "This section is locked. Kindly contact admin or leader.",
     "Are you sure you want to delete this tap type?": "Are you sure you want to delete this tap type?",
     "Tap type deleted successfully": "Tap type deleted successfully",
-    "No project assigned to you": "No project assigned to you."
+    "No project assigned to you": "No project assigned to you.",
+    "upload excel": "Upload Excel",
+    "Upload excel": "Upload Excel",
+    "Excel upload successfully": "Excel upload successfully",
+    "Excel upload failed": "Excel upload failed"
 }

@@ -68,3 +68,6 @@ Route::group(["prefix" => "admin", "namespace" => "ApiController" ], function() 
     Route::post("login",  "AdminAuthenticationController@login");
     Route::post("logout", "AdminAuthenticationController@logout")->middleware('auth:api');
 });
+
+Route::get('excel', '\App\Http\Controllers\ApiController\ExcelController@index');
+Route::post('excel', '\App\Http\Controllers\ApiController\ExcelController@postImport');

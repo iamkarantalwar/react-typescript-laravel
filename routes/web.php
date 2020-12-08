@@ -21,9 +21,6 @@ Route::view('/{path?}', 'app')
        ->name("frontend");
 
 
-Route::get('test', '\App\Http\Controllers\ApiController\ExcelController@index');
-Route::post('test', '\App\Http\Controllers\ApiController\ExcelController@postImport');
-
 Auth::routes(['register' => false]);
 
 Route::get('/home', 'HomeController@index')->name('home');

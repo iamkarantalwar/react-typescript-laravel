@@ -70,11 +70,14 @@ class RoomImportExcelService implements ToModel
                 }
             }
         } else if($this->iteartion == 1) {
-            // Find Section
+            // Add the description
+            $this->project->update([
+                'description' => $row[0]
+            ]);
 
         } else if($this->iteartion == 3) {
             // Check for all the rooms
-            $i=3;
+            $i=4;
             while($row[$i] != "") {
                 if(!$this->startsWith($row[$i], "Check")) {
                     // Check if room type Exist
@@ -95,28 +98,31 @@ class RoomImportExcelService implements ToModel
             }
         } else if($this->iteartion > 5){
             $floorNumber = $row[0];
-            $roomNumber = $row[1];
-            if($roomNumber != "") {
+            $roomNumber = $row[2];
+            $sectionNumber = $row[1];
+
+            if(is_numeric($roomNumber) && is_numeric($sectionNumber) && is_numeric($floorNumber)) {
                 // Find the floor
                 $floor = $this->projectFloorRepository->where('project_id', $this->project->id)
-                                                      ->where('floor_name', 'Floor'.$floorNumber)->first();
+                                                      ->where('floor_name', 'Floor '.$floorNumber)->first();
+
                 // If floor doesn't exist create the floor
                 if($floor == null) {
                     $floor = $this->projectFloorRepository->create([
                         'project_id' => $this->project->id,
-                        'floor_name' => 'Floor'.$floorNumber]);
+                        'floor_name' => 'Floor '.$floorNumber]);
                 }
 
                 // Find the section
                 $section = $this->sectionRepository->where([
                     'project_floor_id' => $floor->id,
-                    'section_name' => 'Section1'
+                    'section_name' => 'Section'. $sectionNumber
                 ])->first();
 
                 if($section == null) {
                     $section = $this->sectionRepository->create([
                         'project_floor_id' => $floor->id,
-                        'section_name' => 'Section1'
+                        'section_name' => 'Section'. $sectionNumber
                     ]);
                 }
 

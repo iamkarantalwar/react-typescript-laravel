@@ -30,7 +30,7 @@ class ExcelController extends Controller
             return response()->json([
                 'message' => 'Excel Upload successfully.',
                 'route' => route('home'),
-            ], 400);
+            ], 200);
         } catch(Exception $e) {
             return response()->json([
                 'message' => 'Something went wrong',

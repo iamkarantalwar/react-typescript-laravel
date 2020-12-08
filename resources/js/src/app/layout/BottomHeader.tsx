@@ -27,8 +27,9 @@ export class BottomHeader extends Component<IProps> {
 
     render() {
         const t = this.props.t;
-        const path = this.props.location.pathname.split("/")[1];
+        var path = this.props.location.pathname.split("/")[1];
         let context:{title: string} = this.context;
+        path = path == "upload"  ? "upload excel" : path;
         let title_ = path.length === 0 ? t("Dashboard") : t(this.capitalizeFirstLetter(path));
         title_ = this.props.title.title ? this.props.title.title : title_;
         return (

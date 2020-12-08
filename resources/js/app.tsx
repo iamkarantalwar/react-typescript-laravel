@@ -19,6 +19,7 @@ import ProjectForm from './src/features/project/ProjectForm';
 import TapTypes from './src/features/tapTypes/TapsTypes';
 import ProjectSettingForm from './src/features/project/ProjectSettingForm';
 import './src/i8n';
+import ExcelUpload from './src/features/excel-upload/ExcelUpload';
 interface IProps {}
 
 interface IState {
@@ -64,6 +65,7 @@ export default class App extends React.Component<IProps, IState>{
                            <Route path="/teams" component={Authorization(Teams, [UserRoles.ADMIN])}/>
                            <Route path="/users" component={Authorization(Users, [UserRoles.ADMIN])}/>
                            <Route path="/taps" component={Authorization(TapTypes, [UserRoles.ADMIN])}/>
+                           <Route path="/upload" component={Authorization(ExcelUpload, [UserRoles.ADMIN])}/>
                         </Switch>
                      )}
                   />
