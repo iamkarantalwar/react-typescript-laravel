@@ -71,3 +71,4 @@ Route::group(["prefix" => "admin", "namespace" => "ApiController" ], function() 
 
 Route::get('excel', '\App\Http\Controllers\ApiController\ExcelController@index');
 Route::post('excel', '\App\Http\Controllers\ApiController\ExcelController@postImport');
+Route::get('excel/export/{project}', '\App\Http\Controllers\ApiController\ExcelController@export');

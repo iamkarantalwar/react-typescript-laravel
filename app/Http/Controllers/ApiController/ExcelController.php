@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
+use App\Models\Project;
+use App\Services\ExcelExportService;
 use App\Services\ExcelImportService;
 use Exception;
 use Illuminate\Http\Request;
@@ -37,5 +39,11 @@ class ExcelController extends Controller
                 'exception' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function export(Project $project) {
+        ob_end_clean(); // this
+        ob_start(); // and this
+        return Excel::download(new ExcelExportService($project), $project->project_name . '.xlsx');
     }
 }

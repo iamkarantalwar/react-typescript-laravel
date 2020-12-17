@@ -13,4 +13,8 @@ class FloorRoom extends Model
     public function taps() {
         return $this->hasMany("App\Models\Tap");
     }
+
+    public function section() {
+        return $this->belongsTo(Section::class);
+    }
 }

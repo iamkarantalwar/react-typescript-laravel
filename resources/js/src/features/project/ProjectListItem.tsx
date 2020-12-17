@@ -69,7 +69,12 @@ class ProjectListItem extends Component<IProps, State> {
                        aria-expanded={this.state.open}
                     >
                        {project?.project_name}
-                </a>
+                    </a>
+                    <span>
+                        <a href={`api/excel/export/${project?.id}`} title="Download Excel">
+                            <i className="fa fa-download"></i>
+                        </a>
+                    </span>
                     {
                         userObject.role == UserRoles.ADMIN ?
                         <Fragment>
