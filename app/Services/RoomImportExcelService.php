@@ -78,7 +78,7 @@ class RoomImportExcelService implements ToModel
         } else if($this->iteartion == 3) {
             // Check for all the rooms
             $i=4;
-            while($row[$i] != "") {
+            while(isset($row[$i])  && $row[$i] != "") {
                 if(!$this->startsWith($row[$i], "Check")) {
                     // Check if room type Exist
                     $roomType = $this->roomTypeRepository->where('room_type', $row[$i])->first();
